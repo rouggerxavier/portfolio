@@ -1,208 +1,241 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects, type Project } from '../data/projects'
+import './FlowingMenu.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-function host(url?: string) {
-  if (!url) return ''
-  try {
-    return new URL(url).hostname.replace(/^www\./, '')
-  } catch {
-    return url
-  }
-}
+const ANIM = { duration: 0.6, ease: 'expo' as const }
+const REPS = 6
 
-function Panel({ p }: { p: Project }) {
+function FlowRow({
+  p,
+  open,
+  onOpen,
+  onToggle,
+}: {
+  p: Project
+  open: boolean
+  onOpen: () => void
+  onToggle: () => void
+}) {
+  const itemRef = useRef<HTMLDivElement>(null)
+  const marqueeRef = useRef<HTMLDivElement>(null)
+  const innerRef = useRef<HTMLDivElement>(null)
+  const loopRef = useRef<gsap.core.Tween | null>(null)
   const href = p.live || p.repo
-  return (
-    <article className="panel relative flex w-full shrink-0 items-center px-5 sm:px-8 lg:h-screen lg:w-[88vw] lg:max-w-[900px]">
-      <span className="pointer-events-none absolute right-4 top-24 select-none font-display text-[28vw] font-extrabold leading-none text-ink opacity-[0.04] lg:top-1/2 lg:-translate-y-1/2 lg:text-[20rem]">
-        {p.index}
-      </span>
+  const marqueeImg = p.shot || '/images/projects/grankasa.jpg'
 
-      <div className="relative grid w-full gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-        <div>
-          <div className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">
-            <span className="text-flame">{p.index}</span>
-            <span>{p.category}</span>
-            <span>·</span>
-            <span>{p.year}</span>
-          </div>
-          <h3 className="font-display text-[clamp(2.2rem,6vw,4.5rem)] font-extrabold leading-[0.92] tracking-tight">
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce || !innerRef.current) return
+    const part = innerRef.current.querySelector('.marquee__part') as HTMLElement | null
+    const w = part?.offsetWidth || 0
+    if (!w) return
+    loopRef.current = gsap.to(innerRef.current, {
+      x: -w,
+      duration: 16,
+      ease: 'none',
+      repeat: -1,
+    })
+    return () => {
+      loopRef.current?.kill()
+    }
+  }, [])
+
+  const edge = (e: React.MouseEvent) => {
+    const r = itemRef.current!.getBoundingClientRect()
+    const y = e.clientY - r.top
+    return y < r.height / 2 ? 'top' : 'bottom'
+  }
+
+  const onEnter = (e: React.MouseEvent) => {
+    if (!marqueeRef.current || !innerRef.current) return
+    const ed = edge(e)
+    gsap
+      .timeline({ defaults: ANIM })
+      .set(marqueeRef.current, { y: ed === 'top' ? '-101%' : '101%' }, 0)
+      .set(innerRef.current, { y: ed === 'top' ? '101%' : '-101%' }, 0)
+      .to([marqueeRef.current, innerRef.current], { y: '0%' }, 0)
+  }
+  const onLeave = (e: React.MouseEvent) => {
+    if (!marqueeRef.current || !innerRef.current) return
+    const ed = edge(e)
+    gsap
+      .timeline({ defaults: ANIM })
+      .to(marqueeRef.current, { y: ed === 'top' ? '-101%' : '101%' }, 0)
+      .to(innerRef.current, { y: ed === 'top' ? '101%' : '-101%' }, 0)
+  }
+
+  return (
+    <li className="rule-t" onMouseEnter={onOpen}>
+      <div className="flow-row" ref={itemRef}>
+        <button
+          className="flow-link group px-1"
+          onMouseEnter={onEnter}
+          onMouseLeave={onLeave}
+          onClick={onToggle}
+          aria-expanded={open}
+          data-hot
+        >
+          <span className="font-mono text-sm text-flame">{p.index}</span>
+          <span className="font-display text-[clamp(1.6rem,4.5vw,3rem)] font-bold leading-none tracking-tight">
             {p.title}
-          </h3>
-          <p className="mt-2 font-mono text-sm uppercase tracking-wider text-flame">
-            {p.role}
-          </p>
-          <p className="mt-5 max-w-[52ch] leading-relaxed text-ink-soft">
-            {p.summary}
-          </p>
-          <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
-            {p.stack.map((s) => (
-              <li key={s}>{s}</li>
-            ))}
-          </ul>
-          <div className="mt-8 flex items-center gap-6">
-            {href ? (
+          </span>
+          <span className="ml-auto hidden font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft sm:block">
+            {p.category}
+          </span>
+          <span
+            className="font-display text-2xl text-ink-soft transition-transform duration-500 ease-out"
+            style={{ transform: open ? 'rotate(45deg)' : 'none' }}
+            aria-hidden
+          >
+            +
+          </span>
+        </button>
+
+        <div className="marquee" ref={marqueeRef}>
+          <div className="marquee__inner-wrap">
+            <div className="marquee__inner" ref={innerRef} aria-hidden>
+              {Array.from({ length: REPS }).map((_, i) => (
+                <div className="marquee__part" key={i}>
+                  <span>{p.title}</span>
+                  <div
+                    className="marquee__img"
+                    style={{ backgroundImage: `url(${marqueeImg})` }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* expand-down panel: summary + preview */}
+      <div
+        className="grid transition-[grid-template-rows] duration-500 ease-out"
+        style={{ gridTemplateRows: open ? '1fr' : '0fr' }}
+      >
+        <div className="overflow-hidden">
+          <div className="grid gap-8 px-1 pb-12 pt-2 lg:grid-cols-[1fr_0.85fr] lg:items-start">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-wider text-flame">
+                {p.role}
+              </p>
+              <p className="mt-4 max-w-[56ch] leading-relaxed text-ink-soft">
+                {p.summary}
+              </p>
+              <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
+                {p.stack.map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ul>
+              {href && (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-7 inline-flex items-center gap-2 bg-ink px-6 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame"
+                  data-hot
+                >
+                  {p.live ? 'Ver live' : 'Ver no GitHub'} ↗
+                </a>
+              )}
+            </div>
+
+            {p.shot ? (
               <a
                 href={href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 bg-ink px-6 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame"
+                className="group/sh relative block overflow-hidden ring-1 ring-ink/10"
                 data-hot
               >
-                {p.live ? 'Ver live' : 'Ver no GitHub'} ↗
+                <img
+                  src={p.shot}
+                  alt={`Captura de tela do site do projeto ${p.title}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 ease-out group-hover/sh:scale-[1.04]"
+                />
               </a>
             ) : (
-              <span className="font-mono text-xs uppercase tracking-wider text-ink-soft">
-                {p.status}
-              </span>
+              <a
+                href={p.repo}
+                target="_blank"
+                rel="noreferrer"
+                className="flex aspect-[16/10] w-full items-end justify-between bg-paper-2 p-6 ring-1 ring-ink/10"
+                data-hot
+              >
+                <span
+                  className="font-display text-[7rem] font-extrabold leading-none"
+                  style={{ WebkitTextStroke: '1.5px var(--color-flame)', color: 'transparent' }}
+                >
+                  {p.index}
+                </span>
+                <span className="font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
+                  {p.status || 'GitHub'} ↗
+                </span>
+              </a>
             )}
           </div>
         </div>
-
-        <div className="relative hidden lg:block">
-          {p.shot ? (
-            <a
-              href={p.live}
-              target="_blank"
-              rel="noreferrer"
-              className="group/shot relative block aspect-[16/10] w-full overflow-hidden bg-paper-2 shadow-[0_36px_70px_-34px_rgba(44,38,32,0.45)] ring-1 ring-ink/10"
-              data-hot
-            >
-              <img
-                src={p.shot}
-                alt={`Captura de tela do site do projeto ${p.title}`}
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover object-top transition-transform duration-[1.2s] ease-out group-hover/shot:scale-[1.06]"
-              />
-              <div className="absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover/shot:bg-ink/45" />
-              <span className="absolute bottom-4 left-4 flex translate-y-2 items-center gap-2 bg-flame px-4 py-2 font-mono text-[0.7rem] uppercase tracking-wider text-paper opacity-0 transition-all duration-500 ease-out group-hover/shot:translate-y-0 group-hover/shot:opacity-100">
-                Ver live ↗
-              </span>
-            </a>
-          ) : (
-            <a
-              href={p.repo}
-              target="_blank"
-              rel="noreferrer"
-              className="group/shot relative flex aspect-[16/10] w-full flex-col justify-between overflow-hidden bg-paper-2 p-6 shadow-[0_36px_70px_-34px_rgba(44,38,32,0.45)] ring-1 ring-ink/10"
-              data-hot
-            >
-              <span
-                className="self-end font-display text-[8rem] font-extrabold leading-none"
-                style={{
-                  WebkitTextStroke: '1.5px var(--color-flame)',
-                  color: 'transparent',
-                }}
-              >
-                {p.index}
-              </span>
-              <span className="flex items-center justify-between font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
-                {p.status || 'GitHub'}
-                <span className="transition-transform group-hover/shot:translate-x-1 group-hover/shot:text-flame">
-                  ↗
-                </span>
-              </span>
-            </a>
-          )}
-          <div className="mt-3 flex justify-between font-mono text-[0.65rem] tracking-wide text-ink-soft">
-            <span>{p.live ? host(p.live) : host(p.repo)}</span>
-            <span>{p.year}</span>
-          </div>
-        </div>
       </div>
-    </article>
+    </li>
   )
 }
 
 export default function Projects() {
-  const section = useRef<HTMLElement>(null)
-  const track = useRef<HTMLDivElement>(null)
+  const root = useRef<HTMLElement>(null)
+  const [open, setOpen] = useState<string | null>(projects[0]?.slug ?? null)
 
   useEffect(() => {
-    const mm = gsap.matchMedia()
-
-    // desktop: horizontal pinned scrub
-    mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
-      const el = track.current!
-      const getAmount = () => el.scrollWidth - window.innerWidth
-      const tween = gsap.to(el, {
-        x: () => -getAmount(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section.current,
-          start: 'top top',
-          end: () => '+=' + getAmount(),
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-        },
-      })
-      gsap.from('.panel', {
+    const ctx = gsap.context(() => {
+      gsap.from('.idx-head > *', {
+        scrollTrigger: { trigger: '.idx-head', start: 'top 85%' },
+        y: 28,
         opacity: 0,
-        y: 40,
-        duration: 0.6,
-        stagger: 0.05,
+        duration: 0.7,
+        stagger: 0.08,
         ease: 'expo.out',
-        scrollTrigger: { trigger: section.current, start: 'top 80%' },
       })
-      return () => tween.kill()
-    })
-
-    // mobile / reduced: vertical reveals
-    mm.add('(max-width: 1023px), (prefers-reduced-motion: reduce)', () => {
-      const panels = gsap.utils.toArray<HTMLElement>('.panel')
-      panels.forEach((pnl) =>
-        gsap.from(pnl, {
+      gsap.utils.toArray<HTMLElement>('.rule-t').forEach((row) => {
+        gsap.from(row, {
+          scrollTrigger: { trigger: row, start: 'top 92%' },
+          y: 24,
           opacity: 0,
-          y: 40,
-          duration: 0.7,
+          duration: 0.6,
           ease: 'expo.out',
-          scrollTrigger: { trigger: pnl, start: 'top 85%' },
-        }),
-      )
-    })
-
-    return () => mm.revert()
+        })
+      })
+    }, root)
+    return () => ctx.revert()
   }, [])
 
   return (
-    <section
-      id="index"
-      ref={section}
-      className="relative py-24 lg:h-screen lg:overflow-hidden lg:py-0"
-    >
-      <div
-        ref={track}
-        className="flex flex-col gap-20 lg:h-screen lg:flex-row lg:gap-0"
-      >
-        {/* intro panel */}
-        <div className="flex w-full shrink-0 flex-col justify-center px-5 sm:px-8 lg:h-screen lg:w-[60vw] lg:max-w-[640px]">
-          <span className="font-mono text-xs uppercase tracking-widest text-flame">
-            Índice
-          </span>
-          <h2 className="mt-4 font-display text-[clamp(2.4rem,7vw,5.5rem)] font-extrabold leading-[0.9] tracking-tight">
-            Projetos<span className="text-flame">.</span>
+    <section id="index" ref={root} className="relative px-5 py-24 sm:px-8">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="idx-head mb-10 flex flex-wrap items-end justify-between gap-4">
+          <h2 className="font-display text-[clamp(2rem,5vw,3.75rem)] font-extrabold leading-none tracking-tight">
+            Índice de projetos
           </h2>
-          <p className="mt-6 max-w-[42ch] leading-relaxed text-ink-soft">
-            Produtos reais com IA aplicada, do backend à interface. Role para
-            percorrer o índice.
-          </p>
-          <div className="mt-8 flex items-center gap-4 font-mono text-xs uppercase tracking-widest text-ink-soft">
-            <span>{String(projects.length).padStart(2, '0')} entradas</span>
-            <span className="hidden h-px w-16 bg-line lg:block" />
-            <span className="hidden lg:inline">role →</span>
-          </div>
+          <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
+            {String(projects.length).padStart(2, '0')} entradas / 2026
+          </span>
         </div>
 
-        {projects.map((p) => (
-          <Panel key={p.slug} p={p} />
-        ))}
+        <ul>
+          {projects.map((p) => (
+            <FlowRow
+              key={p.slug}
+              p={p}
+              open={open === p.slug}
+              onOpen={() => setOpen(p.slug)}
+              onToggle={() => setOpen((cur) => (cur === p.slug ? null : p.slug))}
+            />
+          ))}
+        </ul>
       </div>
     </section>
   )
