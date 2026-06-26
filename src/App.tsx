@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import Lenis from 'lenis'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import Background from './components/Background'
 import Cursor from './components/Cursor'
 import Intro, { INTRO_DONE } from './components/Intro'
 import Nav from './components/Nav'
@@ -52,7 +51,6 @@ export default function App() {
 
   return (
     <>
-      <Background />
       <Cursor />
       <Intro />
       <Nav />
