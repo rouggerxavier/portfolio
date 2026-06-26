@@ -44,17 +44,23 @@ export default function Hero() {
             <span className="h-meta">{profile.study}</span>
           </div>
 
-          <h1 className="font-display text-[clamp(2.9rem,9vw,8.5rem)] font-extrabold leading-[0.86] tracking-[-0.03em]">
+          <h1 className="font-display text-[clamp(2.6rem,7.2vw,7rem)] font-extrabold leading-[0.86] tracking-[-0.03em]">
             <span className="block overflow-hidden">
               <span className="h-word block">Construo</span>
             </span>
             <span className="block overflow-hidden">
+              <span className="h-word block">produtos</span>
+            </span>
+            <span className="block overflow-hidden">
               <span className="h-word block">
-                produtos com <span className="text-flame">IA</span>
+                com <span className="text-flame">IA</span>
               </span>
             </span>
             <span className="block overflow-hidden">
-              <span className="h-word block">de ponta a ponta.</span>
+              <span className="h-word block">de ponta</span>
+            </span>
+            <span className="block overflow-hidden">
+              <span className="h-word block">a ponta.</span>
             </span>
           </h1>
 
