@@ -47,7 +47,7 @@ export default function Hero() {
             hoverIntensity={0.35}
             rotateOnHover
             forceHoverState
-            backgroundColor="#15120e"
+            backgroundColor="#070708"
           />
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function Hero() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'radial-gradient(closest-side at 50% 48%, rgba(21,18,14,0.72), rgba(21,18,14,0.25) 45%, transparent 70%)',
+            'radial-gradient(closest-side at 50% 48%, rgba(7,7,8,0.72), rgba(7,7,8,0.25) 45%, transparent 70%)',
         }}
       />
 
