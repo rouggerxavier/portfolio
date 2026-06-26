@@ -4,12 +4,12 @@
 
 ## Product purpose
 
-Portfólio pessoal de Rougger Xavier — estudante de Ciência de Dados & IA na
-UFPB, AI Engineer e full-stack. O site é o produto: a impressão que deixa em
-quem o vê é a entrega. Objetivo: provar craft técnico e de interface através do
-próprio site e apresentar produtos reais com IA aplicada end-to-end (DocOps
-Agent, Grankasa, EvalOps, Aurora Support AI, Feirão, CRM Feirão, MobileTurismo,
-Alana Lacerda Arquitetos).
+Portfólio pessoal de Rougger Xavier — web designer e desenvolvedor full-stack,
+com foco em UI/UX, motion e front-end de alto nível (base sólida de back-end e
+IA aplicada). O site é o produto: a impressão que deixa em quem o vê é a entrega.
+Objetivo: provar craft de design e de interface através do próprio site e
+apresentar produtos web reais (Grankasa, Alana Lacerda Arquitetos, DocOps,
+EvalOps, Feirão, Aurora Support AI, MobileTurismo).
 
 ## Users
 

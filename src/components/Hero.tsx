@@ -46,28 +46,26 @@ export default function Hero() {
 
           <h1 className="font-display text-[clamp(2.6rem,7.2vw,7rem)] font-extrabold leading-[0.86] tracking-[-0.03em]">
             <span className="block overflow-hidden">
-              <span className="h-word block">Construo</span>
+              <span className="h-word block">Desenho</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="h-word block">produtos</span>
+              <span className="h-word block">experiências</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="h-word block">
-                com <span className="text-flame">IA</span>
-              </span>
+              <span className="h-word block text-flame">web</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="h-word block">de ponta</span>
+              <span className="h-word block">memoráveis</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="h-word block">a ponta.</span>
+              <span className="h-word block">e vivas.</span>
             </span>
           </h1>
 
           <p className="h-sub mt-8 max-w-[58ch] text-lg leading-relaxed text-ink-soft">
-            Transformo modelos, agentes e pipelines em sistemas reais: API,
-            autenticação, RAG, avaliação, deploy e interfaces que as pessoas
-            gostam de usar.
+            Web designer e desenvolvedor full-stack. Crio interfaces e sites de
+            ponta a ponta: UI/UX, motion, front-end de alto nível e a engenharia
+            que faz tudo funcionar, incluindo produtos com IA.
           </p>
 
           <div className="h-cta mt-10 flex flex-wrap items-center gap-7">
@@ -99,7 +97,7 @@ export default function Hero() {
             {[
               ['Autor', 'R. Xavier'],
               ['Local', 'PB / BR'],
-              ['Foco', 'AI · Full-stack'],
+              ['Foco', 'UI/UX · Web'],
               ['Estudo', 'UFPB'],
               ['Projetos', String(projects.length).padStart(2, '0')],
               ['Rev.', '2026.0'],

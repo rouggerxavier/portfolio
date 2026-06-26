@@ -1,12 +1,12 @@
 const items = [
-  'AI Engineering',
-  'RAG & Agentes',
-  'Full-stack',
-  'FastAPI',
-  'React / TypeScript',
-  'LLMOps & Evals',
-  'Fine-tuning',
-  'Product UX',
+  'Web Design',
+  'UI/UX',
+  'Motion Design',
+  'Front-end',
+  'React / Next.js',
+  'Design Systems',
+  'Acessibilidade',
+  'IA aplicada',
 ]
 
 export default function Marquee() {

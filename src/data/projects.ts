@@ -114,7 +114,7 @@ export const projects: Project[] = [
 
 export const profile = {
   name: 'Rougger Xavier',
-  role: 'AI Engineer & Full-stack Developer',
+  role: 'Web Designer & Full-stack Developer',
   study: 'Ciência de Dados & IA — UFPB',
   location: 'Paraíba, Brasil',
   email: 'rouggerxavier@hotmail.com',
@@ -122,14 +122,14 @@ export const profile = {
 }
 
 export const focus = [
-  { label: 'AI Engineering & RAG', pct: 35 },
-  { label: 'Backend & APIs', pct: 25 },
-  { label: 'Frontend / Product UX', pct: 20 },
-  { label: 'Data / LLMOps & Evals', pct: 20 },
+  { label: 'UI/UX & Web Design', pct: 35 },
+  { label: 'Front-end & Motion', pct: 30 },
+  { label: 'Back-end & APIs', pct: 20 },
+  { label: 'IA aplicada & Dados', pct: 15 },
 ]
 
 export const capabilities = [
-  'RAG', 'Agentes', 'Fine-tuning', 'Evals', 'FastAPI', 'LangGraph',
-  'React', 'Next.js', 'TypeScript', 'Vite', 'Tailwind', 'Vertex AI',
-  'Gemini', 'Docker', 'PostgreSQL', 'CI/CD',
+  'UI/UX', 'Web Design', 'Design Systems', 'Motion', 'GSAP', 'three.js',
+  'React', 'Next.js', 'TypeScript', 'Tailwind', 'shadcn/ui', 'Acessibilidade',
+  'Responsivo', 'Node.js', 'FastAPI', 'RAG',
 ]
