@@ -4,12 +4,13 @@
 
 ## Product purpose
 
-Portfólio pessoal de Rougger Xavier — web designer e desenvolvedor full-stack,
-com foco em UI/UX, motion e front-end de alto nível (base sólida de back-end e
-IA aplicada). O site é o produto: a impressão que deixa em quem o vê é a entrega.
-Objetivo: provar craft de design e de interface através do próprio site e
-apresentar produtos web reais (Grankasa, Alana Lacerda Arquitetos, DocOps,
-EvalOps, Feirão, Aurora Support AI, MobileTurismo).
+Portfólio pessoal de Rougger Xavier — web designer e AI engineer, full-stack.
+Posicionamento equilibrado entre dois pilares de igual peso: design/UI-UX (UI/UX,
+motion, front-end) e engenharia de IA aplicada (RAG, agentes, avaliação, APIs).
+O site é o produto: a impressão que deixa em quem o vê é a entrega. Objetivo:
+provar craft de design e de engenharia através do próprio site e apresentar
+produtos web reais (Grankasa, Alana Lacerda Arquitetos, DocOps, EvalOps, Feirão,
+Aurora Support AI, MobileTurismo).
 
 ## Users
 

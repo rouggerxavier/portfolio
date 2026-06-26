@@ -52,13 +52,13 @@ export default function About() {
             02 / Perfil
           </span>
           <h2 className="ab-reveal max-w-[16ch] font-display text-[clamp(1.9rem,4.5vw,3.5rem)] font-extrabold leading-[1.02] tracking-tight">
-            Design e front-end, com profundidade de engenheiro.
+            Design e IA, do traço ao deploy.
           </h2>
           <p className="ab-reveal mt-7 max-w-[62ch] text-lg leading-relaxed text-ink-soft">
-            Meu foco é web design e UI/UX: interfaces com hierarquia clara,
-            tipografia cuidada, motion e acessibilidade. Levo isso até o produto
-            real com React e TypeScript, e tenho a base de back-end e IA para
-            entregar coisas que funcionam de verdade.
+            Trabalho nos dois lados com o mesmo cuidado: web design e UI/UX
+            (hierarquia, tipografia, motion, acessibilidade) e engenharia de IA
+            aplicada (RAG, agentes, avaliação, APIs). Levo do conceito ao deploy
+            com React e TypeScript.
           </p>
 
           <div className="bars ab-reveal mt-10 space-y-4">
@@ -98,7 +98,7 @@ export default function About() {
 
           <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden border border-line bg-line font-mono text-xs uppercase tracking-wider">
             {[
-              ['Foco', 'Web · UI/UX'],
+              ['Foco', 'Design · IA'],
               ['Base', profile.location],
               ['Estudo', 'UFPB'],
               ['Nível', 'Intermediário+'],

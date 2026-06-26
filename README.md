@@ -44,10 +44,26 @@ ano, resumo, stack, e (opcional) `repo`, `live`, `status` e `shot` (screenshot).
 
 ### Screenshots dos sites
 
-Os cards mostram capturas reais dos sites live, em `public/images/projects/<slug>.jpg`,
-exibidas num frame de browser. Para regerar, rode um Playwright apontando para cada
-`live` (viewport 1366x854, esperar o intro do site assentar) e salve com o nome do slug.
+Os cards mostram capturas reais dos sites em `public/images/projects/<slug>.jpg`,
+como imagem editorial (zoom no hover, tag "Ver live"). Para regerar, rode um
+Playwright apontando para cada `live` (viewport ~1366x854, esperar o intro do
+site assentar) e salve com o nome do slug.
 
-> Projetos sem `live` (ex.: Aurora, CRM Feirão) caem no motif SVG gerado.
-> `projeto-alana` e `mobileturismo` usam links `*.pages.dev` (Cloudflare) por ora;
-> trocar por domínio próprio quando disponível.
+> Projetos sem `live` (ex.: Aurora) usam um tile com o número do índice + link do
+> repositório. `projeto-alana` e `mobileturismo` usam links `*.pages.dev`
+> (Cloudflare) por ora; trocar por domínio próprio quando disponível em `live`.
+
+## Deploy
+
+Build estático em `dist/` (SPA de página única). Funciona em qualquer host estático.
+
+**Cloudflare Pages** (mesmo dos outros projetos)
+- Build command: `npm run build`
+- Output directory: `dist`
+- `public/_redirects` já faz o fallback SPA (`/* /index.html 200`).
+
+**Vercel**
+- `vercel.json` já define framework, build, output, rewrites e cache dos assets.
+- Ou via CLI: `vercel --prod`.
+
+Local: `npm run build && npm run preview`.

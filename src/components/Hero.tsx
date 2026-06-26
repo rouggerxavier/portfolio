@@ -49,23 +49,23 @@ export default function Hero() {
               <span className="h-word block">Desenho</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="h-word block">experiências</span>
+              <span className="h-word block">e construo</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="h-word block text-flame">web</span>
+              <span className="h-word block">produtos</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="h-word block">memoráveis</span>
+              <span className="h-word block text-flame">web &amp; IA</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="h-word block">e vivas.</span>
+              <span className="h-word block">que vivem.</span>
             </span>
           </h1>
 
           <p className="h-sub mt-8 max-w-[58ch] text-lg leading-relaxed text-ink-soft">
-            Web designer e desenvolvedor full-stack. Crio interfaces e sites de
-            ponta a ponta: UI/UX, motion, front-end de alto nível e a engenharia
-            que faz tudo funcionar, incluindo produtos com IA.
+            Uno design e engenharia: interfaces com UI/UX e motion caprichados,
+            e back-end com IA aplicada, RAG e APIs. Do conceito ao deploy, em
+            produtos web que funcionam de verdade.
           </p>
 
           <div className="h-cta mt-10 flex flex-wrap items-center gap-7">
@@ -97,7 +97,7 @@ export default function Hero() {
             {[
               ['Autor', 'R. Xavier'],
               ['Local', 'PB / BR'],
-              ['Foco', 'UI/UX · Web'],
+              ['Foco', 'UI/UX · IA'],
               ['Estudo', 'UFPB'],
               ['Projetos', String(projects.length).padStart(2, '0')],
               ['Rev.', '2026.0'],

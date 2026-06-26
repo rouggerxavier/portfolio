@@ -1,12 +1,12 @@
 const items = [
   'Web Design',
   'UI/UX',
-  'Motion Design',
+  'Motion',
   'Front-end',
-  'React / Next.js',
-  'Design Systems',
-  'Acessibilidade',
   'IA aplicada',
+  'RAG & Agentes',
+  'Back-end & APIs',
+  'Design Systems',
 ]
 
 export default function Marquee() {
