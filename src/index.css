@@ -1,0 +1,87 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-paper: oklch(0.966 0.008 78);
+  --color-paper-2: oklch(0.932 0.011 78);
+  --color-ink: oklch(0.205 0.014 62);
+  --color-ink-soft: oklch(0.46 0.012 62);
+  --color-flame: oklch(0.605 0.205 38);
+  --color-flame-deep: oklch(0.5 0.18 36);
+  --color-line: oklch(0.205 0.014 62 / 0.16);
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono: 'Spline Sans Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: var(--color-flame);
+    color: var(--color-paper);
+  }
+  ::-webkit-scrollbar {
+    width: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-paper-2);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-flame);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+  /* draughtsman grid: thin ink rules as the page voice */
+  .blueprint-grid {
+    background-image:
+      linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+    background-size: clamp(48px, 7vw, 96px) clamp(48px, 7vw, 96px);
+  }
+  .rule-t {
+    border-top: 1px solid var(--color-line);
+  }
+  .rule-b {
+    border-bottom: 1px solid var(--color-line);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* hide native cursor only where a custom one is active */
+  .has-cursor,
+  .has-cursor a,
+  .has-cursor button {
+    cursor: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
