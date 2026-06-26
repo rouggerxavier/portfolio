@@ -1,16 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects, type Project } from '../data/projects'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// deterministic blueprint motif per project
 function Motif({ seed }: { seed: number }) {
-  const lines = Array.from({ length: 7 }, (_, i) => {
+  const lines = Array.from({ length: 8 }, (_, i) => {
     const a = ((seed * 37 + i * 53) % 100) / 100
     const b = ((seed * 19 + i * 71) % 100) / 100
-    return { x1: a * 100, y1: i * 16 + 4, x2: 100 - b * 100, y2: i * 16 + 12 }
+    return { x1: a * 100, y1: i * 14 + 4, x2: 100 - b * 100, y2: i * 14 + 10 }
   })
   return (
     <svg viewBox="0 0 100 116" className="h-full w-full" aria-hidden>
@@ -27,143 +26,168 @@ function Motif({ seed }: { seed: number }) {
           strokeOpacity={i % 3 === 0 ? 0.9 : 0.4}
         />
       ))}
-      <circle cx="50" cy="58" r={14 + (seed % 5) * 3} fill="none" stroke="var(--color-flame)" strokeWidth="1" strokeOpacity="0.7" />
+      <circle cx="50" cy="58" r={12 + (seed % 5) * 4} fill="none" stroke="var(--color-flame)" strokeWidth="1" strokeOpacity="0.7" />
     </svg>
   )
 }
 
+function Panel({ p }: { p: Project }) {
+  const seed = p.index.charCodeAt(1) + p.title.length
+  const href = p.live || p.repo
+  return (
+    <article className="panel relative flex w-full shrink-0 items-center px-5 sm:px-8 lg:h-screen lg:w-[88vw] lg:max-w-[900px]">
+      <span className="pointer-events-none absolute right-4 top-24 select-none font-display text-[28vw] font-extrabold leading-none text-ink opacity-[0.04] lg:top-1/2 lg:-translate-y-1/2 lg:text-[20rem]">
+        {p.index}
+      </span>
+
+      <div className="relative grid w-full gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div>
+          <div className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">
+            <span className="text-flame">{p.index}</span>
+            <span>{p.category}</span>
+            <span>·</span>
+            <span>{p.year}</span>
+          </div>
+          <h3 className="font-display text-[clamp(2.2rem,6vw,4.5rem)] font-extrabold leading-[0.92] tracking-tight">
+            {p.title}
+          </h3>
+          <p className="mt-2 font-mono text-sm uppercase tracking-wider text-flame">
+            {p.role}
+          </p>
+          <p className="mt-5 max-w-[52ch] leading-relaxed text-ink-soft">
+            {p.summary}
+          </p>
+          <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
+            {p.stack.map((s) => (
+              <li key={s}>{s}</li>
+            ))}
+          </ul>
+          <div className="mt-8 flex items-center gap-6">
+            {href ? (
+              <a
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 bg-ink px-6 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame"
+                data-hot
+              >
+                {p.live ? 'Ver live' : 'Ver no GitHub'} ↗
+              </a>
+            ) : (
+              <span className="font-mono text-xs uppercase tracking-wider text-ink-soft">
+                {p.status}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="relative hidden border border-line p-3 lg:block">
+          {['left-0 top-0', 'right-0 top-0', 'left-0 bottom-0', 'right-0 bottom-0'].map(
+            (pos) => (
+              <span
+                key={pos}
+                className={`absolute ${pos} h-2.5 w-2.5 border border-flame`}
+                style={{ margin: -1 }}
+              />
+            ),
+          )}
+          <div className="aspect-[100/116] w-full bg-paper/50">
+            <Motif seed={seed} />
+          </div>
+          <div className="mt-3 flex justify-between font-mono text-[0.6rem] uppercase tracking-wider text-ink-soft">
+            <span>fig. {p.index}</span>
+            <span>{p.live ? 'live ↗' : p.status || 'github ↗'}</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  )
+}
+
 export default function Projects() {
-  const root = useRef<HTMLDivElement>(null)
-  const preview = useRef<HTMLDivElement>(null)
-  const [active, setActive] = useState<Project | null>(null)
+  const section = useRef<HTMLElement>(null)
+  const track = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.idx-head > *', {
-        scrollTrigger: { trigger: '.idx-head', start: 'top 85%' },
-        y: 30,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.08,
-        ease: 'expo.out',
+    const mm = gsap.matchMedia()
+
+    // desktop: horizontal pinned scrub
+    mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
+      const el = track.current!
+      const getAmount = () => el.scrollWidth - window.innerWidth
+      const tween = gsap.to(el, {
+        x: () => -getAmount(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section.current,
+          start: 'top top',
+          end: () => '+=' + getAmount(),
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+        },
       })
-      gsap.utils.toArray<HTMLElement>('.idx-row').forEach((row) => {
-        gsap.from(row, {
-          scrollTrigger: { trigger: row, start: 'top 92%' },
-          y: 28,
+      gsap.from('.panel', {
+        opacity: 0,
+        y: 40,
+        duration: 0.6,
+        stagger: 0.05,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: section.current, start: 'top 80%' },
+      })
+      return () => tween.kill()
+    })
+
+    // mobile / reduced: vertical reveals
+    mm.add('(max-width: 1023px), (prefers-reduced-motion: reduce)', () => {
+      const panels = gsap.utils.toArray<HTMLElement>('.panel')
+      panels.forEach((pnl) =>
+        gsap.from(pnl, {
           opacity: 0,
+          y: 40,
           duration: 0.7,
           ease: 'expo.out',
-        })
-      })
-    }, root)
-    return () => ctx.revert()
-  }, [])
-
-  const onMove = (e: React.MouseEvent) => {
-    if (!preview.current) return
-    gsap.to(preview.current, {
-      x: e.clientX + 24,
-      y: e.clientY - 90,
-      duration: 0.5,
-      ease: 'power3.out',
+          scrollTrigger: { trigger: pnl, start: 'top 85%' },
+        }),
+      )
     })
-  }
+
+    return () => mm.revert()
+  }, [])
 
   return (
     <section
       id="index"
-      ref={root}
-      onMouseMove={onMove}
-      className="relative px-5 py-24 sm:px-8"
+      ref={section}
+      className="relative py-24 lg:h-screen lg:overflow-hidden lg:py-0"
     >
-      <div className="mx-auto max-w-[1400px]">
-        <div className="idx-head mb-12 flex flex-wrap items-end justify-between gap-4 rule-b pb-6">
-          <h2 className="font-display text-[clamp(2rem,5vw,3.75rem)] font-extrabold leading-none tracking-tight">
-            Índice de projetos
-          </h2>
-          <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
-            {String(projects.length).padStart(2, '0')} entradas / 2026
+      <div
+        ref={track}
+        className="flex flex-col gap-20 lg:h-screen lg:flex-row lg:gap-0"
+      >
+        {/* intro panel */}
+        <div className="flex w-full shrink-0 flex-col justify-center px-5 sm:px-8 lg:h-screen lg:w-[60vw] lg:max-w-[640px]">
+          <span className="font-mono text-xs uppercase tracking-widest text-flame">
+            Índice
           </span>
+          <h2 className="mt-4 font-display text-[clamp(2.4rem,7vw,5.5rem)] font-extrabold leading-[0.9] tracking-tight">
+            Projetos<span className="text-flame">.</span>
+          </h2>
+          <p className="mt-6 max-w-[42ch] leading-relaxed text-ink-soft">
+            Produtos reais com IA aplicada, do backend à interface. Role para
+            percorrer o índice.
+          </p>
+          <div className="mt-8 flex items-center gap-4 font-mono text-xs uppercase tracking-widest text-ink-soft">
+            <span>{String(projects.length).padStart(2, '0')} entradas</span>
+            <span className="hidden h-px w-16 bg-line lg:block" />
+            <span className="hidden lg:inline">role →</span>
+          </div>
         </div>
 
-        <ul>
-          {projects.map((p) => {
-            return (
-              <li
-                key={p.slug}
-                className="idx-row group rule-b"
-                onMouseEnter={() => setActive(p)}
-                onMouseLeave={() => setActive((cur) => (cur?.slug === p.slug ? null : cur))}
-              >
-                <a
-                  href={p.live || p.repo || '#index'}
-                  target={p.live || p.repo ? '_blank' : undefined}
-                  rel="noreferrer"
-                  className="grid grid-cols-[auto_1fr_auto] items-center gap-4 py-6 transition-colors sm:gap-8 sm:py-7"
-                >
-                  <span className="font-mono text-sm text-flame">{p.index}</span>
-
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                      <h3 className="font-display text-2xl font-bold tracking-tight transition-transform duration-500 ease-out group-hover:translate-x-2 sm:text-4xl">
-                        {p.title}
-                      </h3>
-                      <span className="font-mono text-xs uppercase tracking-wider text-ink-soft">
-                        {p.role}
-                      </span>
-                    </div>
-                    {/* expand-on-hover detail (grid-rows transition, no layout-prop animation) */}
-                    <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-out group-hover:grid-rows-[1fr] motion-reduce:grid-rows-[1fr]">
-                      <div className="overflow-hidden">
-                        <p className="max-w-[70ch] pt-3 text-sm leading-relaxed text-ink-soft">
-                          {p.summary}
-                        </p>
-                        <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
-                          {p.stack.map((s) => (
-                            <li key={s}>{s}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex shrink-0 items-center gap-4 self-start pt-1">
-                    <div className="hidden text-right font-mono text-[0.65rem] uppercase tracking-wider text-ink-soft sm:block">
-                      <div>{p.category}</div>
-                      <div className="text-flame">
-                        {p.live ? 'live ↗' : p.status || (p.repo ? 'github ↗' : '')}
-                      </div>
-                    </div>
-                    <span className="font-display text-xl transition-transform duration-500 ease-out group-hover:translate-x-1 group-hover:text-flame">
-                      ↗
-                    </span>
-                  </div>
-                </a>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-
-      {/* cursor-following preview */}
-      <div
-        ref={preview}
-        className="pointer-events-none fixed left-0 top-0 z-30 hidden w-44 lg:block"
-        style={{ opacity: active ? 1 : 0, transition: 'opacity 0.35s ease' }}
-        aria-hidden
-      >
-        {active && (
-          <div className="border border-ink bg-paper p-2 shadow-[6px_6px_0_var(--color-ink)]">
-            <div className="aspect-[100/116] w-full bg-paper-2">
-              <Motif seed={active.index.charCodeAt(1) + active.title.length} />
-            </div>
-            <div className="mt-2 flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-wider">
-              <span>{active.index}</span>
-              <span className="text-flame">{active.category}</span>
-            </div>
-          </div>
-        )}
+        {projects.map((p) => (
+          <Panel key={p.slug} p={p} />
+        ))}
       </div>
     </section>
   )

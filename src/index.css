@@ -56,19 +56,27 @@
   .font-mono {
     font-family: var(--font-mono);
   }
-  /* draughtsman grid: thin ink rules as the page voice */
-  .blueprint-grid {
-    background-image:
-      linear-gradient(to right, var(--color-line) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
-    background-size: clamp(48px, 7vw, 96px) clamp(48px, 7vw, 96px);
-  }
   .rule-t {
     border-top: 1px solid var(--color-line);
   }
   .rule-b {
     border-bottom: 1px solid var(--color-line);
   }
+  .animate-marquee {
+    animation: marquee 28s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* lock scroll while the intro overlay is on screen */
+body.intro-lock {
+  overflow: hidden;
+  height: 100vh;
 }
 
 @media (hover: hover) and (pointer: fine) {

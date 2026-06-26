@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import Scene3D from './Scene3D'
 import Magnetic from './Magnetic'
+import { INTRO_DONE } from './Intro'
 import { profile, projects } from '../data/projects'
 
 export default function Hero() {
@@ -11,21 +11,21 @@ export default function Hero() {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const ctx = gsap.context(() => {
       if (reduce) {
-        gsap.set('.h-anim', { opacity: 1, y: 0 })
+        gsap.set('.h-anim, .h-meta, .h-sub, .h-cta, .h-block', { opacity: 1, y: 0 })
         gsap.set('.h-word', { yPercent: 0 })
         return
       }
-      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
+      gsap.set(root.current, { autoAlpha: 1 })
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out' }, paused: true })
       tl.from('.h-meta', { y: 14, opacity: 0, duration: 0.6, stagger: 0.06 })
-        .from(
-          '.h-word',
-          { yPercent: 115, duration: 1.05, stagger: 0.08 },
-          '-=0.2',
-        )
+        .from('.h-word', { yPercent: 115, duration: 1.05, stagger: 0.08 }, '-=0.2')
         .from('.h-sub', { y: 20, opacity: 0, duration: 0.7 }, '-=0.5')
         .from('.h-cta', { y: 16, opacity: 0, duration: 0.6, stagger: 0.08 }, '-=0.4')
-        .from('.h-frame', { opacity: 0, scale: 0.9, duration: 1.1 }, '-=1.2')
-        .from('.h-block', { opacity: 0, duration: 0.8 }, '-=0.4')
+        .from('.h-block', { opacity: 0, y: 16, duration: 0.7 }, '-=0.5')
+
+      const play = () => tl.play()
+      if (sessionStorage.getItem('introSeen')) play()
+      else window.addEventListener(INTRO_DONE, play, { once: true })
     }, root)
     return () => ctx.revert()
   }, [])
@@ -34,10 +34,9 @@ export default function Hero() {
     <section
       id="top"
       ref={root}
-      className="blueprint-grid relative min-h-screen overflow-hidden"
+      className="relative min-h-screen"
     >
-      <div className="mx-auto grid min-h-screen max-w-[1400px] grid-cols-1 items-center gap-8 px-5 pt-28 pb-16 sm:px-8 lg:grid-cols-[1.15fr_0.85fr] lg:pt-24">
-        {/* Left: type */}
+      <div className="mx-auto grid min-h-screen max-w-[1400px] grid-cols-1 items-center gap-10 px-5 pt-32 pb-20 sm:px-8 lg:grid-cols-[1.25fr_0.75fr] lg:pt-24">
         <div>
           <div className="h-meta mb-7 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-xs uppercase tracking-[0.18em] text-ink-soft">
             <span className="h-meta">{profile.role}</span>
@@ -45,7 +44,7 @@ export default function Hero() {
             <span className="h-meta">{profile.study}</span>
           </div>
 
-          <h1 className="font-display text-[clamp(2.9rem,9vw,8rem)] font-extrabold leading-[0.88] tracking-[-0.03em]">
+          <h1 className="font-display text-[clamp(2.9rem,9vw,8.5rem)] font-extrabold leading-[0.86] tracking-[-0.03em]">
             <span className="block overflow-hidden">
               <span className="h-word block">Construo</span>
             </span>
@@ -59,7 +58,7 @@ export default function Hero() {
             </span>
           </h1>
 
-          <p className="h-sub mt-8 max-w-[60ch] text-lg leading-relaxed text-ink-soft">
+          <p className="h-sub mt-8 max-w-[58ch] text-lg leading-relaxed text-ink-soft">
             Transformo modelos, agentes e pipelines em sistemas reais: API,
             autenticação, RAG, avaliação, deploy e interfaces que as pessoas
             gostam de usar.
@@ -70,6 +69,7 @@ export default function Hero() {
               <a
                 href="#index"
                 className="inline-flex items-center gap-3 bg-ink px-7 py-4 font-mono text-sm uppercase tracking-wider text-paper transition-colors hover:bg-flame"
+                data-hot
               >
                 Ver projetos
                 <span className="font-mono text-xs">({projects.length})</span>
@@ -79,6 +79,7 @@ export default function Hero() {
               <a
                 href="#contact"
                 className="font-mono text-sm uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-[6px] hover:text-flame"
+                data-hot
               >
                 Falar comigo →
               </a>
@@ -86,43 +87,26 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right: 3D drawing inside a title block */}
-        <div className="relative hidden lg:block">
-          <div className="h-frame relative aspect-square w-full border border-line">
-            {/* corner ticks */}
-            {['left-0 top-0', 'right-0 top-0', 'left-0 bottom-0', 'right-0 bottom-0'].map(
-              (pos) => (
-                <span
-                  key={pos}
-                  className={`absolute ${pos} h-3 w-3 border border-flame`}
-                  style={{ margin: -1 }}
-                />
-              ),
-            )}
-            <Scene3D />
-            <span className="absolute left-3 top-3 font-mono text-[0.6rem] uppercase tracking-widest text-ink-soft">
-              fig. 01 — system
-            </span>
-            <span className="absolute bottom-3 right-3 font-mono text-[0.6rem] uppercase tracking-widest text-ink-soft">
-              wireframe / live
-            </span>
+        {/* right: technical title block (3D field shows behind globally) */}
+        <div className="h-block hidden lg:block">
+          <div className="grid grid-cols-2 gap-px overflow-hidden border border-line bg-line font-mono text-[0.65rem] uppercase tracking-wider">
+            {[
+              ['Autor', 'R. Xavier'],
+              ['Local', 'PB / BR'],
+              ['Foco', 'AI · Full-stack'],
+              ['Estudo', 'UFPB'],
+              ['Projetos', String(projects.length).padStart(2, '0')],
+              ['Rev.', '2026.0'],
+            ].map(([k, v]) => (
+              <div key={k} className="bg-paper/70 p-4 backdrop-blur-[1px]">
+                <div className="text-ink-soft">{k}</div>
+                <div className="mt-1 text-ink">{v}</div>
+              </div>
+            ))}
           </div>
-
-          {/* title block */}
-          <div className="h-block mt-4 grid grid-cols-3 border border-line font-mono text-[0.65rem] uppercase tracking-wider">
-            <div className="rule-r border-r border-line p-3">
-              <div className="text-ink-soft">Autor</div>
-              <div className="mt-1 text-ink">R. Xavier</div>
-            </div>
-            <div className="border-r border-line p-3">
-              <div className="text-ink-soft">Local</div>
-              <div className="mt-1 text-ink">PB / BR</div>
-            </div>
-            <div className="p-3">
-              <div className="text-ink-soft">Rev.</div>
-              <div className="mt-1 text-ink">2026.0</div>
-            </div>
-          </div>
+          <p className="mt-4 max-w-[34ch] font-mono text-[0.65rem] uppercase leading-relaxed tracking-wider text-ink-soft">
+            Fig. 01 — campo estrutural reativo. Mova o ponteiro / role a página.
+          </p>
         </div>
       </div>
 

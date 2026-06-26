@@ -26,6 +26,20 @@ export default function About() {
         stagger: 0.12,
         ease: 'expo.out',
       })
+      // count-up percentages
+      gsap.utils.toArray<HTMLElement>('.pct').forEach((el) => {
+        const target = Number(el.dataset.pct || 0)
+        const obj = { v: 0 }
+        gsap.to(obj, {
+          v: target,
+          duration: 1.2,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: '.bars', start: 'top 80%' },
+          onUpdate: () => {
+            el.textContent = `${Math.round(obj.v)}%`
+          },
+        })
+      })
     }, root)
     return () => ctx.revert()
   }, [])
@@ -52,7 +66,9 @@ export default function About() {
               <div key={f.label}>
                 <div className="mb-1.5 flex items-baseline justify-between font-mono text-xs uppercase tracking-wider">
                   <span>{f.label}</span>
-                  <span className="text-ink-soft">{f.pct}%</span>
+                  <span className="pct text-ink-soft" data-pct={f.pct}>
+                    {f.pct}%
+                  </span>
                 </div>
                 <div className="h-2 w-full bg-paper-2">
                   <div
