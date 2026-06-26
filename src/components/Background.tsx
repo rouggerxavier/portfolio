@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-const INK = '#2c2620'
-const FLAME = '#d2451e'
+const INK = '#ece6da'
+const FLAME = '#f0571f'
 
 // volumetric point lattice: nodes connected to nearest neighbours, precomputed once
 function buildLattice(count: number) {

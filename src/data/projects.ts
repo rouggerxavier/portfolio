@@ -117,7 +117,7 @@ export const profile = {
   role: 'AI Engineer & Full-stack Developer',
   study: 'Ciência de Dados & IA — UFPB',
   location: 'Paraíba, Brasil',
-  email: 'rougger.xavier.1anob@gmail.com',
+  email: 'rouggerxavier@hotmail.com',
   github: 'https://github.com/rouggerxavier',
 }
 

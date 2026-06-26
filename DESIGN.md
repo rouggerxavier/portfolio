@@ -1,6 +1,6 @@
 # DESIGN.md
 
-Lane: **blueprint técnico / Swiss spec-sheet**. Tema claro, papel quente.
+Lane: **blueprint técnico / Swiss spec-sheet**. Tema **dark** (superfície quase-preta quente), tinta = foreground claro, acento cinábrio.
 
 ## Color (OKLCH)
 

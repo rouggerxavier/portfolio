@@ -1,13 +1,14 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-paper: oklch(0.966 0.008 78);
-  --color-paper-2: oklch(0.932 0.011 78);
-  --color-ink: oklch(0.205 0.014 62);
-  --color-ink-soft: oklch(0.46 0.012 62);
-  --color-flame: oklch(0.605 0.205 38);
-  --color-flame-deep: oklch(0.5 0.18 36);
-  --color-line: oklch(0.205 0.014 62 / 0.16);
+  /* dark theme: 'paper' is the dark surface, 'ink' is the light foreground */
+  --color-paper: oklch(0.155 0.012 58);
+  --color-paper-2: oklch(0.205 0.013 58);
+  --color-ink: oklch(0.94 0.012 82);
+  --color-ink-soft: oklch(0.72 0.012 78);
+  --color-flame: oklch(0.66 0.215 40);
+  --color-flame-deep: oklch(0.56 0.19 37);
+  --color-line: oklch(0.94 0.012 82 / 0.14);
 
   --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-body: 'Hanken Grotesk', system-ui, sans-serif;
