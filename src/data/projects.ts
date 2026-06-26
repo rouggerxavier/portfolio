@@ -10,6 +10,7 @@ export type Project = {
   repo?: string
   live?: string
   status?: string
+  shot?: string
 }
 
 export const projects: Project[] = [
@@ -25,6 +26,7 @@ export const projects: Project[] = [
     stack: ['FastAPI', 'LangGraph', 'Chroma', 'BM25', 'React', 'TypeScript', 'Docker'],
     live: 'https://doc-ops-agent.vercel.app/',
     repo: 'https://github.com/rouggerxavier/DocOps_Agent',
+    shot: '/images/projects/docops.jpg',
   },
   {
     index: '02',
@@ -36,8 +38,9 @@ export const projects: Project[] = [
     summary:
       'Plataforma imobiliária com catálogo, busca de imóveis e chat de agente com streaming SSE. Integração de catálogo Loft/Vista atrás de flag, observabilidade segura do agente e persistência híbrida SQLite/Postgres.',
     stack: ['React', 'Vite', 'shadcn/ui', 'Python', 'SSE', 'PostgreSQL'],
-    live: 'https://grankasa.vercel.app/',
+    live: 'https://grankasa.com',
     repo: 'https://github.com/rouggerxavier/Grankasa',
+    shot: '/images/projects/grankasa.jpg',
   },
   {
     index: '03',
@@ -51,6 +54,7 @@ export const projects: Project[] = [
     stack: ['FastAPI', 'Next.js', 'TypeScript', 'SDK Python', 'SQLAlchemy', 'Alembic'],
     live: 'https://eval-ops-web.vercel.app/',
     repo: 'https://github.com/rouggerxavier/EvalOps',
+    shot: '/images/projects/evalops.jpg',
   },
   {
     index: '04',
@@ -75,8 +79,9 @@ export const projects: Project[] = [
     summary:
       'MVP de catálogo com lista de orçamento e conversão por WhatsApp, sem checkout. Pipeline offline de ingestão de planilhas para JSON normalizado. Cobertura unit, integração e E2E.',
     stack: ['Next.js', 'TypeScript', 'Tailwind v4', 'Zustand', 'Zod', 'Playwright'],
-    live: 'https://feiraodaconstrucao.com.br/',
+    live: 'https://feiraodaconstrucao.com.br',
     repo: 'https://github.com/rouggerxavier/feirao',
+    shot: '/images/projects/feirao.jpg',
   },
   {
     index: '06',
@@ -95,13 +100,14 @@ export const projects: Project[] = [
     index: '07',
     slug: 'mobileturismo',
     title: 'MobileTurismo',
-    role: 'Aplicação de turismo mobile',
-    category: 'Mobile / Travel',
+    role: 'Fretamento de ônibus & turismo',
+    category: 'Site / Turismo',
     year: '2026',
     summary:
-      'Aplicação de turismo focada em experiência mobile, descoberta de pontos e roteiros. Detalhes técnicos a completar; repositório a vincular.',
-    stack: ['React Native', 'Mobile', 'Maps'],
-    status: 'em construção',
+      'Site para empresa de fretamento de ônibus, micro-ônibus e vans em João Pessoa, voltado a turismo, eventos e transporte corporativo. Hero imersivo, seções de frota e captação de orçamento direto pelo WhatsApp.',
+    stack: ['Web', 'Landing page', 'Responsivo', 'WhatsApp'],
+    live: 'https://mobileturismo.pages.dev',
+    shot: '/images/projects/mobileturismo.jpg',
   },
   {
     index: '08',
@@ -113,7 +119,9 @@ export const projects: Project[] = [
     summary:
       'Portfólio para arquiteta com grid de projetos filtrável, pipeline de imagens em WebP e contato direto via WhatsApp. Build estático, sem backend nem CMS.',
     stack: ['React', 'Vite', 'TypeScript', 'WebP pipeline'],
+    live: 'https://projeto-alana.pages.dev',
     repo: 'https://github.com/rouggerxavier/projeto-alana',
+    shot: '/images/projects/projeto-alana.jpg',
   },
 ]
 

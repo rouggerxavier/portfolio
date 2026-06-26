@@ -39,8 +39,15 @@ npm run preview  # serve o build
 
 ## Editar projetos
 
-Tudo em `src/data/projects.ts`. Cada projeto tem título, tagline, descrição,
-stack, ano, cor de acento e (opcional) link do repositório.
+Tudo em `src/data/projects.ts`. Cada projeto tem índice, título, role, categoria,
+ano, resumo, stack, e (opcional) `repo`, `live`, `status` e `shot` (screenshot).
 
-> **TODO:** `MobileTurismo` está com descrição placeholder e sem `repo` — completar
-> quando o repositório estiver disponível.
+### Screenshots dos sites
+
+Os cards mostram capturas reais dos sites live, em `public/images/projects/<slug>.jpg`,
+exibidas num frame de browser. Para regerar, rode um Playwright apontando para cada
+`live` (viewport 1366x854, esperar o intro do site assentar) e salve com o nome do slug.
+
+> Projetos sem `live` (ex.: Aurora, CRM Feirão) caem no motif SVG gerado.
+> `projeto-alana` e `mobileturismo` usam links `*.pages.dev` (Cloudflare) por ora;
+> trocar por domínio próprio quando disponível.

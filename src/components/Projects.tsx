@@ -5,6 +5,15 @@ import { projects, type Project } from '../data/projects'
 
 gsap.registerPlugin(ScrollTrigger)
 
+function host(url?: string) {
+  if (!url) return ''
+  try {
+    return new URL(url).hostname.replace(/^www\./, '')
+  } catch {
+    return url
+  }
+}
+
 function Motif({ seed }: { seed: number }) {
   const lines = Array.from({ length: 8 }, (_, i) => {
     const a = ((seed * 37 + i * 53) % 100) / 100
@@ -81,22 +90,60 @@ function Panel({ p }: { p: Project }) {
           </div>
         </div>
 
-        <div className="relative hidden border border-line p-3 lg:block">
-          {['left-0 top-0', 'right-0 top-0', 'left-0 bottom-0', 'right-0 bottom-0'].map(
-            (pos) => (
-              <span
-                key={pos}
-                className={`absolute ${pos} h-2.5 w-2.5 border border-flame`}
-                style={{ margin: -1 }}
-              />
-            ),
+        <div className="relative hidden lg:block">
+          {p.shot ? (
+            <a
+              href={p.live}
+              target="_blank"
+              rel="noreferrer"
+              className="group/shot relative block border border-line bg-paper/70"
+              data-hot
+            >
+              {['left-0 top-0', 'right-0 top-0', 'left-0 bottom-0', 'right-0 bottom-0'].map(
+                (pos) => (
+                  <span
+                    key={pos}
+                    className={`absolute z-10 ${pos} h-2.5 w-2.5 border border-flame`}
+                    style={{ margin: -1 }}
+                  />
+                ),
+              )}
+              <div className="rule-b flex items-center gap-2 px-3 py-2 font-mono text-[0.6rem] uppercase tracking-wider text-ink-soft">
+                <span className="h-2 w-2 rounded-full bg-flame" />
+                <span className="truncate">{host(p.live)}</span>
+                <span className="ml-auto transition-transform group-hover/shot:translate-x-0.5">
+                  live ↗
+                </span>
+              </div>
+              <div className="aspect-[16/10] w-full overflow-hidden">
+                <img
+                  src={p.shot}
+                  alt={`Captura de tela do site do projeto ${p.title}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover/shot:scale-[1.03]"
+                />
+              </div>
+            </a>
+          ) : (
+            <div className="relative border border-line p-3">
+              {['left-0 top-0', 'right-0 top-0', 'left-0 bottom-0', 'right-0 bottom-0'].map(
+                (pos) => (
+                  <span
+                    key={pos}
+                    className={`absolute ${pos} h-2.5 w-2.5 border border-flame`}
+                    style={{ margin: -1 }}
+                  />
+                ),
+              )}
+              <div className="aspect-[100/116] w-full bg-paper/50">
+                <Motif seed={seed} />
+              </div>
+            </div>
           )}
-          <div className="aspect-[100/116] w-full bg-paper/50">
-            <Motif seed={seed} />
-          </div>
           <div className="mt-3 flex justify-between font-mono text-[0.6rem] uppercase tracking-wider text-ink-soft">
             <span>fig. {p.index}</span>
-            <span>{p.live ? 'live ↗' : p.status || 'github ↗'}</span>
+            <span>{p.shot ? `screenshot · ${p.year}` : p.status || 'github ↗'}</span>
           </div>
         </div>
       </div>
