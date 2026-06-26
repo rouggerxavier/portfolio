@@ -14,34 +14,7 @@ function host(url?: string) {
   }
 }
 
-function Motif({ seed }: { seed: number }) {
-  const lines = Array.from({ length: 8 }, (_, i) => {
-    const a = ((seed * 37 + i * 53) % 100) / 100
-    const b = ((seed * 19 + i * 71) % 100) / 100
-    return { x1: a * 100, y1: i * 14 + 4, x2: 100 - b * 100, y2: i * 14 + 10 }
-  })
-  return (
-    <svg viewBox="0 0 100 116" className="h-full w-full" aria-hidden>
-      <rect x="1" y="1" width="98" height="114" fill="none" stroke="var(--color-line)" />
-      {lines.map((l, i) => (
-        <line
-          key={i}
-          x1={l.x1}
-          y1={l.y1}
-          x2={l.x2}
-          y2={l.y2}
-          stroke={i % 3 === 0 ? 'var(--color-flame)' : 'var(--color-ink)'}
-          strokeWidth={i % 3 === 0 ? 1.4 : 0.6}
-          strokeOpacity={i % 3 === 0 ? 0.9 : 0.4}
-        />
-      ))}
-      <circle cx="50" cy="58" r={12 + (seed % 5) * 4} fill="none" stroke="var(--color-flame)" strokeWidth="1" strokeOpacity="0.7" />
-    </svg>
-  )
-}
-
 function Panel({ p }: { p: Project }) {
-  const seed = p.index.charCodeAt(1) + p.title.length
   const href = p.live || p.repo
   return (
     <article className="panel relative flex w-full shrink-0 items-center px-5 sm:px-8 lg:h-screen lg:w-[88vw] lg:max-w-[900px]">
@@ -96,54 +69,49 @@ function Panel({ p }: { p: Project }) {
               href={p.live}
               target="_blank"
               rel="noreferrer"
-              className="group/shot relative block border border-line bg-paper/70"
+              className="group/shot relative block aspect-[16/10] w-full overflow-hidden bg-paper-2 shadow-[0_36px_70px_-34px_rgba(44,38,32,0.45)] ring-1 ring-ink/10"
               data-hot
             >
-              {['left-0 top-0', 'right-0 top-0', 'left-0 bottom-0', 'right-0 bottom-0'].map(
-                (pos) => (
-                  <span
-                    key={pos}
-                    className={`absolute z-10 ${pos} h-2.5 w-2.5 border border-flame`}
-                    style={{ margin: -1 }}
-                  />
-                ),
-              )}
-              <div className="rule-b flex items-center gap-2 px-3 py-2 font-mono text-[0.6rem] uppercase tracking-wider text-ink-soft">
-                <span className="h-2 w-2 rounded-full bg-flame" />
-                <span className="truncate">{host(p.live)}</span>
-                <span className="ml-auto transition-transform group-hover/shot:translate-x-0.5">
-                  live ↗
-                </span>
-              </div>
-              <div className="aspect-[16/10] w-full overflow-hidden">
-                <img
-                  src={p.shot}
-                  alt={`Captura de tela do site do projeto ${p.title}`}
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover/shot:scale-[1.03]"
-                />
-              </div>
+              <img
+                src={p.shot}
+                alt={`Captura de tela do site do projeto ${p.title}`}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover object-top transition-transform duration-[1.2s] ease-out group-hover/shot:scale-[1.06]"
+              />
+              <div className="absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover/shot:bg-ink/45" />
+              <span className="absolute bottom-4 left-4 flex translate-y-2 items-center gap-2 bg-flame px-4 py-2 font-mono text-[0.7rem] uppercase tracking-wider text-paper opacity-0 transition-all duration-500 ease-out group-hover/shot:translate-y-0 group-hover/shot:opacity-100">
+                Ver live ↗
+              </span>
             </a>
           ) : (
-            <div className="relative border border-line p-3">
-              {['left-0 top-0', 'right-0 top-0', 'left-0 bottom-0', 'right-0 bottom-0'].map(
-                (pos) => (
-                  <span
-                    key={pos}
-                    className={`absolute ${pos} h-2.5 w-2.5 border border-flame`}
-                    style={{ margin: -1 }}
-                  />
-                ),
-              )}
-              <div className="aspect-[100/116] w-full bg-paper/50">
-                <Motif seed={seed} />
-              </div>
-            </div>
+            <a
+              href={p.repo}
+              target="_blank"
+              rel="noreferrer"
+              className="group/shot relative flex aspect-[16/10] w-full flex-col justify-between overflow-hidden bg-paper-2 p-6 shadow-[0_36px_70px_-34px_rgba(44,38,32,0.45)] ring-1 ring-ink/10"
+              data-hot
+            >
+              <span
+                className="self-end font-display text-[8rem] font-extrabold leading-none"
+                style={{
+                  WebkitTextStroke: '1.5px var(--color-flame)',
+                  color: 'transparent',
+                }}
+              >
+                {p.index}
+              </span>
+              <span className="flex items-center justify-between font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
+                {p.status || 'GitHub'}
+                <span className="transition-transform group-hover/shot:translate-x-1 group-hover/shot:text-flame">
+                  ↗
+                </span>
+              </span>
+            </a>
           )}
-          <div className="mt-3 flex justify-between font-mono text-[0.6rem] uppercase tracking-wider text-ink-soft">
-            <span>fig. {p.index}</span>
-            <span>{p.shot ? `screenshot · ${p.year}` : p.status || 'github ↗'}</span>
+          <div className="mt-3 flex justify-between font-mono text-[0.65rem] tracking-wide text-ink-soft">
+            <span>{p.live ? host(p.live) : host(p.repo)}</span>
+            <span>{p.year}</span>
           </div>
         </div>
       </div>

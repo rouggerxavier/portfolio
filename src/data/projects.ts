@@ -16,20 +16,6 @@ export type Project = {
 export const projects: Project[] = [
   {
     index: '01',
-    slug: 'docops',
-    title: 'DocOps Agent',
-    role: 'Assistente RAG para documentos',
-    category: 'AI Engineering / RAG',
-    year: '2026',
-    summary:
-      'Assistente RAG que transforma documentos longos em fluxos úteis: ingestão, chat, resumos, planos de estudo, flashcards, tarefas e calendário. Orquestração com LangGraph, recuperação híbrida Chroma + BM25.',
-    stack: ['FastAPI', 'LangGraph', 'Chroma', 'BM25', 'React', 'TypeScript', 'Docker'],
-    live: 'https://doc-ops-agent.vercel.app/',
-    repo: 'https://github.com/rouggerxavier/DocOps_Agent',
-    shot: '/images/projects/docops.jpg',
-  },
-  {
-    index: '02',
     slug: 'grankasa',
     title: 'Grankasa',
     role: 'Agente imobiliário conversacional',
@@ -43,7 +29,35 @@ export const projects: Project[] = [
     shot: '/images/projects/grankasa.jpg',
   },
   {
+    index: '02',
+    slug: 'projeto-alana',
+    title: 'Alana Lacerda Arquitetos',
+    role: 'Portfólio de arquitetura',
+    category: 'Brand / Landing',
+    year: '2026',
+    summary:
+      'Portfólio para arquiteta com grid de projetos filtrável, pipeline de imagens em WebP e contato direto via WhatsApp. Build estático, sem backend nem CMS.',
+    stack: ['React', 'Vite', 'TypeScript', 'WebP pipeline'],
+    live: 'https://projeto-alana.pages.dev',
+    repo: 'https://github.com/rouggerxavier/projeto-alana',
+    shot: '/images/projects/projeto-alana.jpg',
+  },
+  {
     index: '03',
+    slug: 'docops',
+    title: 'DocOps Agent',
+    role: 'Assistente RAG para documentos',
+    category: 'AI Engineering / RAG',
+    year: '2026',
+    summary:
+      'Assistente RAG que transforma documentos longos em fluxos úteis: ingestão, chat, resumos, planos de estudo, flashcards, tarefas e calendário. Orquestração com LangGraph, recuperação híbrida Chroma + BM25.',
+    stack: ['FastAPI', 'LangGraph', 'Chroma', 'BM25', 'React', 'TypeScript', 'Docker'],
+    live: 'https://doc-ops-agent.vercel.app/',
+    repo: 'https://github.com/rouggerxavier/DocOps_Agent',
+    shot: '/images/projects/docops.jpg',
+  },
+  {
+    index: '04',
     slug: 'evalops',
     title: 'EvalOps Studio',
     role: 'Cockpit de LLMOps',
@@ -55,19 +69,6 @@ export const projects: Project[] = [
     live: 'https://eval-ops-web.vercel.app/',
     repo: 'https://github.com/rouggerxavier/EvalOps',
     shot: '/images/projects/evalops.jpg',
-  },
-  {
-    index: '04',
-    slug: 'aurora',
-    title: 'Aurora Support AI',
-    role: 'Atendimento e-commerce com IA',
-    category: 'AI / Fine-tuning',
-    year: '2026',
-    summary:
-      'Atendimento de e-commerce com IA: backend FastAPI, guardrails, rate limiting, avaliação offline e evolução para pipeline de fine-tuning sobre Vertex AI / Gemini. Repositório público de portfólio.',
-    stack: ['Python', 'FastAPI', 'Vertex AI', 'Gemini', 'Evals', 'Playwright', 'CI/CD'],
-    repo: 'https://github.com/rouggerxavier/e-commerce_fine_tuning',
-    status: 'open source',
   },
   {
     index: '05',
@@ -85,16 +86,16 @@ export const projects: Project[] = [
   },
   {
     index: '06',
-    slug: 'crm-feirao',
-    title: 'CRM Feirão',
-    role: 'CRM comercial B2B com WhatsApp',
-    category: 'B2B / CRM',
+    slug: 'aurora',
+    title: 'Aurora Support AI',
+    role: 'Atendimento e-commerce com IA',
+    category: 'AI / Fine-tuning',
     year: '2026',
     summary:
-      'CRM para fluxo comercial via WhatsApp: catálogo inteligente, pré-orçamento com handoff humano obrigatório, gestão de leads, timeline de eventos, follow-up e opt-out. Integração Evolution API com agente LLM.',
-    stack: ['TypeScript', 'Evolution API', 'LLM', 'CSV pipeline'],
-    repo: 'https://github.com/rouggerxavier/CRM_feirao',
-    status: 'case privado',
+      'Atendimento de e-commerce com IA: backend FastAPI, guardrails, rate limiting, avaliação offline e evolução para pipeline de fine-tuning sobre Vertex AI / Gemini. Repositório público de portfólio.',
+    stack: ['Python', 'FastAPI', 'Vertex AI', 'Gemini', 'Evals', 'Playwright', 'CI/CD'],
+    repo: 'https://github.com/rouggerxavier/e-commerce_fine_tuning',
+    status: 'open source',
   },
   {
     index: '07',
@@ -108,20 +109,6 @@ export const projects: Project[] = [
     stack: ['Web', 'Landing page', 'Responsivo', 'WhatsApp'],
     live: 'https://mobileturismo.pages.dev',
     shot: '/images/projects/mobileturismo.jpg',
-  },
-  {
-    index: '08',
-    slug: 'projeto-alana',
-    title: 'Alana Lacerda Arquitetos',
-    role: 'Portfólio de arquitetura',
-    category: 'Brand / Landing',
-    year: '2026',
-    summary:
-      'Portfólio para arquiteta com grid de projetos filtrável, pipeline de imagens em WebP e contato direto via WhatsApp. Build estático, sem backend nem CMS.',
-    stack: ['React', 'Vite', 'TypeScript', 'WebP pipeline'],
-    live: 'https://projeto-alana.pages.dev',
-    repo: 'https://github.com/rouggerxavier/projeto-alana',
-    shot: '/images/projects/projeto-alana.jpg',
   },
 ]
 
