@@ -12,12 +12,10 @@ const REPS = 6
 function FlowRow({
   p,
   open,
-  onOpen,
   onToggle,
 }: {
   p: Project
   open: boolean
-  onOpen: () => void
   onToggle: () => void
 }) {
   const itemRef = useRef<HTMLDivElement>(null)
@@ -69,7 +67,7 @@ function FlowRow({
   }
 
   return (
-    <li className="rule-t" onMouseEnter={onOpen}>
+    <li className="rule-t">
       <div className="flow-row" ref={itemRef}>
         <button
           className="flow-link group px-1"
@@ -188,7 +186,7 @@ function FlowRow({
 
 export default function Projects() {
   const root = useRef<HTMLElement>(null)
-  const [open, setOpen] = useState<string | null>(projects[0]?.slug ?? null)
+  const [open, setOpen] = useState<string | null>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -231,7 +229,6 @@ export default function Projects() {
               key={p.slug}
               p={p}
               open={open === p.slug}
-              onOpen={() => setOpen(p.slug)}
               onToggle={() => setOpen((cur) => (cur === p.slug ? null : p.slug))}
             />
           ))}

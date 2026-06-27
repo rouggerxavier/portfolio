@@ -89,9 +89,11 @@ const DotField = memo(({
     }
 
     function onMouseMove(e) {
-      const s = sizeRef.current;
-      mouseRef.current.x = e.pageX - s.offsetX;
-      mouseRef.current.y = e.pageY - s.offsetY;
+      // measure live so coords stay correct for a fixed full-page parent and
+      // remain independent of scroll position
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current.x = e.clientX - rect.left;
+      mouseRef.current.y = e.clientY - rect.top;
     }
 
     function updateMouseSpeed() {
