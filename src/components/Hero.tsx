@@ -41,7 +41,7 @@ export default function Hero() {
     >
       {/* Orb centerpiece */}
       <div className="h-orb pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="aspect-square w-[min(94vw,880px)]">
+        <div className="aspect-square w-[min(92vw,82svh,880px)]">
           <Orb
             hue={0}
             hoverIntensity={0.35}
