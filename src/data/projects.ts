@@ -96,6 +96,7 @@ export const projects: Project[] = [
     stack: ['Python', 'FastAPI', 'Vertex AI', 'Gemini', 'Evals', 'Playwright', 'CI/CD'],
     repo: 'https://github.com/rouggerxavier/e-commerce_fine_tuning',
     status: 'open source',
+    shot: '/images/projects/aurora.png',
   },
   {
     index: '07',
@@ -115,7 +116,8 @@ export const projects: Project[] = [
 export const profile = {
   name: 'Rougger Xavier',
   role: 'Web Designer & AI Engineer',
-  study: 'Ciência de Dados & IA — UFPB',
+  study: 'Ciência de Dados & IA',
+  school: 'UFPB',
   location: 'Paraíba, Brasil',
   email: 'rouggerxavier@hotmail.com',
   github: 'https://github.com/rouggerxavier',

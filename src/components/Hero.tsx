@@ -63,7 +63,8 @@ export default function Hero() {
       {/* centered content over the orb's core */}
       <div className="relative z-10 mx-auto w-full max-w-[1000px] text-center">
         <p className="h-meta mb-7 font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
-          {profile.role} <span className="text-flame">●</span> {profile.study}
+          {profile.role} <span className="text-flame">●</span> {profile.study}{' '}
+          <span className="text-flame">●</span> {profile.school}
         </p>
 
         <h1 className="font-display text-[clamp(2.6rem,7vw,6.5rem)] font-extrabold leading-[0.9] tracking-[-0.03em]">
