@@ -88,6 +88,11 @@ export default function Intro() {
         </span>
       </div>
 
+      {/* mobile-only: fill the empty middle with a clear value proposition */}
+      <p className="intro-fade intro-meta max-w-[18ch] font-display text-[1.7rem] font-bold leading-[1.05] tracking-tight text-ink md:hidden">
+        Web design, front-end e <span className="text-flame">IA aplicada</span>.
+      </p>
+
       <div className="intro-fade">
         <div className="mb-2 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-ink-soft">
           <span className="intro-meta">Carregando experiência</span>

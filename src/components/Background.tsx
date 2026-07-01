@@ -9,7 +9,10 @@ const DotField = DotFieldRaw as unknown as ComponentType<Record<string, unknown>
 // purple default (an explicit brand anti-reference).
 export default function Background() {
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10" aria-hidden>
+    <div
+      className="pointer-events-none fixed inset-0 -z-10 max-md:opacity-[0.55]"
+      aria-hidden
+    >
       <DotField
         dotRadius={3}
         dotSpacing={16}

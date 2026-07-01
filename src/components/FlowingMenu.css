@@ -65,3 +65,15 @@
   background-size: cover;
   background-position: 50% 30%;
 }
+
+/* Mobile only: let a wrapped long title (e.g. "Alana Lacerda Arquitetos")
+   grow the row instead of being clipped by the fixed desktop height. */
+@media (max-width: 767px) {
+  .flow-link {
+    height: auto;
+    min-height: 76px;
+    gap: 0.85rem;
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+  }
+}
