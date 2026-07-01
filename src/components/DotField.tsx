@@ -42,6 +42,13 @@ const DotField = memo(({
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let resizeTimer;
 
+    // The lattice only reacts to a moving mouse. On touch / reduced-motion there
+    // is no mouse, so animating every frame just burns battery and stutters.
+    // In that case we paint the lattice once, statically, and never loop.
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const animated = fine && !reduceMotion;
+
     function resize() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(doResize, 100);
@@ -66,6 +73,9 @@ const DotField = memo(({
       };
 
       buildDots(w, h);
+
+      // static devices: repaint the single frame after a resize/orientation change
+      if (!animated) tick();
     }
 
     function buildDots(w, h) {
@@ -107,7 +117,7 @@ const DotField = memo(({
       m.prevY = m.y;
     }
 
-    const speedInterval = setInterval(updateMouseSpeed, 20);
+    const speedInterval = animated ? setInterval(updateMouseSpeed, 20) : null;
 
     let frameCount = 0;
 
@@ -205,13 +215,15 @@ const DotField = memo(({
 
       ctx.fill();
 
-      rafRef.current = requestAnimationFrame(tick);
+      if (animated) rafRef.current = requestAnimationFrame(tick);
     }
 
-    doResize();
+    doResize(); // builds dots; in static mode this also paints the one frame
     window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    rafRef.current = requestAnimationFrame(tick);
+    if (animated) {
+      window.addEventListener('mousemove', onMouseMove, { passive: true });
+      rafRef.current = requestAnimationFrame(tick);
+    }
 
     rebuildRef.current = () => {
       const { w, h } = sizeRef.current;
