@@ -1,9 +1,65 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { capabilities, focus, profile } from '../data/projects'
+import type { IconType } from 'react-icons/lib'
+import {
+  SiReact,
+  SiNextdotjs,
+  SiTypescript,
+  SiTailwindcss,
+  SiGreensock,
+  SiThreedotjs,
+  SiNodedotjs,
+  SiPython,
+  SiFastapi,
+  SiLangchain,
+  SiGit,
+  SiGithub,
+} from 'react-icons/si'
+import {
+  TbLayoutGrid,
+  TbBrush,
+  TbWaveSine,
+  TbDevices,
+  TbDatabaseSearch,
+  TbRobot,
+  TbShare2,
+  TbAdjustmentsHorizontal,
+  TbChecklist,
+  TbTerminal2,
+  TbInfinity,
+  TbCloud,
+} from 'react-icons/tb'
+import { capabilities, focus } from '../data/projects'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const capIcons: Record<string, IconType> = {
+  uiux: TbLayoutGrid,
+  webdesign: TbBrush,
+  motion: TbWaveSine,
+  responsive: TbDevices,
+  react: SiReact,
+  next: SiNextdotjs,
+  typescript: SiTypescript,
+  tailwind: SiTailwindcss,
+  gsap: SiGreensock,
+  three: SiThreedotjs,
+  node: SiNodedotjs,
+  python: SiPython,
+  fastapi: SiFastapi,
+  rag: TbDatabaseSearch,
+  agents: TbRobot,
+  langchain: SiLangchain,
+  langgraph: TbShare2,
+  finetune: TbAdjustmentsHorizontal,
+  evals: TbChecklist,
+  cli: TbTerminal2,
+  git: SiGit,
+  github: SiGithub,
+  cicd: TbInfinity,
+  cloud: TbCloud,
+}
 
 export default function About() {
   const root = useRef<HTMLDivElement>(null)
@@ -83,32 +139,29 @@ export default function About() {
 
         <div className="ab-reveal">
           <h3 className="mb-5 font-mono text-xs uppercase tracking-widest text-ink-soft">
-            Capacidades
+            Skills &amp; Tools
           </h3>
-          <ul className="flex flex-wrap gap-2">
-            {capabilities.map((c) => (
-              <li
-                key={c}
-                className="border border-line px-3 py-1.5 font-mono text-xs transition-colors hover:border-flame hover:text-flame"
-              >
-                {c}
-              </li>
-            ))}
+          <ul className="grid grid-cols-3 gap-px overflow-hidden border border-line bg-line sm:grid-cols-4">
+            {capabilities.map(({ label, icon }) => {
+              const Icon = capIcons[icon]
+              return (
+                <li
+                  key={label}
+                  className="group flex flex-col items-center justify-center gap-2.5 bg-paper px-2 py-5 text-center transition-colors duration-300 hover:bg-paper-2"
+                >
+                  {Icon && (
+                    <Icon
+                      className="text-2xl text-ink-soft transition-colors duration-300 group-hover:text-flame"
+                      aria-hidden
+                    />
+                  )}
+                  <span className="font-mono text-[10px] uppercase leading-tight tracking-wider text-ink-soft transition-colors duration-300 group-hover:text-ink">
+                    {label}
+                  </span>
+                </li>
+              )
+            })}
           </ul>
-
-          <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden border border-line bg-line font-mono text-xs uppercase tracking-wider">
-            {[
-              ['Foco', 'Design · IA'],
-              ['Base', profile.location],
-              ['Estudo', 'UFPB'],
-              ['Nível', 'Intermediário+'],
-            ].map(([k, v]) => (
-              <div key={k} className="bg-paper p-4">
-                <dt className="text-ink-soft">{k}</dt>
-                <dd className="mt-1 text-ink">{v}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
       </div>
     </section>

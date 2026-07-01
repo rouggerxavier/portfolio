@@ -14,7 +14,7 @@ export default function Hero() {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const ctx = gsap.context(() => {
       if (reduce) {
-        gsap.set('.h-meta, .h-sub, .h-cta, .h-orb, .h-block', { opacity: 1, y: 0 })
+        gsap.set('.h-meta, .h-sub, .h-cta, .h-orb', { opacity: 1, y: 0 })
         gsap.set('.h-word', { yPercent: 0 })
         return
       }
@@ -24,7 +24,6 @@ export default function Hero() {
         .from('.h-word', { yPercent: 115, duration: 1.0, stagger: 0.07 }, '-=0.7')
         .from('.h-sub', { y: 18, opacity: 0, duration: 0.7 }, '-=0.5')
         .from('.h-cta', { y: 16, opacity: 0, duration: 0.6, stagger: 0.08 }, '-=0.4')
-        .from('.h-block', { opacity: 0, y: 16, duration: 0.7 }, '-=0.5')
 
       const play = () => tl.play()
       if (sessionStorage.getItem('introSeen')) play()
@@ -60,18 +59,6 @@ export default function Hero() {
             'radial-gradient(closest-side at 50% 48%, rgba(7,7,8,0.72), rgba(7,7,8,0.25) 45%, transparent 70%)',
         }}
       />
-
-      {/* corner metadata (spec-sheet framing) */}
-      <div className="h-meta pointer-events-none absolute left-5 top-24 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink-soft sm:left-8">
-        Fig. 01
-        <br />
-        Núcleo / RX
-      </div>
-      <div className="h-meta pointer-events-none absolute right-5 top-24 text-right font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink-soft sm:right-8">
-        2026.0
-        <br />
-        PB / BR
-      </div>
 
       {/* centered content over the orb's core */}
       <div className="relative z-10 mx-auto w-full max-w-[1000px] text-center">
@@ -121,22 +108,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* bottom drawing title-block */}
-      <div className="h-block absolute inset-x-0 bottom-0">
-        <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-px overflow-hidden border-t border-line bg-line font-mono text-[0.62rem] uppercase tracking-wider sm:grid-cols-4">
-          {[
-            ['Autor', profile.name],
-            ['Foco', 'UI/UX · IA'],
-            ['Projetos', String(projects.length).padStart(2, '0')],
-            ['Rev.', '2026.0'],
-          ].map(([k, v]) => (
-            <div key={k} className="bg-paper/70 p-3 backdrop-blur-[1px]">
-              <div className="text-ink-soft">{k}</div>
-              <div className="mt-0.5 text-ink">{v}</div>
-            </div>
-          ))}
-        </div>
-      </div>
     </section>
   )
 }

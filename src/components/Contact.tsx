@@ -1,13 +1,30 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { TbCopy, TbCheck } from 'react-icons/tb'
 import Magnetic from './Magnetic'
 import { profile } from '../data/projects'
 
 gsap.registerPlugin(ScrollTrigger)
 
+// live readout: local time in Rougger's timezone (Paraíba / BRT)
+const timeFmt = new Intl.DateTimeFormat('pt-BR', {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+  timeZone: 'America/Recife',
+})
+
 export default function Contact() {
   const root = useRef<HTMLElement>(null)
+  const [time, setTime] = useState(() => timeFmt.format(new Date()))
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    const id = setInterval(() => setTime(timeFmt.format(new Date())), 1000)
+    return () => clearInterval(id)
+  }, [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -30,12 +47,33 @@ export default function Contact() {
     return () => ctx.revert()
   }, [])
 
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email)
+    } catch {
+      return
+    }
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1600)
+  }
+
   return (
     <section id="contact" ref={root} className="relative px-5 pt-24 sm:px-8">
       <div className="mx-auto max-w-[1400px] rule-t pt-14">
-        <span className="ct-fade mb-8 block font-mono text-xs uppercase tracking-widest text-flame">
-          03 / Contato
-        </span>
+        {/* live instrument readout: section id + availability + local clock */}
+        <div className="ct-fade mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-widest text-ink-soft">
+          <span className="text-flame">03 / Contato</span>
+          <span className="inline-flex items-center gap-2">
+            <span className="relative flex h-1.5 w-1.5" aria-hidden>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-flame opacity-70 motion-reduce:animate-none" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-flame" />
+            </span>
+            Disponível para projetos
+          </span>
+          <span className="tabular-nums" aria-hidden>
+            {profile.location.split(',')[0]} · {time} BRT
+          </span>
+        </div>
 
         <h2 className="font-display text-[clamp(2.6rem,11vw,10rem)] font-extrabold leading-[0.85] tracking-[-0.03em]">
           <span className="block overflow-hidden">
@@ -46,21 +84,44 @@ export default function Contact() {
           </span>
         </h2>
 
-        <div className="ct-fade mt-12 flex flex-wrap items-center gap-x-10 gap-y-5">
+        <p className="ct-fade mt-8 max-w-[46ch] text-lg leading-relaxed text-ink-soft">
+          Tem um produto web ou de IA em mente? Me manda uma linha: respondo
+          rápido e a gente tira do papel.
+        </p>
+
+        {/* actions: copy-to-clipboard (delight) + open mail + github */}
+        <div className="ct-fade mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
           <Magnetic strength={0.4}>
-            <a
-              href={`mailto:${profile.email}`}
-              className="inline-flex items-center gap-3 bg-ink px-7 py-4 font-mono text-sm uppercase tracking-wider text-paper transition-colors hover:bg-flame"
+            <button
+              type="button"
+              onClick={copyEmail}
+              aria-label={copied ? 'Email copiado' : `Copiar email: ${profile.email}`}
+              className={`inline-flex items-center gap-3 border border-line px-6 py-4 font-mono text-sm uppercase tracking-wider text-paper transition-colors hover:bg-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
+                copied ? 'bg-flame' : 'bg-ink'
+              }`}
               data-hot
             >
-              {profile.email}
-            </a>
+              {copied ? (
+                <TbCheck className="text-base" aria-hidden />
+              ) : (
+                <TbCopy className="text-base" aria-hidden />
+              )}
+              {copied ? 'Copiado' : 'Copiar email'}
+            </button>
           </Magnetic>
+
+          <a
+            href={`mailto:${profile.email}`}
+            className="font-mono text-sm normal-case tracking-wider underline decoration-flame decoration-2 underline-offset-[6px] transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none"
+            data-hot
+          >
+            {profile.email} ↗
+          </a>
           <a
             href={profile.github}
             target="_blank"
             rel="noreferrer"
-            className="font-mono text-sm uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-[6px] hover:text-flame"
+            className="font-mono text-sm uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-[6px] transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none"
           >
             GitHub ↗
           </a>

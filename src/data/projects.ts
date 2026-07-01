@@ -128,8 +128,35 @@ export const focus = [
   { label: 'Back-end & APIs', pct: 20 },
 ]
 
-export const capabilities = [
-  'UI/UX', 'Web Design', 'Motion', 'GSAP', 'three.js', 'React',
-  'Next.js', 'TypeScript', 'Tailwind', 'RAG', 'Agentes', 'FastAPI',
-  'LangGraph', 'Evals', 'Node.js', 'CI/CD',
+export type Capability = { label: string; icon: string }
+
+export const capabilities: Capability[] = [
+  // Design & UX
+  { label: 'UI/UX', icon: 'uiux' },
+  { label: 'Web Design', icon: 'webdesign' },
+  { label: 'Motion', icon: 'motion' },
+  { label: 'Responsivo', icon: 'responsive' },
+  // Front-end
+  { label: 'React', icon: 'react' },
+  { label: 'Next.js', icon: 'next' },
+  { label: 'TypeScript', icon: 'typescript' },
+  { label: 'Tailwind', icon: 'tailwind' },
+  { label: 'GSAP', icon: 'gsap' },
+  { label: 'three.js', icon: 'three' },
+  { label: 'Node.js', icon: 'node' },
+  // IA aplicada
+  { label: 'Python', icon: 'python' },
+  { label: 'FastAPI', icon: 'fastapi' },
+  { label: 'RAG', icon: 'rag' },
+  { label: 'Agentes', icon: 'agents' },
+  { label: 'LangChain', icon: 'langchain' },
+  { label: 'LangGraph', icon: 'langgraph' },
+  { label: 'Fine-tuning', icon: 'finetune' },
+  { label: 'Evals', icon: 'evals' },
+  // Infra & tooling
+  { label: 'Command Line', icon: 'cli' },
+  { label: 'Git', icon: 'git' },
+  { label: 'GitHub', icon: 'github' },
+  { label: 'CI/CD', icon: 'cicd' },
+  { label: 'Cloud', icon: 'cloud' },
 ]

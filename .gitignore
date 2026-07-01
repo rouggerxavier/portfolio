@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Agent tooling (impeccable / harness config, machine-local)
+.claude/
+.codex/
+.cursor/
+.agents/
