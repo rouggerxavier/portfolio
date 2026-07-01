@@ -32,11 +32,11 @@ export default function Nav() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="group relative inline-block py-1 font-mono text-[0.8rem] uppercase tracking-[0.16em] text-ink-soft transition-colors duration-300 hover:text-ink"
+                className="group relative inline-block py-1 font-mono text-[0.8rem] uppercase tracking-[0.16em] text-ink-soft transition-colors duration-300 hover:text-ink focus-visible:text-ink focus-visible:outline-none"
               >
                 {l.label}
-                {/* draughtsman underline: draws in from left on hover */}
-                <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-flame transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                {/* draughtsman underline: draws in from left on hover/focus */}
+                <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-flame transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100" />
               </a>
             </li>
           ))}
@@ -44,8 +44,12 @@ export default function Nav() {
 
         <a
           href="#contact"
-          className="font-mono text-xs uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-4 transition-colors hover:text-flame"
+          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-4 transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none max-md:-my-2 max-md:py-2"
         >
+          <span className="relative flex h-1.5 w-1.5" aria-hidden>
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-flame opacity-70 motion-reduce:animate-none" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-flame" />
+          </span>
           Disponível p/ projetos
         </a>
       </nav>

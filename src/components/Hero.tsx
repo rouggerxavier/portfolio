@@ -67,7 +67,7 @@ export default function Hero() {
           <span className="text-flame">●</span> {profile.school}
         </p>
 
-        <h1 className="font-display text-[clamp(2.6rem,7vw,6.5rem)] font-extrabold leading-[0.9] tracking-[-0.03em]">
+        <h1 className="font-display text-[clamp(2.6rem,7vw,6.5rem)] font-extrabold leading-[0.9] tracking-[-0.03em] max-md:text-[clamp(1.95rem,8.4vw,2.6rem)] max-md:leading-[0.98]">
           <span className="block overflow-hidden">
             <span className="h-word block">Desenho e construo</span>
           </span>
@@ -81,29 +81,30 @@ export default function Hero() {
           </span>
         </h1>
 
-        <p className="h-sub mx-auto mt-8 max-w-[54ch] text-lg leading-relaxed text-ink-soft">
-          Uno design e engenharia: UI/UX e motion no front, IA aplicada, RAG e
-          APIs no back. Do conceito ao deploy.
+        <p className="h-sub mx-auto mt-8 max-w-[52ch] text-lg leading-relaxed text-ink">
+          Ajudo startups, empresas e profissionais a lançar produtos web e de IA
+          de ponta a ponta. Design, engenharia e IA aplicada na mesma mão, do
+          conceito ao deploy.
         </p>
 
-        <div className="h-cta mt-10 flex flex-wrap items-center justify-center gap-7">
+        <div className="h-cta mt-10 flex flex-wrap items-center justify-center gap-7 max-md:mt-8 max-md:gap-5">
           <Magnetic strength={0.5}>
             <a
               href="#index"
-              className="inline-flex items-center gap-3 bg-ink px-7 py-4 font-mono text-sm uppercase tracking-wider text-paper transition-colors hover:bg-flame"
+              className="inline-flex items-center gap-3 bg-ink px-7 py-4 font-mono text-sm uppercase tracking-wider text-paper transition-colors hover:bg-flame focus-visible:bg-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
               data-hot
             >
-              Ver projetos
+              Ver o trabalho
               <span className="font-mono text-xs">({projects.length})</span>
             </a>
           </Magnetic>
           <Magnetic strength={0.4}>
             <a
               href="#contact"
-              className="font-mono text-sm uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-[6px] hover:text-flame"
+              className="font-mono text-sm uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-[6px] transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none max-md:inline-flex max-md:min-h-[44px] max-md:items-center"
               data-hot
             >
-              Falar comigo →
+              Começar um projeto →
             </a>
           </Magnetic>
         </div>

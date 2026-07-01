@@ -70,7 +70,7 @@ function FlowRow({
     <li className="rule-t">
       <div className="flow-row" ref={itemRef}>
         <button
-          className="flow-link group px-1"
+          className="flow-link group px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-flame"
           onMouseEnter={onEnter}
           onMouseLeave={onLeave}
           onClick={onToggle}
@@ -78,7 +78,7 @@ function FlowRow({
           data-hot
         >
           <span className="font-mono text-sm text-flame">{p.index}</span>
-          <span className="font-display text-[clamp(1.6rem,4.5vw,3rem)] font-bold leading-none tracking-tight">
+          <span className="font-display text-[clamp(1.6rem,4.5vw,3rem)] font-bold leading-none tracking-tight max-md:min-w-0 max-md:text-[clamp(1.5rem,5.6vw,2rem)] max-md:leading-[1.05] max-md:[overflow-wrap:anywhere]">
             {p.title}
           </span>
           <span className="ml-auto hidden font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft sm:block">
@@ -121,7 +121,7 @@ function FlowRow({
               <p className="font-mono text-xs uppercase tracking-wider text-flame">
                 {p.role}
               </p>
-              <p className="mt-4 max-w-[56ch] leading-relaxed text-ink-soft">
+              <p className="mt-4 max-w-[56ch] leading-relaxed text-ink-soft max-md:text-ink">
                 {p.summary}
               </p>
               <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
@@ -134,7 +134,7 @@ function FlowRow({
                   href={href}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-7 inline-flex items-center gap-2 bg-ink px-6 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame"
+                  className="mt-7 inline-flex items-center gap-2 bg-ink px-6 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame focus-visible:bg-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                   data-hot
                 >
                   {p.live ? 'Ver live' : 'Ver no GitHub'} ↗

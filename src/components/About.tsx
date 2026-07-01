@@ -30,7 +30,7 @@ import {
   TbInfinity,
   TbCloud,
 } from 'react-icons/tb'
-import { capabilities, focus } from '../data/projects'
+import { capabilities, focus, projects } from '../data/projects'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -108,13 +108,13 @@ export default function About() {
             02 / Perfil
           </span>
           <h2 className="ab-reveal max-w-[16ch] font-display text-[clamp(1.9rem,4.5vw,3.5rem)] font-extrabold leading-[1.02] tracking-tight">
-            Design e IA, do traço ao deploy.
+            Produtos completos, do traço ao deploy.
           </h2>
-          <p className="ab-reveal mt-7 max-w-[62ch] text-lg leading-relaxed text-ink-soft">
-            Trabalho nos dois lados com o mesmo cuidado: web design e UI/UX
-            (hierarquia, tipografia, motion, acessibilidade) e engenharia de IA
-            aplicada (RAG, agentes, avaliação, APIs). Levo do conceito ao deploy
-            com React e TypeScript.
+          <p className="ab-reveal mt-7 max-w-[60ch] text-lg leading-relaxed text-ink">
+            Entrego produto pronto, não pedaços soltos. Design que comunica,
+            front-end rápido e acessível, IA aplicada a problemas reais e APIs
+            que aguentam produção. Do primeiro traço ao deploy, na mesma mão:
+            menos intermediários, menos ruído, mais produto no ar.
           </p>
 
           <div className="bars ab-reveal mt-10 space-y-4">
@@ -162,6 +162,33 @@ export default function About() {
               )
             })}
           </ul>
+        </div>
+      </div>
+
+      {/* proof band: real, verifiable facts in the drawing's spec-sheet idiom */}
+      <div className="ab-reveal mx-auto mt-16 max-w-[1400px]">
+        <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-ink-soft">
+          O trabalho, em números
+        </h3>
+        <div className="grid grid-cols-2 gap-px overflow-hidden border border-line bg-line sm:grid-cols-4">
+          {[
+            [String(projects.length).padStart(2, '0'), 'Produtos reais'],
+            [
+              String(projects.filter((p) => p.live).length).padStart(2, '0'),
+              'No ar em produção',
+            ],
+            [String(capabilities.length), 'Ferramentas no cinto'],
+            ['02', 'Design + IA, uma só mão'],
+          ].map(([v, k]) => (
+            <div key={k} className="bg-paper px-5 py-6">
+              <div className="font-display text-[clamp(1.6rem,3vw,2.25rem)] font-extrabold leading-none tracking-tight">
+                {v}
+              </div>
+              <div className="mt-2 font-mono text-[0.7rem] uppercase leading-tight tracking-wider text-ink-soft">
+                {k}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
