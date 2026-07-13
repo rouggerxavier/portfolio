@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap, SplitText, MOTION_OK, useGSAP } from '../lib/gsap'
 import { TbCopy, TbCheck, TbChevronDown } from 'react-icons/tb'
 import Magnetic from './Magnetic'
 import { profile } from '../data/projects'
-
-gsap.registerPlugin(ScrollTrigger)
 
 // live readout: local time in Rougger's timezone (Paraíba / BRT)
 const timeFmt = new Intl.DateTimeFormat('pt-BR', {
@@ -28,26 +25,44 @@ export default function Contact() {
     return () => clearInterval(id)
   }, [])
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.ct-word', {
-        scrollTrigger: { trigger: root.current, start: 'top 75%' },
-        yPercent: 110,
-        duration: 1,
-        stagger: 0.1,
-        ease: 'expo.out',
+  // Act 5: the closing plate. The giant invitation is inked char by char,
+  // scrubbed to the arrival; the instrument readouts follow the same scroll.
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia()
+      mm.add(MOTION_OK, () => {
+        const split = new SplitText('.ct-word', { type: 'chars' })
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: root.current,
+              start: 'top 92%',
+              end: 'top 28%',
+              scrub: 0.8,
+            },
+            defaults: { ease: 'none' },
+          })
+          .from(split.chars, {
+            yPercent: 120,
+            stagger: 0.05,
+          })
+        gsap.from('.ct-fade', {
+          scrollTrigger: {
+            trigger: root.current,
+            start: 'top 60%',
+            toggleActions: 'play none none reverse',
+          },
+          y: 24,
+          autoAlpha: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'expo.out',
+        })
+        return () => split.revert()
       })
-      gsap.from('.ct-fade', {
-        scrollTrigger: { trigger: root.current, start: 'top 65%' },
-        y: 24,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'expo.out',
-      })
-    }, root)
-    return () => ctx.revert()
-  }, [])
+    },
+    { scope: root },
+  )
 
   const copy = async (value: string, key: string) => {
     try {
@@ -87,7 +102,7 @@ export default function Contact() {
       <div className="mx-auto max-w-[1400px] rule-t pt-14">
         {/* live instrument readout: section id + availability + local clock */}
         <div className="ct-fade mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-widest text-ink-soft">
-          <span className="text-flame">03 / Contato</span>
+          <span className="text-flame">Contato</span>
           <span className="inline-flex items-center gap-2">
             <span className="relative flex h-1.5 w-1.5" aria-hidden>
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-flame opacity-70 motion-reduce:animate-none" />
@@ -229,7 +244,7 @@ export default function Contact() {
             ['Documento', 'Portfólio'],
             ['Autor', profile.name],
             ['Rev.', '2026.0'],
-            ['Stack', 'React · GSAP · three.js'],
+            ['Stack', 'React · GSAP · Lenis'],
           ].map(([k, v]) => (
             <div key={k} className="bg-paper p-4">
               <div className="text-ink-soft">{k}</div>
@@ -238,7 +253,7 @@ export default function Contact() {
           ))}
         </footer>
         <p className="py-6 text-center font-mono text-[0.65rem] uppercase tracking-widest text-ink-soft">
-          © {new Date().getFullYear()} {profile.name} — desenhado e construído à mão
+          © {new Date().getFullYear()} {profile.name} · desenhado e construído à mão
         </p>
       </div>
     </section>

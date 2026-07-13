@@ -1,19 +1,26 @@
 import { useEffect } from 'react'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap, ScrollTrigger } from './lib/gsap'
+import { setLenis, getLenis } from './lib/lenis'
 import Background from './components/Background'
 import Cursor from './components/Cursor'
-import Intro, { INTRO_DONE } from './components/Intro'
-import Nav from './components/Nav'
-import Hero from './components/Hero'
-import Marquee from './components/Marquee'
-import Projects from './components/Projects'
-import About from './components/About'
-import Contact from './components/Contact'
+import { INTRO_DONE } from './components/Intro'
+import Home from './pages/Home'
+import Project from './pages/Project'
 
-gsap.registerPlugin(ScrollTrigger)
+// route changes land at the top of the new page with fresh trigger positions
+function ScrollReset() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const l = getLenis()
+    if (l) l.scrollTo(0, { immediate: true, force: true })
+    window.scrollTo(0, 0)
+    requestAnimationFrame(() => ScrollTrigger.refresh())
+  }, [pathname])
+  return null
+}
 
 export default function App() {
   useEffect(() => {
@@ -36,16 +43,18 @@ export default function App() {
     let lenis: Lenis | null = null
     let removeTick: (() => void) | null = null
     if (!reduce && fine) {
-      const l = new Lenis({ lerp: 0.1, smoothWheel: true })
+      const l = new Lenis({ lerp: 0.1, smoothWheel: true, anchors: true })
       lenis = l
+      setLenis(l)
       l.on('scroll', ScrollTrigger.update)
       const tick = (time: number) => l.raf(time * 1000)
       gsap.ticker.add(tick)
       gsap.ticker.lagSmoothing(0)
       removeTick = () => gsap.ticker.remove(tick)
 
-      // hold scroll until the intro reveals the page (mobile uses body.intro-lock)
-      if (!seen) {
+      // hold scroll until the intro reveals the page (mobile uses body.intro-lock);
+      // the intro only runs on the home route, so don't lock deep links
+      if (!seen && window.location.pathname === '/') {
         l.stop()
         window.addEventListener(INTRO_DONE, () => l.start(), { once: true })
       }
@@ -55,6 +64,7 @@ export default function App() {
       window.removeEventListener('load', refresh)
       removeTick?.()
       lenis?.destroy()
+      setLenis(null)
     }
   }, [])
 
@@ -62,15 +72,12 @@ export default function App() {
     <>
       <Background />
       <Cursor />
-      <Intro />
-      <Nav />
-      <main>
-        <Hero />
-        <Marquee />
-        <Projects />
-        <About />
-        <Contact />
-      </main>
+      <ScrollReset />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/projeto/:slug" element={<Project />} />
+        <Route path="*" element={<Home />} />
+      </Routes>
     </>
   )
 }

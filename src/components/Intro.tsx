@@ -96,7 +96,7 @@ export default function Intro() {
       <div className="intro-fade">
         <div className="mb-2 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-ink-soft">
           <span className="intro-meta">Carregando experiência</span>
-          <span className="intro-meta">three.js · gsap · lenis</span>
+          <span className="intro-meta">gsap · scrolltrigger · lenis</span>
         </div>
         <div className="h-px w-full bg-line">
           <span
