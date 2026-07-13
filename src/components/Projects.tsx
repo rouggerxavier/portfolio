@@ -134,7 +134,6 @@ export default function Projects() {
                     <img
                       src={p.shot}
                       alt={`Captura de tela do projeto ${p.title}`}
-                      loading="lazy"
                       decoding="async"
                       className="aspect-[16/10] w-[112%] max-w-none object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                     />
