@@ -87,41 +87,36 @@
   );
 }
 
-/* ── horizontal project sheet ─────────────────────────────────────────── */
-.pj-track {
-  padding-inline: max(1.25rem, calc((100vw - 1400px) / 2 + 2rem));
-  gap: 9vw;
+/* ── project showcase: one project at a time on a pinned stage ────────── */
+.sh-stage {
+  /* shared width so the caption tracks the figure exactly */
+  --sh-w: min(88vw, calc((100svh - 17rem) * 1.6), 980px);
 }
-.pj-panel {
-  width: min(82vw, 1150px);
-  flex: 0 0 auto;
+.sh-slide {
+  position: absolute;
+  inset: 0;
 }
-@media (max-width: 1023px) {
-  .pj-panel {
-    width: 86vw;
-  }
-  .pj-panel .pj-body {
-    align-content: center;
-  }
+.sh-fig,
+.sh-info {
+  width: var(--sh-w);
+}
+.sh-fig {
+  will-change: transform, opacity, filter;
 }
 
-/* reduced motion: the sheet stacks vertically, everything readable at rest */
+/* reduced motion: slides stack vertically, everything readable at rest */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .pj-track {
+  .sh-stage {
+    display: flex;
     flex-direction: column;
-    width: 100% !important;
-    gap: 5rem;
-    padding-inline: 1.25rem;
+    gap: 6rem;
+    padding-block: 3rem;
   }
-  .pj-panel {
-    width: min(100%, 1150px);
-    margin-inline: auto;
-  }
-  .pj-shot img {
-    width: 100% !important;
+  .sh-slide {
+    position: static;
   }
   .animate-scrolltick {
     animation: none;

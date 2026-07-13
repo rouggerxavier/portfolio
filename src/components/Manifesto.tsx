@@ -1,9 +1,10 @@
 import { useRef } from 'react'
-import { gsap, MOTION_OK, useGSAP } from '../lib/gsap'
+import { gsap, SplitText, MOTION_OK, useGSAP } from '../lib/gsap'
 
-// Act 2: a pinned statement read by the scroll. Words start as faint ink on
-// the sheet and are inked in one by one as the scrub advances; a horizontal
-// measuring rule tracks the reading progress underneath.
+// Act 2: a pinned statement read by the scroll. Every character starts fully
+// invisible and is pulled out of the dark as the scrub advances: a cloak-of-
+// invisibility reveal (blur + depth + rise) travelling through the text, with
+// a soft wavefront of half-materialized glyphs trailing the crisp ones.
 
 type Word = { t: string; flame?: boolean }
 
@@ -38,13 +39,13 @@ export default function Manifesto() {
     () => {
       const mm = gsap.matchMedia()
       mm.add(MOTION_OK, () => {
-        const words = gsap.utils.toArray<HTMLElement>('.mf-word', root.current)
+        const split = new SplitText('.mf-word', { type: 'chars' })
         gsap
           .timeline({
             scrollTrigger: {
               trigger: root.current,
               start: 'top top',
-              end: '+=220%',
+              end: '+=240%',
               scrub: true,
               pin: true,
               anticipatePin: 1,
@@ -52,14 +53,33 @@ export default function Manifesto() {
             defaults: { ease: 'none' },
           })
           .fromTo(
-            words,
-            { opacity: 0.13 },
-            { opacity: 1, duration: 0.5, stagger: 0.09 },
+            split.chars,
+            {
+              autoAlpha: 0,
+              filter: 'blur(14px)',
+              yPercent: 16,
+              scale: 1.06,
+            },
+            {
+              autoAlpha: 1,
+              filter: 'blur(0px)',
+              yPercent: 0,
+              scale: 1,
+              duration: 1.6,
+              stagger: 0.09,
+            },
             0,
           )
-          .fromTo('.mf-rule', { scaleX: 0 }, { scaleX: 1, duration: 0.5 + 0.09 * words.length }, 0)
-          // breathing room at the end so the last words settle before unpin
-          .to({}, { duration: 0.6 })
+          .fromTo(
+            '.mf-rule',
+            { scaleX: 0 },
+            { scaleX: 1, duration: 1.6 + 0.09 * split.chars.length },
+            0,
+          )
+          // breathing room at the end so the last glyphs settle before unpin
+          .to({}, { duration: 1.2 })
+
+        return () => split.revert()
       })
     },
     { scope: root },

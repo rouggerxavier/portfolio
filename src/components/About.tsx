@@ -222,26 +222,27 @@ export default function About() {
         </div>
       </div>
 
-      {/* proof band: real, verifiable facts in the drawing's spec-sheet idiom */}
-      <div className="stats mx-auto mt-16 max-w-[1400px]">
-        <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-ink-soft">
+      {/* proof band: real, verifiable facts as quiet cotas on a single rule */}
+      <div className="stats mx-auto mt-20 max-w-[1400px] rule-t pt-4">
+        <h3 className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink-soft">
           O trabalho, em números
         </h3>
-        <div className="grid grid-cols-2 gap-px overflow-hidden border border-line bg-line sm:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-x-10 gap-y-12 sm:grid-cols-4">
           {[
             [projects.length, 'Produtos reais'],
             [projects.filter((p) => p.live).length, 'No ar em produção'],
             [capabilities.length, 'Ferramentas no cinto'],
             [2, 'Design + IA, uma só mão'],
           ].map(([v, k]) => (
-            <div key={String(k)} className="bg-paper px-5 py-6">
+            <div key={String(k)}>
               <div
-                className="stat-num font-display text-[clamp(1.6rem,3vw,2.25rem)] font-extrabold leading-none tracking-tight"
+                className="stat-num font-display text-[clamp(2.4rem,4.5vw,3.6rem)] font-extrabold leading-none tracking-tight"
                 data-num={v}
               >
                 {String(v).padStart(2, '0')}
               </div>
-              <div className="mt-2 font-mono text-[0.7rem] uppercase leading-tight tracking-wider text-ink-soft">
+              <span className="mt-4 block h-px w-9 bg-flame/70" aria-hidden />
+              <div className="mt-3 font-mono text-[0.65rem] uppercase leading-relaxed tracking-[0.18em] text-ink-soft">
                 {k}
               </div>
             </div>

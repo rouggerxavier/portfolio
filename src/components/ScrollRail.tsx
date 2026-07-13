@@ -9,7 +9,7 @@ import { gsap, ScrollTrigger, MOTION_OK, useGSAP } from '../lib/gsap'
 const stations = [
   { id: 'top', label: 'Início' },
   { id: 'manifesto', label: 'Manifesto' },
-  { id: 'index', label: 'Trabalho' },
+  { id: 'index', label: 'Projetos' },
   { id: 'about', label: 'Perfil' },
   { id: 'contact', label: 'Contato' },
 ]

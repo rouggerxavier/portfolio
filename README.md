@@ -2,8 +2,8 @@
 
 Site de portfólio como experiência scroll-driven: uma narrativa contínua do
 hero ao contato, coreografada com GSAP ScrollTrigger (seções pinadas, texto
-inkado pelo scroll, índice de projetos em rolagem horizontal e uma barra de
-rolagem própria no idioma de régua técnica).
+revelado letra a letra pelo scroll, showcase de um projeto por vez e uma barra
+de rolagem própria no idioma de régua técnica).
 
 ## Stack
 
@@ -25,9 +25,9 @@ src/
     Nav.tsx         # navbar fixa
     ScrollRail.tsx  # scrollbar custom: régua, progresso, estações clicáveis
     Hero.tsx        # ato 1: pin + SplitText; o scrub desmonta a prancha
-    Manifesto.tsx   # ato 2: pin; declaração inkada palavra a palavra
+    Manifesto.tsx   # ato 2: pin; chars saem da escuridão (blur + profundidade)
     Marquee.tsx     # faixa que se move apenas com o scroll (scrub)
-    Projects.tsx    # ato 3: pin horizontal (containerAnimation), parallax
+    Projects.tsx    # ato 3: showcase pinado; a foto mergulha no escuro e a próxima emerge
     About.tsx       # ato 4: barras de foco scrubadas, grid em batch
     Contact.tsx     # ato 5: convite inkado por chars + canais diretos
   data/
@@ -38,8 +38,8 @@ src/
 
 Acessibilidade de movimento: toda a coreografia vive atrás de
 `prefers-reduced-motion: no-preference` (via `gsap.matchMedia`). Com redução de
-movimento, o documento fica estático e o índice de projetos empilha na vertical
-(fallback em CSS).
+movimento, o documento fica estático e o showcase de projetos empilha na
+vertical (fallback em CSS).
 
 ## Comandos
 
