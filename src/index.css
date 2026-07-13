@@ -22,6 +22,11 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* the drawing-ruler rail (ScrollRail) replaces the native scrollbar */
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
   }
   body {
     margin: 0;
@@ -35,18 +40,6 @@
   ::selection {
     background: var(--color-flame);
     color: var(--color-paper);
-  }
-  ::-webkit-scrollbar {
-    width: 11px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--color-paper-2);
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--color-ink);
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-flame);
   }
 }
 
@@ -63,14 +56,75 @@
   .rule-b {
     border-bottom: 1px solid var(--color-line);
   }
-  .animate-marquee {
-    animation: marquee 28s linear infinite;
+  .animate-scrolltick {
+    animation: scrolltick 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   }
 }
 
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
+/* hero scroll hint: a tick sliding down its slot */
+@keyframes scrolltick {
+  0% {
+    transform: translateY(-100%);
+  }
+  70%,
+  100% {
+    transform: translateY(2.25rem);
+  }
+}
+
+/* ruler tick marks on the custom scroll rail */
+.rail-ticks::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 -4px;
+  width: 4px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--color-line) 0,
+    var(--color-line) 1px,
+    transparent 1px,
+    transparent 28px
+  );
+}
+
+/* ── horizontal project sheet ─────────────────────────────────────────── */
+.pj-track {
+  padding-inline: max(1.25rem, calc((100vw - 1400px) / 2 + 2rem));
+  gap: 9vw;
+}
+.pj-panel {
+  width: min(82vw, 1150px);
+  flex: 0 0 auto;
+}
+@media (max-width: 1023px) {
+  .pj-panel {
+    width: 86vw;
+  }
+  .pj-panel .pj-body {
+    align-content: center;
+  }
+}
+
+/* reduced motion: the sheet stacks vertically, everything readable at rest */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .pj-track {
+    flex-direction: column;
+    width: 100% !important;
+    gap: 5rem;
+    padding-inline: 1.25rem;
+  }
+  .pj-panel {
+    width: min(100%, 1150px);
+    margin-inline: auto;
+  }
+  .pj-shot img {
+    width: 100% !important;
+  }
+  .animate-scrolltick {
+    animation: none;
   }
 }
 
@@ -86,11 +140,5 @@ body.intro-lock {
   .has-cursor a,
   .has-cursor button {
     cursor: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
   }
 }

@@ -1,6 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useRef } from 'react'
+import { gsap, ScrollTrigger, MOTION_OK, useGSAP } from '../lib/gsap'
 import type { IconType } from 'react-icons/lib'
 import {
   SiReact,
@@ -32,8 +31,6 @@ import {
 } from 'react-icons/tb'
 import { capabilities, focus, projects } from '../data/projects'
 
-gsap.registerPlugin(ScrollTrigger)
-
 const capIcons: Record<string, IconType> = {
   uiux: TbLayoutGrid,
   webdesign: TbBrush,
@@ -61,51 +58,111 @@ const capIcons: Record<string, IconType> = {
   cloud: TbCloud,
 }
 
+// Act 4: the profile sheet. Every reveal is wired to the scroll: heading and
+// prose mask in, the focus bars fill scrubbed to the reading position and the
+// tool grid tiles in batches as it crosses the viewport.
 export default function About() {
-  const root = useRef<HTMLDivElement>(null)
+  const root = useRef<HTMLElement>(null)
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.ab-reveal', {
-        scrollTrigger: { trigger: root.current, start: 'top 72%' },
-        y: 36,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'expo.out',
-      })
-      gsap.from('.bar-fill', {
-        scrollTrigger: { trigger: '.bars', start: 'top 80%' },
-        scaleX: 0,
-        transformOrigin: 'left',
-        duration: 1.1,
-        stagger: 0.12,
-        ease: 'expo.out',
-      })
-      // count-up percentages
-      gsap.utils.toArray<HTMLElement>('.pct').forEach((el) => {
-        const target = Number(el.dataset.pct || 0)
-        const obj = { v: 0 }
-        gsap.to(obj, {
-          v: target,
-          duration: 1.2,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: '.bars', start: 'top 80%' },
-          onUpdate: () => {
-            el.textContent = `${Math.round(obj.v)}%`
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia()
+      mm.add(MOTION_OK, () => {
+        gsap.from('.ab-reveal', {
+          scrollTrigger: {
+            trigger: root.current,
+            start: 'top 75%',
+            toggleActions: 'play none none reverse',
           },
+          y: 40,
+          autoAlpha: 0,
+          duration: 0.9,
+          stagger: 0.1,
+          ease: 'expo.out',
+        })
+
+        // focus bars scrubbed: they fill exactly as the block crosses the screen
+        gsap.utils.toArray<HTMLElement>('.bar-fill', root.current).forEach((bar, i) => {
+          gsap.fromTo(
+            bar,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              transformOrigin: 'left center',
+              ease: 'none',
+              scrollTrigger: {
+                trigger: '.bars',
+                start: 'top 85%',
+                end: 'top 35%',
+                scrub: 0.5 + i * 0.15,
+              },
+            },
+          )
+        })
+        gsap.utils.toArray<HTMLElement>('.pct', root.current).forEach((el) => {
+          const target = Number(el.dataset.pct || 0)
+          const obj = { v: 0 }
+          gsap.to(obj, {
+            v: target,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.bars',
+              start: 'top 85%',
+              end: 'top 35%',
+              scrub: 0.5,
+            },
+            onUpdate: () => {
+              el.textContent = `${Math.round(obj.v)}%`
+            },
+          })
+        })
+
+        // tool grid tiles in as batches
+        gsap.set('.cap-tile', { autoAlpha: 0, y: 22 })
+        ScrollTrigger.batch('.cap-tile', {
+          start: 'top 88%',
+          onEnter: (batch) =>
+            gsap.to(batch, {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.05,
+              ease: 'expo.out',
+              overwrite: true,
+            }),
+          onLeaveBack: (batch) =>
+            gsap.to(batch, { autoAlpha: 0, y: 22, duration: 0.3, overwrite: true }),
+        })
+
+        // numbers band counts up when it enters
+        gsap.utils.toArray<HTMLElement>('.stat-num', root.current).forEach((el) => {
+          const target = Number(el.dataset.num || 0)
+          const obj = { v: 0 }
+          gsap.to(obj, {
+            v: target,
+            duration: 1.4,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: '.stats',
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+            onUpdate: () => {
+              el.textContent = String(Math.round(obj.v)).padStart(2, '0')
+            },
+          })
         })
       })
-    }, root)
-    return () => ctx.revert()
-  }, [])
+    },
+    { scope: root },
+  )
 
   return (
     <section id="about" ref={root} className="relative px-5 py-24 sm:px-8">
       <div className="mx-auto grid max-w-[1400px] gap-x-16 gap-y-12 rule-t pt-14 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
           <span className="ab-reveal mb-6 block font-mono text-xs uppercase tracking-widest text-flame">
-            02 / Perfil
+            Perfil
           </span>
           <h2 className="ab-reveal max-w-[16ch] font-display text-[clamp(1.9rem,4.5vw,3.5rem)] font-extrabold leading-[1.02] tracking-tight">
             Produtos completos, do traço ao deploy.
@@ -147,7 +204,7 @@ export default function About() {
               return (
                 <li
                   key={label}
-                  className="group flex flex-col items-center justify-center gap-2.5 bg-paper px-2 py-5 text-center transition-colors duration-300 hover:bg-paper-2"
+                  className="cap-tile group flex flex-col items-center justify-center gap-2.5 bg-paper px-2 py-5 text-center transition-colors duration-300 hover:bg-paper-2"
                 >
                   {Icon && (
                     <Icon
@@ -166,23 +223,23 @@ export default function About() {
       </div>
 
       {/* proof band: real, verifiable facts in the drawing's spec-sheet idiom */}
-      <div className="ab-reveal mx-auto mt-16 max-w-[1400px]">
+      <div className="stats mx-auto mt-16 max-w-[1400px]">
         <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-ink-soft">
           O trabalho, em números
         </h3>
         <div className="grid grid-cols-2 gap-px overflow-hidden border border-line bg-line sm:grid-cols-4">
           {[
-            [String(projects.length).padStart(2, '0'), 'Produtos reais'],
-            [
-              String(projects.filter((p) => p.live).length).padStart(2, '0'),
-              'No ar em produção',
-            ],
-            [String(capabilities.length), 'Ferramentas no cinto'],
-            ['02', 'Design + IA, uma só mão'],
+            [projects.length, 'Produtos reais'],
+            [projects.filter((p) => p.live).length, 'No ar em produção'],
+            [capabilities.length, 'Ferramentas no cinto'],
+            [2, 'Design + IA, uma só mão'],
           ].map(([v, k]) => (
-            <div key={k} className="bg-paper px-5 py-6">
-              <div className="font-display text-[clamp(1.6rem,3vw,2.25rem)] font-extrabold leading-none tracking-tight">
-                {v}
+            <div key={String(k)} className="bg-paper px-5 py-6">
+              <div
+                className="stat-num font-display text-[clamp(1.6rem,3vw,2.25rem)] font-extrabold leading-none tracking-tight"
+                data-num={v}
+              >
+                {String(v).padStart(2, '0')}
               </div>
               <div className="mt-2 font-mono text-[0.7rem] uppercase leading-tight tracking-wider text-ink-soft">
                 {k}

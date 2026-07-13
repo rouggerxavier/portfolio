@@ -1,19 +1,18 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap, ScrollTrigger } from './lib/gsap'
 import Background from './components/Background'
 import Cursor from './components/Cursor'
 import Intro, { INTRO_DONE } from './components/Intro'
 import Nav from './components/Nav'
+import ScrollRail from './components/ScrollRail'
 import Hero from './components/Hero'
+import Manifesto from './components/Manifesto'
 import Marquee from './components/Marquee'
 import Projects from './components/Projects'
 import About from './components/About'
 import Contact from './components/Contact'
-
-gsap.registerPlugin(ScrollTrigger)
 
 export default function App() {
   useEffect(() => {
@@ -36,7 +35,7 @@ export default function App() {
     let lenis: Lenis | null = null
     let removeTick: (() => void) | null = null
     if (!reduce && fine) {
-      const l = new Lenis({ lerp: 0.1, smoothWheel: true })
+      const l = new Lenis({ lerp: 0.1, smoothWheel: true, anchors: true })
       lenis = l
       l.on('scroll', ScrollTrigger.update)
       const tick = (time: number) => l.raf(time * 1000)
@@ -64,8 +63,10 @@ export default function App() {
       <Cursor />
       <Intro />
       <Nav />
+      <ScrollRail />
       <main>
         <Hero />
+        <Manifesto />
         <Marquee />
         <Projects />
         <About />
