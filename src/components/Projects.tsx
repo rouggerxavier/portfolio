@@ -1,238 +1,162 @@
-import { useEffect, useRef, useState } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects, type Project } from '../data/projects'
-import './FlowingMenu.css'
 
-gsap.registerPlugin(ScrollTrigger)
-
-const ANIM = { duration: 0.6, ease: 'expo' as const }
-const REPS = 6
-
-function FlowRow({
-  p,
-  open,
-  onToggle,
-}: {
-  p: Project
-  open: boolean
-  onToggle: () => void
-}) {
-  const itemRef = useRef<HTMLDivElement>(null)
-  const marqueeRef = useRef<HTMLDivElement>(null)
-  const innerRef = useRef<HTMLDivElement>(null)
-  const loopRef = useRef<gsap.core.Tween | null>(null)
-  const href = p.live || p.repo
-  const marqueeImg = p.shot || '/images/projects/grankasa.jpg'
-
-  useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce || !innerRef.current) return
-    const part = innerRef.current.querySelector('.marquee__part') as HTMLElement | null
-    const w = part?.offsetWidth || 0
-    if (!w) return
-    loopRef.current = gsap.to(innerRef.current, {
-      x: -w,
-      duration: 16,
-      ease: 'none',
-      repeat: -1,
-    })
-    return () => {
-      loopRef.current?.kill()
-    }
-  }, [])
-
-  const edge = (e: React.MouseEvent) => {
-    const r = itemRef.current!.getBoundingClientRect()
-    const y = e.clientY - r.top
-    return y < r.height / 2 ? 'top' : 'bottom'
-  }
-
-  const onEnter = (e: React.MouseEvent) => {
-    if (!marqueeRef.current || !innerRef.current) return
-    const ed = edge(e)
-    gsap
-      .timeline({ defaults: ANIM })
-      .set(marqueeRef.current, { y: ed === 'top' ? '-101%' : '101%' }, 0)
-      .set(innerRef.current, { y: ed === 'top' ? '101%' : '-101%' }, 0)
-      .to([marqueeRef.current, innerRef.current], { y: '0%' }, 0)
-  }
-  const onLeave = (e: React.MouseEvent) => {
-    if (!marqueeRef.current || !innerRef.current) return
-    const ed = edge(e)
-    gsap
-      .timeline({ defaults: ANIM })
-      .to(marqueeRef.current, { y: ed === 'top' ? '-101%' : '101%' }, 0)
-      .to(innerRef.current, { y: ed === 'top' ? '101%' : '-101%' }, 0)
-  }
-
+function ProjectActions({ project }: { project: Project }) {
   return (
-    <li className="rule-t">
-      <div className="flow-row" ref={itemRef}>
-        <button
-          className="flow-link group px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-flame"
-          onMouseEnter={onEnter}
-          onMouseLeave={onLeave}
-          onClick={onToggle}
-          aria-expanded={open}
-          data-hot
-        >
-          <span className="font-mono text-sm text-flame">{p.index}</span>
-          <span className="font-display text-[clamp(1.6rem,4.5vw,3rem)] font-bold leading-none tracking-tight max-md:min-w-0 max-md:text-[clamp(1.5rem,5.6vw,2rem)] max-md:leading-[1.05] max-md:[overflow-wrap:anywhere]">
-            {p.title}
-          </span>
-          <span className="ml-auto hidden font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft sm:block">
-            {p.category}
-          </span>
-          <span
-            className="font-display text-2xl text-ink-soft transition-transform duration-500 ease-out"
-            style={{ transform: open ? 'rotate(45deg)' : 'none' }}
-            aria-hidden
-          >
-            +
-          </span>
-        </button>
+    <div className="project-actions">
+      {project.live && (
+        <a href={project.live} target="_blank" rel="noreferrer">
+          Acessar projeto <span aria-hidden="true">↗</span>
+        </a>
+      )}
+      {project.repo && (
+        <a href={project.repo} target="_blank" rel="noreferrer">
+          Ver código <span aria-hidden="true">↗</span>
+        </a>
+      )}
+    </div>
+  )
+}
 
-        <div className="marquee" ref={marqueeRef}>
-          <div className="marquee__inner-wrap">
-            <div className="marquee__inner" ref={innerRef} aria-hidden>
-              {Array.from({ length: REPS }).map((_, i) => (
-                <div className="marquee__part" key={i}>
-                  <span>{p.title}</span>
-                  <div
-                    className="marquee__img"
-                    style={{ backgroundImage: `url(${marqueeImg})` }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+function ProjectDetails({ project }: { project: Project }) {
+  return (
+    <dl className="project-details">
+      <div>
+        <dt>Problema</dt>
+        <dd>{project.problem}</dd>
       </div>
-
-      {/* expand-down panel: summary + preview */}
-      <div
-        className="grid transition-[grid-template-rows] duration-500 ease-out"
-        style={{ gridTemplateRows: open ? '1fr' : '0fr' }}
-      >
-        <div className="overflow-hidden">
-          <div className="grid gap-8 px-1 pb-12 pt-2 lg:grid-cols-[1fr_0.85fr] lg:items-start">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-wider text-flame">
-                {p.role}
-              </p>
-              <p className="mt-4 max-w-[56ch] leading-relaxed text-ink-soft max-md:text-ink">
-                {p.summary}
-              </p>
-              <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
-                {p.stack.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
-              {href && (
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-7 inline-flex items-center gap-2 bg-ink px-6 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame focus-visible:bg-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
-                  data-hot
-                >
-                  {p.live ? 'Ver live' : 'Ver no GitHub'} ↗
-                </a>
-              )}
-            </div>
-
-            {p.shot ? (
-              <a
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className="group/sh relative block overflow-hidden ring-1 ring-ink/10"
-                data-hot
-              >
-                <img
-                  src={p.shot}
-                  alt={`Captura de tela do site do projeto ${p.title}`}
-                  loading="lazy"
-                  decoding="async"
-                  className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 ease-out group-hover/sh:scale-[1.04]"
-                />
-              </a>
-            ) : (
-              <a
-                href={p.repo}
-                target="_blank"
-                rel="noreferrer"
-                className="flex aspect-[16/10] w-full items-end justify-between bg-paper-2 p-6 ring-1 ring-ink/10"
-                data-hot
-              >
-                <span
-                  className="font-display text-[7rem] font-extrabold leading-none"
-                  style={{ WebkitTextStroke: '1.5px var(--color-flame)', color: 'transparent' }}
-                >
-                  {p.index}
-                </span>
-                <span className="font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
-                  {p.status || 'GitHub'} ↗
-                </span>
-              </a>
-            )}
-          </div>
-        </div>
+      <div>
+        <dt>Responsabilidade</dt>
+        <dd>{project.responsibility}</dd>
       </div>
-    </li>
+      <div>
+        <dt>Desafio técnico</dt>
+        <dd>{project.challenge}</dd>
+      </div>
+      <div>
+        <dt>Resultado</dt>
+        <dd>{project.outcome}</dd>
+      </div>
+    </dl>
+  )
+}
+
+function ProjectImage({ project }: { project: Project }) {
+  const [width, height] =
+    project.slug === 'aurora'
+      ? [1911, 872]
+      : project.slug === 'projeto-alana'
+        ? [1600, 927]
+        : [1776, 1110]
+  const image = (
+    <img
+      src={project.shot}
+      alt={`Interface do projeto ${project.title}`}
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+    />
+  )
+
+  return project.live ? (
+    <a
+      className="project-image"
+      href={project.live}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={`Abrir ${project.title}`}
+    >
+      {image}
+    </a>
+  ) : (
+    <div className="project-image">{image}</div>
   )
 }
 
 export default function Projects() {
-  const root = useRef<HTMLElement>(null)
-  const [open, setOpen] = useState<string | null>(null)
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.idx-head > *', {
-        scrollTrigger: { trigger: '.idx-head', start: 'top 85%' },
-        y: 28,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.08,
-        ease: 'expo.out',
-      })
-      gsap.utils.toArray<HTMLElement>('.rule-t').forEach((row) => {
-        gsap.from(row, {
-          scrollTrigger: { trigger: row, start: 'top 92%' },
-          y: 24,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'expo.out',
-        })
-      })
-    }, root)
-    return () => ctx.revert()
-  }, [])
+  const [featured, ...secondary] = projects
 
   return (
-    <section id="index" ref={root} className="relative px-5 py-24 sm:px-8">
-      <div className="mx-auto max-w-[1400px]">
-        <div className="idx-head mb-10 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="font-display text-[clamp(2rem,5vw,3.75rem)] font-extrabold leading-none tracking-tight">
-            Índice de projetos
-          </h2>
-          <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
-            {String(projects.length).padStart(2, '0')} entradas / 2026
-          </span>
+    <section id="projects" className="section projects">
+      <div className="section-shell">
+        <div className="section-heading section-heading--split">
+          <div>
+            <p>Projetos selecionados</p>
+            <h2>Problemas reais, decisões explícitas e produto no ar.</h2>
+          </div>
+          <p>
+            Uma seleção de aplicações web, plataformas de dados e produtos com
+            inteligência artificial construídos de ponta a ponta.
+          </p>
         </div>
 
-        <ul>
-          {projects.map((p) => (
-            <FlowRow
-              key={p.slug}
-              p={p}
-              open={open === p.slug}
-              onToggle={() => setOpen((cur) => (cur === p.slug ? null : p.slug))}
-            />
+        <article className="featured-project">
+          <div className="featured-project__media">
+            <span className="featured-project__flag">Projeto em destaque</span>
+            <ProjectImage project={featured} />
+          </div>
+          <div className="featured-project__content">
+            <div className="project-meta">
+              <span>{featured.index}</span>
+              <span>{featured.category}</span>
+              <span>{featured.year}</span>
+            </div>
+            <h3>{featured.title}</h3>
+            <p className="project-role">{featured.role}</p>
+            <p className="project-summary">{featured.summary}</p>
+            <ul className="feature-list" aria-label="Principais funcionalidades">
+              {featured.features.map((feature) => (
+                <li key={feature}>{feature}</li>
+              ))}
+            </ul>
+            <ProjectDetails project={featured} />
+            <ul className="stack-list" aria-label="Tecnologias utilizadas">
+              {featured.stack.map((tech) => (
+                <li key={tech}>{tech}</li>
+              ))}
+            </ul>
+            <ProjectActions project={featured} />
+          </div>
+        </article>
+
+        <div className="project-list">
+          {secondary.map((project) => (
+            <article className="project-entry" key={project.slug}>
+              <div className="project-entry__media">
+                <ProjectImage project={project} />
+                {project.metric && (
+                  <div className="project-metric">
+                    <strong>{project.metric.value}</strong>
+                    <span>{project.metric.label}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="project-entry__content">
+                <div className="project-meta">
+                  <span>{project.index}</span>
+                  <span>{project.category}</span>
+                  <span>{project.year}</span>
+                </div>
+                <h3>{project.title}</h3>
+                <p className="project-role">{project.role}</p>
+                <p className="project-summary">{project.summary}</p>
+                <ul className="feature-list" aria-label="Principais funcionalidades">
+                  {project.features.map((feature) => (
+                    <li key={feature}>{feature}</li>
+                  ))}
+                </ul>
+                <ProjectDetails project={project} />
+                <ul className="stack-list" aria-label="Tecnologias utilizadas">
+                  {project.stack.map((tech) => (
+                    <li key={tech}>{tech}</li>
+                  ))}
+                </ul>
+                <ProjectActions project={project} />
+              </div>
+            </article>
           ))}
-        </ul>
+        </div>
       </div>
     </section>
   )

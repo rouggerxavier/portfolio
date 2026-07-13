@@ -1,58 +1,73 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const links = [
-  { href: '#index', label: 'Índice' },
-  { href: '#about', label: 'Perfil' },
+  { href: '#top', label: 'Início' },
+  { href: '#projects', label: 'Projetos' },
+  { href: '#about', label: 'Sobre' },
   { href: '#contact', label: 'Contato' },
 ]
 
 export default function Nav() {
   const [solid, setSolid] = useState(false)
+  const dialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 60)
+    const onScroll = () => setSolid(window.scrollY > 32)
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const openMenu = () => dialogRef.current?.showModal()
+  const closeMenu = () => dialogRef.current?.close()
+
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-        solid ? 'bg-paper/85 rule-b py-4 backdrop-blur-sm' : 'py-7'
-      }`}
-    >
-      <nav className="mx-auto flex max-w-[1400px] items-center justify-between px-5 sm:px-8">
-        <a href="#top" className="font-display text-2xl font-extrabold tracking-tight">
-          RX
-          <span className="text-flame">/</span>
+    <header className={`site-header ${solid ? 'site-header--solid' : ''}`}>
+      <nav className="site-nav" aria-label="Navegação principal">
+        <a href="#top" className="brand-mark" aria-label="Rougger Xavier, início">
+          RX<span aria-hidden="true">/</span>
         </a>
 
-        <ul className="hidden items-center gap-9 md:flex">
-          {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className="group relative inline-block py-1 font-mono text-[0.8rem] uppercase tracking-[0.16em] text-ink-soft transition-colors duration-300 hover:text-ink focus-visible:text-ink focus-visible:outline-none"
-              >
-                {l.label}
-                {/* draughtsman underline: draws in from left on hover/focus */}
-                <span className="pointer-events-none absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-flame transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100" />
-              </a>
+        <ul className="nav-links">
+          {links.map((link) => (
+            <li key={link.href}>
+              <a href={link.href}>{link.label}</a>
             </li>
           ))}
         </ul>
 
-        <a
-          href="#contact"
-          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-4 transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none max-md:-my-2 max-md:py-2"
+        <button
+          type="button"
+          className="menu-trigger"
+          onClick={openMenu}
+          aria-haspopup="dialog"
+          aria-label="Abrir menu"
         >
-          <span className="relative flex h-1.5 w-1.5" aria-hidden>
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-flame opacity-70 motion-reduce:animate-none" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-flame" />
-          </span>
-          Disponível p/ projetos
-        </a>
+          Menu
+          <span aria-hidden="true">+</span>
+        </button>
       </nav>
+
+      <dialog ref={dialogRef} className="mobile-menu" aria-label="Menu principal">
+        <div className="mobile-menu__head">
+          <span className="brand-mark" aria-hidden="true">
+            RX<span>/</span>
+          </span>
+          <button type="button" onClick={closeMenu} aria-label="Fechar menu">
+            Fechar <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <ul>
+          {links.map((link, index) => (
+            <li key={link.href}>
+              <a href={link.href} onClick={closeMenu}>
+                <span aria-hidden="true">0{index + 1}</span>
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </dialog>
     </header>
   )
 }

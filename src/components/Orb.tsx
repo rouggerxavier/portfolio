@@ -214,7 +214,7 @@ export default function Orb({
 
     function resize() {
       if (!container) return;
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const width = container.clientWidth;
       const height = container.clientHeight;
       renderer.setSize(width * dpr, height * dpr);
@@ -256,8 +256,13 @@ export default function Orb({
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mouseleave', handleMouseLeave);
 
-    let rafId;
+    let rafId = 0;
+    let inView = true;
     const update = t => {
+      if (!inView) {
+        rafId = 0;
+        return;
+      }
       rafId = requestAnimationFrame(update);
       const dt = (t - lastTime) * 0.001;
       lastTime = t;
@@ -276,17 +281,30 @@ export default function Orb({
 
       renderer.render({ scene: mesh });
     };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        if (inView && !rafId) {
+          lastTime = performance.now();
+          rafId = requestAnimationFrame(update);
+        }
+      },
+      { rootMargin: '120px' },
+    );
+    observer.observe(container);
     rafId = requestAnimationFrame(update);
 
     return () => {
       cancelAnimationFrame(rafId);
+      observer.disconnect();
       window.removeEventListener('resize', resize);
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mouseleave', handleMouseLeave);
       container.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  }, [hue, hoverIntensity, rotateOnHover, forceHoverState, backgroundColor]);
+  }, [hue, hoverIntensity, rotateOnHover, forceHoverState, backgroundColor, frag, vert]);
 
   return <div ref={ctnDom} className="orb-container" />;
 }

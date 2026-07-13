@@ -1,194 +1,45 @@
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import type { IconType } from 'react-icons/lib'
-import {
-  SiReact,
-  SiNextdotjs,
-  SiTypescript,
-  SiTailwindcss,
-  SiGreensock,
-  SiThreedotjs,
-  SiNodedotjs,
-  SiPython,
-  SiFastapi,
-  SiLangchain,
-  SiGit,
-  SiGithub,
-} from 'react-icons/si'
-import {
-  TbLayoutGrid,
-  TbBrush,
-  TbWaveSine,
-  TbDevices,
-  TbDatabaseSearch,
-  TbRobot,
-  TbShare2,
-  TbAdjustmentsHorizontal,
-  TbChecklist,
-  TbTerminal2,
-  TbInfinity,
-  TbCloud,
-} from 'react-icons/tb'
-import { capabilities, focus, projects } from '../data/projects'
-
-gsap.registerPlugin(ScrollTrigger)
-
-const capIcons: Record<string, IconType> = {
-  uiux: TbLayoutGrid,
-  webdesign: TbBrush,
-  motion: TbWaveSine,
-  responsive: TbDevices,
-  react: SiReact,
-  next: SiNextdotjs,
-  typescript: SiTypescript,
-  tailwind: SiTailwindcss,
-  gsap: SiGreensock,
-  three: SiThreedotjs,
-  node: SiNodedotjs,
-  python: SiPython,
-  fastapi: SiFastapi,
-  rag: TbDatabaseSearch,
-  agents: TbRobot,
-  langchain: SiLangchain,
-  langgraph: TbShare2,
-  finetune: TbAdjustmentsHorizontal,
-  evals: TbChecklist,
-  cli: TbTerminal2,
-  git: SiGit,
-  github: SiGithub,
-  cicd: TbInfinity,
-  cloud: TbCloud,
-}
+import { capabilities, profile } from '../data/projects'
 
 export default function About() {
-  const root = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.ab-reveal', {
-        scrollTrigger: { trigger: root.current, start: 'top 72%' },
-        y: 36,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'expo.out',
-      })
-      gsap.from('.bar-fill', {
-        scrollTrigger: { trigger: '.bars', start: 'top 80%' },
-        scaleX: 0,
-        transformOrigin: 'left',
-        duration: 1.1,
-        stagger: 0.12,
-        ease: 'expo.out',
-      })
-      // count-up percentages
-      gsap.utils.toArray<HTMLElement>('.pct').forEach((el) => {
-        const target = Number(el.dataset.pct || 0)
-        const obj = { v: 0 }
-        gsap.to(obj, {
-          v: target,
-          duration: 1.2,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: '.bars', start: 'top 80%' },
-          onUpdate: () => {
-            el.textContent = `${Math.round(obj.v)}%`
-          },
-        })
-      })
-    }, root)
-    return () => ctx.revert()
-  }, [])
-
   return (
-    <section id="about" ref={root} className="relative px-5 py-24 sm:px-8">
-      <div className="mx-auto grid max-w-[1400px] gap-x-16 gap-y-12 rule-t pt-14 lg:grid-cols-[1.1fr_0.9fr]">
-        <div>
-          <span className="ab-reveal mb-6 block font-mono text-xs uppercase tracking-widest text-flame">
-            02 / Perfil
-          </span>
-          <h2 className="ab-reveal max-w-[16ch] font-display text-[clamp(1.9rem,4.5vw,3.5rem)] font-extrabold leading-[1.02] tracking-tight">
-            Produtos completos, do traço ao deploy.
-          </h2>
-          <p className="ab-reveal mt-7 max-w-[60ch] text-lg leading-relaxed text-ink">
-            Entrego produto pronto, não pedaços soltos. Design que comunica,
-            front-end rápido e acessível, IA aplicada a problemas reais e APIs
-            que aguentam produção. Do primeiro traço ao deploy, na mesma mão:
-            menos intermediários, menos ruído, mais produto no ar.
-          </p>
+    <section id="about" className="section about">
+      <div className="section-shell about__grid">
+        <div className="about__mark" aria-hidden="true">
+          <span>RX</span>
+          <small>João Pessoa / PB</small>
+        </div>
 
-          <div className="bars ab-reveal mt-10 space-y-4">
-            {focus.map((f) => (
-              <div key={f.label}>
-                <div className="mb-1.5 flex items-baseline justify-between font-mono text-xs uppercase tracking-wider">
-                  <span>{f.label}</span>
-                  <span className="pct text-ink-soft" data-pct={f.pct}>
-                    {f.pct}%
-                  </span>
-                </div>
-                <div className="h-2 w-full bg-paper-2">
-                  <div
-                    className="bar-fill h-full bg-flame"
-                    style={{ width: `${f.pct}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+        <div className="about__content">
+          <div className="section-heading section-heading--compact">
+            <p>Sobre mim</p>
+            <h2>Clareza para resolver, cuidado para manter.</h2>
           </div>
-        </div>
 
-        <div className="ab-reveal">
-          <h3 className="mb-5 font-mono text-xs uppercase tracking-widest text-ink-soft">
-            Skills &amp; Tools
-          </h3>
-          <ul className="grid grid-cols-3 gap-px overflow-hidden border border-line bg-line sm:grid-cols-4">
-            {capabilities.map(({ label, icon }) => {
-              const Icon = capIcons[icon]
-              return (
-                <li
-                  key={label}
-                  className="group flex flex-col items-center justify-center gap-2.5 bg-paper px-2 py-5 text-center transition-colors duration-300 hover:bg-paper-2"
-                >
-                  {Icon && (
-                    <Icon
-                      className="text-2xl text-ink-soft transition-colors duration-300 group-hover:text-flame"
-                      aria-hidden
-                    />
-                  )}
-                  <span className="font-mono text-[10px] uppercase leading-tight tracking-wider text-ink-soft transition-colors duration-300 group-hover:text-ink">
-                    {label}
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      </div>
+          <div className="about__text">
+            <p>
+              Sou Rougger Xavier, desenvolvedor Full Stack em João Pessoa. Gosto de
+              transformar problemas práticos em produtos organizados, fáceis de usar e
+              possíveis de manter, combinando desenvolvimento web, dados e inteligência
+              artificial quando ela realmente melhora o processo.
+            </p>
+            <p>
+              Trabalho do frontend à infraestrutura: desenho fluxos, construo interfaces,
+              APIs e integrações, organizo dados e preparo o deploy. Valorizo usabilidade,
+              decisões técnicas explícitas e uma base que continue saudável depois da
+              entrega. Atuo de forma remota e estou aberto a oportunidades profissionais e
+              projetos selecionados.
+            </p>
+          </div>
 
-      {/* proof band: real, verifiable facts in the drawing's spec-sheet idiom */}
-      <div className="ab-reveal mx-auto mt-16 max-w-[1400px]">
-        <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-ink-soft">
-          O trabalho, em números
-        </h3>
-        <div className="grid grid-cols-2 gap-px overflow-hidden border border-line bg-line sm:grid-cols-4">
-          {[
-            [String(projects.length).padStart(2, '0'), 'Produtos reais'],
-            [
-              String(projects.filter((p) => p.live).length).padStart(2, '0'),
-              'No ar em produção',
-            ],
-            [String(capabilities.length), 'Ferramentas no cinto'],
-            ['02', 'Design + IA, uma só mão'],
-          ].map(([v, k]) => (
-            <div key={k} className="bg-paper px-5 py-6">
-              <div className="font-display text-[clamp(1.6rem,3vw,2.25rem)] font-extrabold leading-none tracking-tight">
-                {v}
-              </div>
-              <div className="mt-2 font-mono text-[0.7rem] uppercase leading-tight tracking-wider text-ink-soft">
-                {k}
-              </div>
-            </div>
-          ))}
+          <div className="toolbox" aria-label="Tecnologias e competências">
+            <span>Ferramentas que uso</span>
+            <ul>
+              {capabilities.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <p className="about__location">{profile.location} · trabalho remoto</p>
         </div>
       </div>
     </section>

@@ -1,69 +1,67 @@
 # Portfólio · Rougger Xavier
 
-Site de portfólio interativo apresentando meus projetos (Grankasa, Feirão da
-Construção, MobileTurismo, Alana Lacerda Arquitetos). Foco em motion e 3D para
-uma experiência viva.
+Portfólio pessoal de Rougger Xavier, desenvolvedor Full Stack em João Pessoa.
+Apresenta aplicações web, APIs, integrações e automações com inteligência
+artificial por meio de estudos de caso editoriais.
 
 ## Stack
 
-- **Vite + React + TypeScript** — SPA, build estático
-- **Tailwind CSS v4** (`@tailwindcss/vite`) — estilo utilitário + tema custom
-- **GSAP** (+ ScrollTrigger) — animações de entrada e scroll
-- **three.js** via **@react-three/fiber** + **@react-three/drei** — cena 3D de fundo (blob com distorção + estrelas, reativo ao ponteiro)
+- React 19 + TypeScript
+- Vite 8
+- Tailwind CSS v4 para tokens e integração de build
+- CSS próprio para layout, responsividade e motion
+- OGL para a composição interativa do hero em desktop
+
+O conteúdo principal é HTML semântico e permanece visível sem JavaScript de
+animação. O orb é carregado sob demanda apenas em telas com ponteiro preciso e
+sem preferência por redução de movimento.
 
 ## Estrutura
 
-```
+```text
 src/
   components/
-    Scene3D.tsx   # fundo three.js (Canvas, blob distorcido, stars)
-    Nav.tsx       # navbar com glass ao rolar
-    Hero.tsx      # headline animada com GSAP
-    Projects.tsx  # grid de projetos, tilt 3D no hover, reveal por scroll
-    About.tsx     # bio + stack
-    Contact.tsx   # CTA + footer
-  data/
-    projects.ts   # fonte de verdade dos cards de projeto
-  index.css       # tema Tailwind v4 + utilitários (glass, gradient, grain)
-  App.tsx
+    Nav.tsx          navegação desktop e dialog mobile
+    Hero.tsx         posicionamento, CTAs e composição RX
+    Proof.tsx        prova rápida de capacidade
+    Projects.tsx     destaque e estudos de caso editoriais
+    Expertise.tsx    três pilares profissionais
+    About.tsx        perfil e ferramentas
+    Contact.tsx      CTA principal e contatos secundários
+    Footer.tsx       rodapé essencial
+    Orb.tsx          composição OGL carregada sob demanda
+  data/projects.ts   fonte de verdade dos projetos e perfil
+  index.css          tokens, layout e estados responsivos
 ```
 
 ## Comandos
 
 ```bash
 npm install
-npm run dev      # desenvolvimento (http://localhost:5173)
-npm run build    # build de produção em dist/
-npm run preview  # serve o build
+npm run dev
+npm run lint
+npm run build
+npm run preview
 ```
 
-## Editar projetos
+Não há script `typecheck` separado: `npm run build` executa `tsc -b` antes do
+build de produção.
 
-Tudo em `src/data/projects.ts`. Cada projeto tem índice, título, role, categoria,
-ano, resumo, stack, e (opcional) `repo`, `live`, `status` e `shot` (screenshot).
+## Conteúdo dos projetos
 
-### Screenshots dos sites
+Cada entrada em `src/data/projects.ts` contém problema, funcionalidades,
+responsabilidade, desafio técnico, resultado, tecnologias e links. Métricas só
+devem ser incluídas quando houver evidência no repositório do projeto.
 
-Os cards mostram capturas reais dos sites em `public/images/projects/<slug>.jpg`,
-como imagem editorial (zoom no hover, tag "Ver live"). Para regerar, rode um
-Playwright apontando para cada `live` (viewport ~1366x854, esperar o intro do
-site assentar) e salve com o nome do slug.
+As imagens ficam em `public/images/projects/` e devem manter dimensões explícitas
+no componente para evitar layout shift.
 
-> Projetos sem `live` (ex.: Aurora) usam um tile com o número do índice + link do
-> repositório. `projeto-alana` e `mobileturismo` usam links `*.pages.dev`
-> (Cloudflare) por ora; trocar por domínio próprio quando disponível em `live`.
+## SEO e deploy
 
-## Deploy
+- Metadata, Open Graph, Twitter Card e JSON-LD: `index.html`
+- Sitemap: `public/sitemap.xml`
+- Regras de indexação: `public/robots.txt`
+- Fallback SPA e cache: `vercel.json` e `public/_redirects`
 
-Build estático em `dist/` (SPA de página única). Funciona em qualquer host estático.
-
-**Cloudflare Pages** (mesmo dos outros projetos)
-- Build command: `npm run build`
-- Output directory: `dist`
-- `public/_redirects` já faz o fallback SPA (`/* /index.html 200`).
-
-**Vercel**
-- `vercel.json` já define framework, build, output, rewrites e cache dos assets.
-- Ou via CLI: `vercel --prod`.
-
-Local: `npm run build && npm run preview`.
+O build estático é gerado em `dist/` e pode ser publicado na Vercel ou no
+Cloudflare Pages.
