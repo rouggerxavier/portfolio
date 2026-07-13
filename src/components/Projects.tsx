@@ -1,11 +1,12 @@
 import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { gsap, MOTION_OK, useGSAP } from '../lib/gsap'
 import { projects } from '../data/projects'
 
-// Act 3: one project at a time on a pinned stage. Each screenshot holds for a
+// Act 3: one project at a time on a pinned stage, split in half: the capture
+// on one side, the project brief on the other. Each project holds for a long
 // beat of reading, then shrinks and sinks into the dark while the next one
-// surfaces from depth — the scroll conducts the whole exchange. The mono
-// counter and progress line report the position in the sequence.
+// surfaces from depth — the scroll conducts the whole exchange, unhurried.
 export default function Projects() {
   const root = useRef<HTMLElement>(null)
   const counter = useRef<HTMLSpanElement>(null)
@@ -26,8 +27,9 @@ export default function Projects() {
           scrollTrigger: {
             trigger: root.current,
             start: 'top top',
-            end: () => '+=' + slides.length * window.innerHeight * 0.85,
-            scrub: 1,
+            // generous runway: ~1.3 viewport heights of scroll per project
+            end: () => '+=' + slides.length * window.innerHeight * 1.3,
+            scrub: 1.2,
             pin: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
@@ -53,34 +55,34 @@ export default function Projects() {
           const fig = slide.querySelector('.sh-fig')
           const info = slide.querySelectorAll('.sh-info > *')
 
-          // reading dwell
-          tl.to({}, { duration: 1 })
+          // long reading dwell before anything moves
+          tl.to({}, { duration: 1.4 })
 
           if (i < slides.length - 1) {
             const next = slides[i + 1]
             const nextFig = next.querySelector('.sh-fig')
             const nextInfo = next.querySelectorAll('.sh-info > *')
 
-            // out: the sheet swallows the project
+            // out: the sheet swallows the project, slowly
             tl.to(
               fig,
               {
-                scale: 0.8,
+                scale: 0.82,
                 autoAlpha: 0,
                 filter: 'blur(12px)',
-                duration: 0.55,
+                duration: 1,
                 ease: 'power2.in',
               },
               '>',
             )
               .to(
                 info,
-                { y: -28, autoAlpha: 0, duration: 0.4, stagger: 0.04 },
+                { y: -30, autoAlpha: 0, duration: 0.8, stagger: 0.05 },
                 '<',
               )
               .set(slide, { autoAlpha: 0 })
               .set(next, { autoAlpha: 1 })
-              // in: the next one surfaces from depth
+              // in: the next one surfaces from depth, just as unhurried
               .fromTo(
                 nextFig,
                 { scale: 1.16, autoAlpha: 0, filter: 'blur(12px)' },
@@ -88,19 +90,19 @@ export default function Projects() {
                   scale: 1,
                   autoAlpha: 1,
                   filter: 'blur(0px)',
-                  duration: 0.55,
+                  duration: 1,
                   ease: 'power2.out',
                 },
               )
               .fromTo(
                 nextInfo,
-                { y: 30, autoAlpha: 0 },
-                { y: 0, autoAlpha: 1, duration: 0.4, stagger: 0.05 },
-                '<0.15',
+                { y: 34, autoAlpha: 0 },
+                { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.07 },
+                '<0.25',
               )
           } else {
-            // last project holds a little longer before the unpin
-            tl.to({}, { duration: 0.4 })
+            // last project holds before the unpin
+            tl.to({}, { duration: 0.6 })
           }
         })
       })
@@ -133,74 +135,78 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* pinned stage: slides swap in place */}
+        {/* pinned stage: slides swap in place, half capture / half brief */}
         <div className="sh-stage relative flex-1">
           {projects.map((p) => {
             const href = p.live || p.repo
             return (
               <article
                 key={p.slug}
-                className="sh-slide flex flex-col items-center justify-center gap-6"
+                className="sh-slide flex items-center justify-center"
               >
-                <span
-                  className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-[clamp(10rem,34vw,26rem)] font-extrabold leading-none text-transparent"
-                  style={{ WebkitTextStroke: '1px var(--color-line)' }}
-                  aria-hidden
-                >
-                  {p.index}
-                </span>
+                <div className="mx-auto grid w-full max-w-[1400px] items-center gap-x-14 gap-y-7 lg:grid-cols-[1.15fr_0.85fr]">
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="sh-fig group relative block overflow-hidden rounded-[10px] ring-1 ring-ink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame"
+                    data-hot
+                    aria-label={`Abrir ${p.title}`}
+                  >
+                    <img
+                      src={p.shot}
+                      alt={`Captura de tela do projeto ${p.title}`}
+                      decoding="async"
+                      className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03] max-lg:max-h-[38svh]"
+                    />
+                    <span className="absolute bottom-3 right-3 rounded-md bg-paper px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-wider text-ink opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      {p.live ? 'Ver live ↗' : 'Ver código ↗'}
+                    </span>
+                  </a>
 
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="sh-fig group relative block overflow-hidden ring-1 ring-ink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame"
-                  data-hot
-                  aria-label={`Abrir ${p.title}`}
-                >
-                  <img
-                    src={p.shot}
-                    alt={`Captura de tela do projeto ${p.title}`}
-                    decoding="async"
-                    className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  />
-                  <span className="absolute bottom-3 right-3 bg-paper px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-wider text-ink opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    {p.live ? 'Ver live ↗' : 'Ver código ↗'}
-                  </span>
-                </a>
-
-                <div className="sh-info relative z-10 w-full">
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-                    <h3 className="font-display text-[clamp(1.6rem,3.2vw,2.6rem)] font-extrabold leading-none tracking-tight">
-                      {p.title}
-                    </h3>
+                  <div className="sh-info relative">
                     <p className="font-mono text-xs uppercase tracking-[0.18em] text-ink-soft">
+                      <span className="text-flame">{p.index}</span>
+                      <span className="mx-3">·</span>
                       {p.category} · {p.year}
                       {p.status ? (
                         <span className="ml-3 text-flame">{p.status}</span>
                       ) : null}
                     </p>
-                  </div>
-                  <div className="mt-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-                    <p className="font-mono text-xs uppercase tracking-wider text-flame">
+                    <h3 className="mt-4 font-display text-[clamp(1.7rem,3.6vw,3rem)] font-extrabold leading-[1.02] tracking-tight">
+                      {p.title}
+                    </h3>
+                    <p className="mt-2 font-mono text-xs uppercase tracking-wider text-flame">
                       {p.role}
                     </p>
-                    <ul className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft max-md:hidden">
-                      {p.stack.slice(0, 5).map((s) => (
+                    <p className="mt-5 max-w-[52ch] leading-relaxed text-ink-soft max-md:line-clamp-3">
+                      {p.summary}
+                    </p>
+                    <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
+                      {p.stack.slice(0, 6).map((s) => (
                         <li key={s}>{s}</li>
                       ))}
                     </ul>
-                    {href && (
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-mono text-xs uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-[6px] transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none"
+                    <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+                      <Link
+                        to={`/projeto/${p.slug}`}
+                        className="inline-flex items-center gap-2 bg-ink px-6 py-3.5 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame focus-visible:bg-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                         data-hot
                       >
-                        {p.live ? 'Visitar ↗' : 'GitHub ↗'}
-                      </a>
-                    )}
+                        Estudo de caso →
+                      </Link>
+                      {href && (
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-mono text-xs uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-[6px] transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none"
+                          data-hot
+                        >
+                          {p.live ? 'Visitar ↗' : 'GitHub ↗'}
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               </article>

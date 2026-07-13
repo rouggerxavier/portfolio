@@ -27,9 +27,12 @@ src/
     Hero.tsx        # ato 1: pin + SplitText; o scrub desmonta a prancha
     Manifesto.tsx   # ato 2: pin; chars saem da escuridão (blur + profundidade)
     Marquee.tsx     # faixa que se move apenas com o scroll (scrub)
-    Projects.tsx    # ato 3: showcase pinado; a foto mergulha no escuro e a próxima emerge
+    Projects.tsx    # ato 3: showcase pinado meio a meio; a foto mergulha no escuro e a próxima emerge
     About.tsx       # ato 4: barras de foco scrubadas, grid em batch
     Contact.tsx     # ato 5: convite inkado por chars + canais diretos
+  pages/
+    Home.tsx        # rota / (a narrativa completa)
+    Project.tsx     # rota /projeto/:slug (estudo de caso scroll-driven)
   data/
     projects.ts     # fonte de verdade dos projetos e do perfil
   index.css         # tema Tailwind v4, trilha horizontal, fallbacks
@@ -50,6 +53,14 @@ npm run lint     # oxlint
 npm run build    # tsc -b + build de produção em dist/
 npm run preview  # serve o build
 ```
+
+## Estudos de caso
+
+Cada projeto tem um endpoint em `/projeto/<slug>` (React Router; o fallback SPA
+de `public/_redirects` cobre o refresh). A galeria "Registros do projeto" exibe
+placeholders até existirem capturas reais em
+`public/images/projects/<slug>/g1.jpg` … `g5.jpg` (basta subir os arquivos; a
+página troca sozinha, sem mudança de código).
 
 ## Editar projetos
 

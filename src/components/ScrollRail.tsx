@@ -6,7 +6,9 @@ import { gsap, ScrollTrigger, MOTION_OK, useGSAP } from '../lib/gsap'
 // The native scrollbar is hidden in index.css; keyboard/touch scrolling is
 // untouched, so this stays presentational (aria-hidden) plus anchor shortcuts.
 
-const stations = [
+type Station = { id: string; label: string }
+
+const defaultStations: Station[] = [
   { id: 'top', label: 'Início' },
   { id: 'manifesto', label: 'Manifesto' },
   { id: 'index', label: 'Projetos' },
@@ -14,11 +16,15 @@ const stations = [
   { id: 'contact', label: 'Contato' },
 ]
 
-export default function ScrollRail() {
+export default function ScrollRail({
+  stations = defaultStations,
+}: {
+  stations?: Station[]
+}) {
   const root = useRef<HTMLDivElement>(null)
   const fill = useRef<HTMLSpanElement>(null)
   const pct = useRef<HTMLSpanElement>(null)
-  const [current, setCurrent] = useState('Início')
+  const [current, setCurrent] = useState(stations[0]?.label ?? '')
   const [marks, setMarks] = useState<Record<string, number>>({})
 
   useGSAP(
