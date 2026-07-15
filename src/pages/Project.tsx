@@ -265,7 +265,7 @@ function ProjectView({ p }: { p: ProjectData }) {
                 src={p.shot}
                 alt={`Captura de tela do projeto ${p.title}`}
                 decoding="async"
-                className="pd-hero-img aspect-[16/10] w-full object-cover object-top sm:aspect-[16/8]"
+                className="pd-hero-img aspect-[16/10] w-full object-cover object-top"
               />
             </div>
           </div>
