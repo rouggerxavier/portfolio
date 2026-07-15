@@ -21,13 +21,19 @@ export default function Nav() {
         solid ? 'bg-paper/85 rule-b py-4 backdrop-blur-sm' : 'py-7'
       }`}
     >
-      <nav className="mx-auto flex max-w-[1400px] items-center justify-between px-5 sm:px-8">
-        <a href="#top" className="font-display text-2xl font-extrabold tracking-tight">
+      {/* 3-col grid keeps the nav links centered on the viewport regardless of
+          the uneven side widths (narrow logo vs. wide CTA), which a plain
+          justify-between would push off-center */}
+      <nav className="mx-auto grid max-w-[1400px] grid-cols-[1fr_auto_1fr] items-center px-5 sm:px-8">
+        <a
+          href="#top"
+          className="justify-self-start font-display text-2xl font-extrabold tracking-tight"
+        >
           RX
           <span className="text-flame">/</span>
         </a>
 
-        <ul className="hidden items-center gap-9 md:flex">
+        <ul className="hidden items-center gap-9 justify-self-center md:flex">
           {links.map((l) => (
             <li key={l.href}>
               <a
@@ -44,7 +50,7 @@ export default function Nav() {
 
         <a
           href="#contact"
-          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-4 transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none max-md:-my-2 max-md:py-2"
+          className="inline-flex items-center gap-2 justify-self-end font-mono text-xs uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-4 transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none max-md:-my-2 max-md:py-2"
         >
           <span className="relative flex h-1.5 w-1.5" aria-hidden>
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-flame opacity-70 motion-reduce:animate-none" />
