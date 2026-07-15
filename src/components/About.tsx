@@ -29,7 +29,7 @@ import {
   TbInfinity,
   TbCloud,
 } from 'react-icons/tb'
-import { capabilities, focus, projects } from '../data/projects'
+import { capabilities, projects } from '../data/projects'
 
 const capIcons: Record<string, IconType> = {
   uiux: TbLayoutGrid,
@@ -58,9 +58,20 @@ const capIcons: Record<string, IconType> = {
   cloud: TbCloud,
 }
 
+// the two disciplines the work is built on, carried at equal weight
+const pillars = [
+  {
+    title: 'Design & Front-end',
+    body: 'Interface, motion e web design que comunicam. React, TypeScript e GSAP — rápido, responsivo e acessível.',
+  },
+  {
+    title: 'IA aplicada & Back-end',
+    body: 'RAG, agentes e avaliação sobre APIs que aguentam produção. Python, FastAPI e orquestração de ponta a ponta.',
+  },
+]
+
 // Act 4: the profile sheet. Every reveal is wired to the scroll: heading and
-// prose mask in, the focus bars fill scrubbed to the reading position and the
-// tool grid tiles in batches as it crosses the viewport.
+// prose mask in, and the tool grid tiles in batches as it crosses the viewport.
 export default function About() {
   const root = useRef<HTMLElement>(null)
 
@@ -79,42 +90,6 @@ export default function About() {
           duration: 0.9,
           stagger: 0.1,
           ease: 'expo.out',
-        })
-
-        // focus bars scrubbed: they fill exactly as the block crosses the screen
-        gsap.utils.toArray<HTMLElement>('.bar-fill', root.current).forEach((bar, i) => {
-          gsap.fromTo(
-            bar,
-            { scaleX: 0 },
-            {
-              scaleX: 1,
-              transformOrigin: 'left center',
-              ease: 'none',
-              scrollTrigger: {
-                trigger: '.bars',
-                start: 'top 85%',
-                end: 'top 35%',
-                scrub: 0.5 + i * 0.15,
-              },
-            },
-          )
-        })
-        gsap.utils.toArray<HTMLElement>('.pct', root.current).forEach((el) => {
-          const target = Number(el.dataset.pct || 0)
-          const obj = { v: 0 }
-          gsap.to(obj, {
-            v: target,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: '.bars',
-              start: 'top 85%',
-              end: 'top 35%',
-              scrub: 0.5,
-            },
-            onUpdate: () => {
-              el.textContent = `${Math.round(obj.v)}%`
-            },
-          })
         })
 
         // tool grid tiles in as batches
@@ -174,21 +149,17 @@ export default function About() {
             menos intermediários, menos ruído, mais produto no ar.
           </p>
 
-          <div className="bars ab-reveal mt-10 space-y-4">
-            {focus.map((f) => (
-              <div key={f.label}>
-                <div className="mb-1.5 flex items-baseline justify-between font-mono text-xs uppercase tracking-wider">
-                  <span>{f.label}</span>
-                  <span className="pct text-ink-soft" data-pct={f.pct}>
-                    {f.pct}%
-                  </span>
+          {/* two pillars of equal weight — the positioning stated plainly,
+              not quantified into invented percentages */}
+          <div className="ab-reveal mt-10 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-2">
+            {pillars.map((p) => (
+              <div key={p.title} className="bg-paper p-5">
+                <div className="font-mono text-xs uppercase tracking-wider text-flame">
+                  {p.title}
                 </div>
-                <div className="h-2 w-full bg-paper-2">
-                  <div
-                    className="bar-fill h-full bg-flame"
-                    style={{ width: `${f.pct}%` }}
-                  />
-                </div>
+                <p className="mt-3 max-w-[42ch] leading-relaxed text-ink-soft">
+                  {p.body}
+                </p>
               </div>
             ))}
           </div>
@@ -212,7 +183,7 @@ export default function About() {
                       aria-hidden
                     />
                   )}
-                  <span className="font-mono text-[10px] uppercase leading-tight tracking-wider text-ink-soft transition-colors duration-300 group-hover:text-ink">
+                  <span className="font-mono text-[11px] uppercase leading-tight tracking-wide text-ink-soft transition-colors duration-300 group-hover:text-ink">
                     {label}
                   </span>
                 </li>
@@ -227,12 +198,11 @@ export default function About() {
         <h3 className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink-soft">
           O trabalho, em números
         </h3>
-        <div className="mt-10 grid grid-cols-2 gap-x-10 gap-y-12 sm:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-x-10 gap-y-12 sm:grid-cols-3">
           {[
             [projects.length, 'Produtos reais'],
             [projects.filter((p) => p.live).length, 'No ar em produção'],
             [capabilities.length, 'Ferramentas no cinto'],
-            [2, 'Design + IA, uma só mão'],
           ].map(([v, k]) => (
             <div key={String(k)}>
               <div
@@ -242,7 +212,7 @@ export default function About() {
                 {String(v).padStart(2, '0')}
               </div>
               <span className="mt-4 block h-px w-9 bg-flame/70" aria-hidden />
-              <div className="mt-3 font-mono text-[0.65rem] uppercase leading-relaxed tracking-[0.18em] text-ink-soft">
+              <div className="mt-3 font-mono text-[0.7rem] uppercase leading-relaxed tracking-[0.16em] text-ink-soft">
                 {k}
               </div>
             </div>

@@ -1,16 +1,43 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap, MOTION_OK, useGSAP } from '../lib/gsap'
+import { getLenis } from '../lib/lenis'
 import { projects } from '../data/projects'
 
 // Act 3: one project at a time on a pinned stage, split in half: the capture
 // on one side, the project brief on the other. Each project holds for a long
 // beat of reading, then shrinks and sinks into the dark while the next one
 // surfaces from depth — the scroll conducts the whole exchange, unhurried.
+// A persistent index sits above the stage so the narrative can be *offered*,
+// not forced: clicking a title jumps straight to that project's scroll dwell.
 export default function Projects() {
   const root = useRef<HTMLElement>(null)
-  const counter = useRef<HTMLSpanElement>(null)
   const progress = useRef<HTMLSpanElement>(null)
+  const [active, setActive] = useState(0)
+  // scroll geometry captured from the pinned timeline so the index can jump
+  // to any project by translating its timeline position into a scroll offset
+  const tlRef = useRef<gsap.core.Timeline | null>(null)
+  const startsRef = useRef<number[]>([])
+  const lastActive = useRef(0)
+
+  // jump the scroll to project i's reading dwell (or the static slide when the
+  // pinned timeline isn't running, e.g. reduced motion)
+  const jumpTo = (i: number) => {
+    const tl = tlRef.current
+    const st = tl?.scrollTrigger
+    const dur = tl?.duration() ?? 0
+    if (tl && st && dur) {
+      const frac = ((startsRef.current[i] ?? 0) + 0.2) / dur
+      const y = st.start + gsap.utils.clamp(0, 1, frac) * (st.end - st.start)
+      const lenis = getLenis()
+      if (lenis) lenis.scrollTo(y, { duration: 1.1, lock: true })
+      else window.scrollTo({ top: y, behavior: 'smooth' })
+      return
+    }
+    document
+      .getElementById(`sh-${projects[i].slug}`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
 
   useGSAP(
     () => {
@@ -39,8 +66,10 @@ export default function Projects() {
               starts.forEach((s, j) => {
                 if (t >= s) i = j
               })
-              if (counter.current)
-                counter.current.textContent = String(i + 1).padStart(2, '0')
+              if (i !== lastActive.current) {
+                lastActive.current = i
+                setActive(i)
+              }
               if (progress.current)
                 progress.current.style.transform = `scaleX(${
                   slides.length > 1 ? i / (slides.length - 1) : 1
@@ -105,6 +134,11 @@ export default function Projects() {
             tl.to({}, { duration: 0.6 })
           }
         })
+
+        // hand the geometry to the index so it can translate a project into a
+        // scroll offset on click
+        tlRef.current = tl
+        startsRef.current = starts
       })
     },
     { scope: root },
@@ -113,26 +147,68 @@ export default function Projects() {
   return (
     <section id="index" ref={root} className="relative overflow-hidden">
       <div className="flex min-h-svh flex-col px-5 py-6 sm:px-8">
-        {/* instrument row: no title, just position */}
-        <div className="mx-auto flex w-full max-w-[1400px] flex-wrap items-center justify-between gap-4 pt-14">
-          <span className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
-            Projetos <span className="text-flame">/</span> 2026
-          </span>
-          <div className="flex items-center gap-5 font-mono text-xs uppercase tracking-widest text-ink-soft">
-            <span>
-              <span ref={counter} className="text-flame">
-                01
-              </span>{' '}
-              / {String(projects.length).padStart(2, '0')}
+        {/* instrument row: position readout + progress */}
+        <div className="mx-auto w-full max-w-[1400px] pt-14">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <span className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
+              Projetos <span className="text-flame">/</span> 2026
             </span>
-            <span className="relative hidden h-px w-36 bg-line sm:block" aria-hidden>
-              <span
-                ref={progress}
-                className="absolute inset-0 origin-left bg-flame"
-                style={{ transform: 'scaleX(0)' }}
-              />
-            </span>
+            <div className="flex items-center gap-5 font-mono text-xs uppercase tracking-widest text-ink-soft">
+              <span>
+                <span className="tabular-nums text-flame">
+                  {String(active + 1).padStart(2, '0')}
+                </span>{' '}
+                / {String(projects.length).padStart(2, '0')}
+              </span>
+              <span className="relative hidden h-px w-36 bg-line sm:block" aria-hidden>
+                <span
+                  ref={progress}
+                  className="absolute inset-0 origin-left bg-flame"
+                  style={{ transform: 'scaleX(0)' }}
+                />
+              </span>
+            </div>
           </div>
+
+          {/* fast path: an always-present index of every project. Clicking a
+              title jumps into its dwell in the pinned narrative, so a visitor
+              in a hurry never has to scroll the whole runway to reach one. */}
+          <nav aria-label="Índice de projetos" className="rule-t mt-5 pt-4">
+            <ul className="-mx-2.5 flex snap-x gap-x-1 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden">
+              {projects.map((p, i) => {
+                const on = active === i
+                return (
+                  <li key={p.slug} className="snap-start">
+                    <button
+                      type="button"
+                      onClick={() => jumpTo(i)}
+                      aria-current={on ? 'true' : undefined}
+                      className={`group inline-flex items-baseline gap-2 whitespace-nowrap px-2.5 py-1.5 font-mono text-[0.7rem] uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame ${
+                        on ? 'text-ink' : 'text-ink-soft hover:text-ink'
+                      }`}
+                      data-hot
+                    >
+                      <span
+                        className={`tabular-nums transition-colors ${
+                          on ? 'text-flame' : 'text-flame/55 group-hover:text-flame'
+                        }`}
+                      >
+                        {p.index}
+                      </span>
+                      <span className="relative">
+                        {p.title}
+                        <span
+                          className={`pointer-events-none absolute -bottom-0.5 left-0 h-px bg-flame transition-all duration-300 ease-out ${
+                            on ? 'w-full' : 'w-0 group-hover:w-full'
+                          }`}
+                        />
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
         </div>
 
         {/* pinned stage: slides swap in place, half capture / half brief */}
@@ -142,6 +218,7 @@ export default function Projects() {
             return (
               <article
                 key={p.slug}
+                id={`sh-${p.slug}`}
                 className="sh-slide flex items-center justify-center"
               >
                 <div className="mx-auto grid w-full max-w-[1400px] items-center gap-x-14 gap-y-7 lg:grid-cols-[1.15fr_0.85fr]">

@@ -224,13 +224,6 @@ export const profile = {
   phoneLabel: '+55 (83) 99635-3706',
 }
 
-export const focus = [
-  { label: 'UI/UX & Web Design', pct: 30 },
-  { label: 'IA aplicada & RAG', pct: 30 },
-  { label: 'Front-end & Motion', pct: 20 },
-  { label: 'Back-end & APIs', pct: 20 },
-]
-
 export type Capability = { label: string; icon: string }
 
 export const capabilities: Capability[] = [

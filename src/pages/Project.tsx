@@ -54,7 +54,7 @@ function GalleryFigure({
           />
         )}
       </div>
-      <figcaption className="mt-3 flex items-baseline justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-ink-soft">
+      <figcaption className="mt-3 flex items-baseline justify-between font-mono text-[0.7rem] uppercase tracking-[0.16em] text-ink-soft">
         <span>{caption}</span>
         <span className="text-flame">{String(n).padStart(2, '0')}</span>
       </figcaption>

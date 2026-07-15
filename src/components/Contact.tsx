@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap, SplitText, MOTION_OK, useGSAP } from '../lib/gsap'
-import { TbCopy, TbCheck, TbChevronDown } from 'react-icons/tb'
+import { TbCopy, TbCheck, TbClipboardX, TbChevronDown } from 'react-icons/tb'
 import Magnetic from './Magnetic'
 import { profile } from '../data/projects'
 
@@ -17,8 +17,14 @@ export default function Contact() {
   const root = useRef<HTMLElement>(null)
   const [time, setTime] = useState(() => timeFmt.format(new Date()))
   const [copied, setCopied] = useState<string | null>(null)
+  const [copyError, setCopyError] = useState<string | null>(null)
   const [channelsOpen, setChannelsOpen] = useState(false)
   const copyTimer = useRef<number | null>(null)
+  const valueRefs = useRef<Record<string, HTMLElement | null>>({})
+  const navigatorCopyHint =
+    typeof navigator !== 'undefined' && /Mac|iPhone|iPad/i.test(navigator.userAgent)
+      ? '⌘C'
+      : 'Ctrl+C'
 
   useEffect(() => {
     const id = setInterval(() => setTime(timeFmt.format(new Date())), 1000)
@@ -64,15 +70,55 @@ export default function Contact() {
     { scope: root },
   )
 
-  const copy = async (value: string, key: string) => {
+  // clipboard with graceful degradation: the async API needs a secure context
+  // and permission; when that fails, fall back to the legacy execCommand path,
+  // then to selecting the value so the user can copy it by hand.
+  const writeClipboard = async (text: string): Promise<boolean> => {
     try {
-      await navigator.clipboard.writeText(value)
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+        return true
+      }
     } catch {
-      return
+      /* fall through to the legacy path */
     }
-    setCopied(key)
+    try {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      ta.setAttribute('readonly', '')
+      ta.style.position = 'fixed'
+      ta.style.top = '-9999px'
+      document.body.appendChild(ta)
+      ta.select()
+      const ok = document.execCommand('copy')
+      document.body.removeChild(ta)
+      return ok
+    } catch {
+      return false
+    }
+  }
+
+  const copy = async (value: string, key: string) => {
     if (copyTimer.current) window.clearTimeout(copyTimer.current)
-    copyTimer.current = window.setTimeout(() => setCopied(null), 1600)
+    const ok = await writeClipboard(value)
+    if (ok) {
+      setCopyError(null)
+      setCopied(key)
+      copyTimer.current = window.setTimeout(() => setCopied(null), 1600)
+    } else {
+      // last resort: select the value in place so a manual copy is one keystroke
+      setCopied(null)
+      setCopyError(key)
+      const el = valueRefs.current[key]
+      const sel = window.getSelection()
+      if (el && sel) {
+        const range = document.createRange()
+        range.selectNodeContents(el)
+        sel.removeAllRanges()
+        sel.addRange(range)
+      }
+      copyTimer.current = window.setTimeout(() => setCopyError(null), 4000)
+    }
   }
 
   const waMessage = 'Olá Rougger! Vi seu portfólio e quero começar um projeto.'
@@ -176,6 +222,14 @@ export default function Contact() {
                 Canais diretos
               </div>
 
+              <p role="status" aria-live="polite" className="sr-only">
+                {copied
+                  ? 'Copiado para a área de transferência'
+                  : copyError
+                    ? 'Não foi possível copiar automaticamente; valor selecionado para copiar manualmente'
+                    : ''}
+              </p>
+
               {channels.map((c, i) => (
                 <div
                   key={c.key}
@@ -190,9 +244,19 @@ export default function Contact() {
                     <div className="font-mono text-[0.65rem] uppercase tracking-widest text-flame">
                       {c.label}
                     </div>
-                    <div className="mt-1 font-mono text-sm text-ink">
+                    <div
+                      ref={(el) => {
+                        valueRefs.current[c.key] = el
+                      }}
+                      className="mt-1 select-all font-mono text-sm text-ink"
+                    >
                       {c.display}
                     </div>
+                    {copyError === c.key ? (
+                      <p className="mt-1.5 font-mono text-[0.7rem] uppercase tracking-wider text-flame">
+                        Selecionado — copie com {navigatorCopyHint}
+                      </p>
+                    ) : null}
                   </div>
 
                   <div className="ml-auto flex items-center gap-2">
@@ -211,13 +275,17 @@ export default function Contact() {
                       aria-label={
                         copied === c.key
                           ? `${c.label} copiado`
-                          : `Copiar ${c.label}: ${c.copyValue}`
+                          : copyError === c.key
+                            ? `Não foi possível copiar automaticamente; ${c.label} selecionado para copiar manualmente`
+                            : `Copiar ${c.label}: ${c.copyValue}`
                       }
                       className="inline-flex items-center justify-center border border-line p-2.5 text-ink transition-colors hover:border-flame hover:text-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper max-md:min-h-[44px] max-md:min-w-[44px]"
                       data-hot
                     >
                       {copied === c.key ? (
                         <TbCheck className="text-base text-flame" aria-hidden />
+                      ) : copyError === c.key ? (
+                        <TbClipboardX className="text-base text-flame" aria-hidden />
                       ) : (
                         <TbCopy className="text-base" aria-hidden />
                       )}
