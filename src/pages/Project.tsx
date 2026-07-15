@@ -8,7 +8,7 @@ import { projects, profile, type Project as ProjectData } from '../data/projects
 // Case-study endpoint (/projeto/:slug), scroll-driven end to end: pinned hero
 // with parallax plate, the problem statement pulled out of the dark char by
 // char, a spec sheet that reveals row by row, a gallery of project records
-// (placeholders until real captures land in /images/projects/<slug>/gN.jpg)
+// (placeholders until real captures land in /images/projects/<slug>/gN.webp)
 // and a handoff to the next project.
 
 const galleryCaptions = [
@@ -37,7 +37,7 @@ function GalleryFigure({
         {missing ? (
           <div
             className={`ph relative flex w-full items-center justify-center ${
-              wide ? 'aspect-[21/9]' : 'aspect-[4/3]'
+              wide ? 'aspect-[2/1]' : 'aspect-video'
             }`}
           >
             <span className="relative z-10 bg-paper px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-ink-soft">
@@ -46,11 +46,11 @@ function GalleryFigure({
           </div>
         ) : (
           <img
-            src={`/images/projects/${slug}/g${n}.jpg`}
+            src={`/images/projects/${slug}/g${n}.webp`}
             alt={`${caption} do projeto`}
             decoding="async"
             onError={() => setMissing(true)}
-            className={`w-full object-cover ${wide ? 'aspect-[21/9]' : 'aspect-[4/3]'}`}
+            className={`w-full object-cover object-top ${wide ? 'aspect-[2/1]' : 'aspect-video'}`}
           />
         )}
       </div>
