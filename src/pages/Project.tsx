@@ -73,7 +73,7 @@ function ProjectView({ p }: { p: ProjectData }) {
       const mm = gsap.matchMedia()
       mm.add(MOTION_OK, () => {
         // entrance: the sheet assembles
-        const title = new SplitText('.pd-title', { type: 'chars' })
+        const title = new SplitText('.pd-title', { type: 'words,chars' })
         gsap
           .timeline({ defaults: { ease: 'expo.out' } })
           .from('.pd-meta', { y: 14, autoAlpha: 0, duration: 0.6 }, 0.1)
@@ -100,8 +100,10 @@ function ProjectView({ p }: { p: ProjectData }) {
           .to('.pd-meta, .pd-role', { y: -26, autoAlpha: 0 }, 0)
           .to('.pd-hero-img', { yPercent: 12, scale: 1.06 }, 0)
 
-        // the problem, pulled out of the dark char by char
-        const problem = new SplitText('.pd-problem', { type: 'chars' })
+        // the problem, pulled out of the dark char by char. Split words too so
+        // line breaks only land at word boundaries (chars alone let the browser
+        // break mid-word, e.g. "concluí/das")
+        const problem = new SplitText('.pd-problem', { type: 'words,chars' })
         gsap
           .timeline({
             scrollTrigger: {
@@ -185,7 +187,7 @@ function ProjectView({ p }: { p: ProjectData }) {
         })
 
         // handoff: the next title climbs out as the page ends
-        const nextTitle = new SplitText('.pd-next-title', { type: 'chars' })
+        const nextTitle = new SplitText('.pd-next-title', { type: 'words,chars' })
         gsap.from(nextTitle.chars, {
           scrollTrigger: {
             trigger: '.pd-next',
