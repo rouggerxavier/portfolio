@@ -232,7 +232,7 @@ export default function Projects() {
                   >
                     <img
                       src={p.shot}
-                      alt={`Captura de tela do projeto ${p.title}`}
+                      alt={p.shotAlt ?? `Captura de tela do projeto ${p.title}`}
                       decoding="async"
                       className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03] max-lg:max-h-[38svh]"
                     />
