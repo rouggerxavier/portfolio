@@ -17,6 +17,7 @@ export type Project = {
   live?: string
   status?: string
   shot?: string
+  shotAlt?: string
 }
 
 export const projects: Project[] = [
@@ -208,6 +209,61 @@ export const projects: Project[] = [
     stack: ['Web', 'Landing page', 'Responsivo', 'WhatsApp'],
     live: 'https://mobileturismo.pages.dev',
     shot: '/images/projects/mobileturismo.jpg',
+  },
+  {
+    index: '08',
+    slug: 'fluxo-nexo',
+    title: 'Fluxo Nexo',
+    role: 'Fluxo de caixa realizado',
+    category: 'Fintech / Operações',
+    year: '2026',
+    summary:
+      'Uma entrada pública para o trabalho financeiro operacional: importa extratos OFX, organiza entradas e saídas por categorias e deixa o movimento realizado pronto para conferência — sem esconder o que ainda precisa de revisão.',
+    problem:
+      'Transformar o extrato bancário em uma leitura operável sem inventar saldo, projeção ou cadastro automático.',
+    features: [
+      'Importação de extratos OFX',
+      'Classificação revisável de entradas e saídas',
+      'Leitura do movimento realizado por período',
+    ],
+    responsibility:
+      'Produto, arquitetura e implementação full stack da experiência pública e autenticada, com BFF Next.js, frontend MUI e serviços de dados.',
+    challenge:
+      'Manter dados financeiros isolados por organização, preservar o histórico de classificação e deixar pendências visíveis para revisão humana.',
+    outcome:
+      'Landing pública e fluxo de acesso administrativo publicados, com importação e classificação validadas pela esteira de CI e E2E operacional.',
+    stack: ['Next.js', 'TypeScript', 'MUI', 'Python', 'PostgreSQL', 'Render'],
+    live: 'https://fluxo-nexo.onrender.com/',
+    repo: 'https://github.com/rouggerxavier/fluxo-nexo',
+    shot: '/images/projects/fluxo-nexo.jpg',
+  },
+  {
+    index: '09',
+    slug: 'sistema-tse',
+    title: 'sistema_tse',
+    role: 'Simulador de transferência de votos',
+    category: 'Data / Produto interno',
+    year: '2026',
+    summary:
+      'Simulador de transferência de votos sobre a base histórica do TSE, no grão de seção eleitoral. A taxa de passagem é uma premissa explícita e o resultado é uma projeção condicional, não uma previsão.',
+    problem:
+      'Explorar hipóteses eleitorais sem perder a proveniência dos dados, a geografia da seção ou a diferença entre fato histórico e premissa de simulação.',
+    features: [
+      'Fundação de dados de 2012–2024 nas 27 UFs',
+      'Reconciliação da origem por ano e UF',
+      'Leitura hierárquica de UF a seção eleitoral',
+    ],
+    responsibility:
+      'Modelagem da fundação de dados, ingestão, reconciliação e invariantes; protótipo da interface que torna hipótese e resultado legíveis.',
+    challenge:
+      'Separar votos nominais, de legenda e brancos/nulos e preservar a ponte entre seção e local de votação ao longo das eleições.',
+    outcome:
+      'Pipeline de dados normalizado e conferido contra a origem, com uma interface de análise em protótipo para orientar as próximas fases do motor e da API.',
+    stack: ['Python', 'PostgreSQL', 'Docker', 'React', 'Vite', 'TypeScript'],
+    repo: 'https://github.com/rouggerxavier/sistema_tse',
+    status: 'uso interno',
+    shot: '/images/projects/sistema-tse-cover.svg',
+    shotAlt: 'Capa visual baseada no protótipo do sistema_tse, sem dados reais.',
   },
 ]
 

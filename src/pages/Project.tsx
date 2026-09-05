@@ -263,7 +263,7 @@ function ProjectView({ p }: { p: ProjectData }) {
             <div className="pd-hero-fig relative mt-12 overflow-hidden rounded-[10px] ring-1 ring-ink/10">
               <img
                 src={p.shot}
-                alt={`Captura de tela do projeto ${p.title}`}
+                alt={p.shotAlt ?? `Captura de tela do projeto ${p.title}`}
                 decoding="async"
                 className="pd-hero-img aspect-[16/10] w-full object-cover object-top"
               />
