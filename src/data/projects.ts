@@ -155,7 +155,7 @@ export const projects: Project[] = [
     stack: ['Next.js', 'TypeScript', 'Tailwind v4', 'Zustand', 'Zod', 'Playwright'],
     live: 'https://feiraodaconstrucao.com.br',
     repo: 'https://github.com/rouggerxavier/feirao',
-    shot: '/images/projects/feirao.jpg',
+    shot: '/images/projects/feirao.webp',
   },
   {
     index: '06',
@@ -235,7 +235,7 @@ export const projects: Project[] = [
     stack: ['Next.js', 'TypeScript', 'MUI', 'Python', 'PostgreSQL', 'Render'],
     live: 'https://fluxo-nexo.onrender.com/',
     repo: 'https://github.com/rouggerxavier/fluxo-nexo',
-    shot: '/images/projects/fluxo-nexo.jpg',
+    shot: '/images/projects/fluxo-nexo.webp',
   },
   {
     index: '09',
