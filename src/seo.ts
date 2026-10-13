@@ -68,9 +68,9 @@ export function projectMeta(p: Project): Meta {
   const path = `/projeto/${p.slug}`
   return {
     title: `${p.title} — ${p.role} | ${profile.name}`,
-    description: clip(`${p.tagline ?? ''} ${p.summary}`.trim()),
+    description: clip(p.summary),
     path,
-    image: `${SITE}${p.shot ?? projects[0].shot}`,
+    image: `${SITE}${p.shot && !p.shot.endsWith('.svg') ? p.shot : projects[0].shot}`,
     keywords: [p.title, p.category, ...p.stack, profile.name],
     jsonLd: [
       {
@@ -137,9 +137,12 @@ export function bodyHtml(p?: Project) {
   if (p) {
     return `<main><nav><a href="/">${profile.name}</a> / <a href="/#index">Projetos</a></nav>
 <h1>${esc(p.title)}</h1><p>${esc(p.role)} · ${esc(p.category)} · ${p.year}</p>
-${p.tagline ? `<p>${esc(p.tagline)}</p>` : ''}
-${(p.overview ?? [p.summary]).map((t) => `<p>${esc(t)}</p>`).join('\n')}
-${p.highlights ? `<h2>Destaques</h2>${list(p.highlights)}` : ''}
+<p>${esc(p.summary)}</p>
+<h2>Problema</h2><p>${esc(p.problem)}</p>
+<h2>Funcionalidades</h2>${list(p.features)}
+<h2>Responsabilidade</h2><p>${esc(p.responsibility)}</p>
+<h2>Desafio</h2><p>${esc(p.challenge)}</p>
+<h2>Resultado</h2><p>${esc(p.outcome)}</p>
 <h2>Stack</h2>${list(p.stack)}
 ${p.live ? `<p><a href="${p.live}">Ver ao vivo</a></p>` : ''}${p.repo ? `<p><a href="${p.repo}">Código no GitHub</a></p>` : ''}
 </main>`
@@ -174,7 +177,7 @@ ${profile.name} estuda ${profile.study} na ${profile.school} (${profile.location
 
 ## Projetos
 
-${projects.map((p) => `- [${p.title}](${SITE}/projeto/${p.slug}): ${p.role}. ${p.tagline ?? ''} Stack: ${p.stack.join(', ')}.`).join('\n')}
+${projects.map((p) => `- [${p.title}](${SITE}/projeto/${p.slug}): ${p.role}. ${clip(p.summary, 200)} Stack: ${p.stack.join(', ')}.`).join('\n')}
 
 ## Links
 
@@ -190,7 +193,7 @@ export function sitemapXml(lastmod: string) {
 ${urls
   .map((u) => {
     const p = projects.find((x) => `/projeto/${x.slug}` === u)
-    const imgs = p ? [p.shot, ...(p.gallery ?? [])].filter(Boolean) : []
+    const imgs = p?.shot ? [p.shot] : []
     return `  <url>
     <loc>${SITE}${u}</loc>
     <lastmod>${lastmod}</lastmod>${imgs.map((i) => `\n    <image:image><image:loc>${SITE}${i}</image:loc></image:image>`).join('')}

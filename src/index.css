@@ -22,6 +22,11 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* the drawing-ruler rail (ScrollRail) replaces the native scrollbar */
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
   }
   body {
     margin: 0;
@@ -35,18 +40,6 @@
   ::selection {
     background: var(--color-flame);
     color: var(--color-paper);
-  }
-  ::-webkit-scrollbar {
-    width: 11px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--color-paper-2);
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--color-ink);
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-flame);
   }
 }
 
@@ -63,14 +56,87 @@
   .rule-b {
     border-bottom: 1px solid var(--color-line);
   }
-  .animate-marquee {
-    animation: marquee 28s linear infinite;
+  .animate-scrolltick {
+    animation: scrolltick 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   }
 }
 
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
+/* hero scroll hint: a tick sliding down its slot */
+@keyframes scrolltick {
+  0% {
+    transform: translateY(-100%);
+  }
+  70%,
+  100% {
+    transform: translateY(2.25rem);
+  }
+}
+
+/* ruler tick marks on the custom scroll rail */
+.rail-ticks::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 -4px;
+  width: 4px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--color-line) 0,
+    var(--color-line) 1px,
+    transparent 1px,
+    transparent 28px
+  );
+}
+
+/* ── project showcase: one project at a time on a pinned stage ────────── */
+.sh-slide {
+  position: absolute;
+  inset: 0;
+}
+.sh-fig {
+  will-change: transform, opacity, filter;
+}
+
+/* reserved area for future project records (case-study gallery) */
+.ph {
+  background: var(--color-paper-2);
+}
+.ph::before,
+.ph::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - 0.5px),
+    var(--color-line) 50%,
+    transparent calc(50% + 0.5px)
+  );
+}
+.ph::after {
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 0.5px),
+    var(--color-line) 50%,
+    transparent calc(50% + 0.5px)
+  );
+}
+
+/* reduced motion: slides stack vertically, everything readable at rest */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .sh-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
+    padding-block: 3rem;
+  }
+  .sh-slide {
+    position: static;
+  }
+  .animate-scrolltick {
+    animation: none;
   }
 }
 
@@ -86,11 +152,5 @@ body.intro-lock {
   .has-cursor a,
   .has-cursor button {
     cursor: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
   }
 }

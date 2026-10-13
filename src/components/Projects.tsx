@@ -1,260 +1,295 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { projects, type Project } from '../data/projects'
-import './FlowingMenu.css'
+import { gsap, MOTION_OK, useGSAP } from '../lib/gsap'
+import { getLenis } from '../lib/lenis'
+import { projects } from '../data/projects'
 
-gsap.registerPlugin(ScrollTrigger)
+// Act 3: one project at a time on a pinned stage, split in half: the capture
+// on one side, the project brief on the other. Each project holds for a long
+// beat of reading, then shrinks and sinks into the dark while the next one
+// surfaces from depth — the scroll conducts the whole exchange, unhurried.
+// A persistent index sits above the stage so the narrative can be *offered*,
+// not forced: clicking a title jumps straight to that project's scroll dwell.
+export default function Projects() {
+  const root = useRef<HTMLElement>(null)
+  const progress = useRef<HTMLSpanElement>(null)
+  const [active, setActive] = useState(0)
+  // scroll geometry captured from the pinned timeline so the index can jump
+  // to any project by translating its timeline position into a scroll offset
+  const tlRef = useRef<gsap.core.Timeline | null>(null)
+  const startsRef = useRef<number[]>([])
+  const lastActive = useRef(0)
 
-const ANIM = { duration: 0.6, ease: 'expo' as const }
-const REPS = 6
-
-function FlowRow({
-  p,
-  open,
-  onToggle,
-}: {
-  p: Project
-  open: boolean
-  onToggle: () => void
-}) {
-  const itemRef = useRef<HTMLDivElement>(null)
-  const marqueeRef = useRef<HTMLDivElement>(null)
-  const innerRef = useRef<HTMLDivElement>(null)
-  const loopRef = useRef<gsap.core.Tween | null>(null)
-  const href = p.live || p.repo
-  const marqueeImg = p.shot || '/images/projects/grankasa.jpg'
-
-  useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce || !innerRef.current) return
-    const part = innerRef.current.querySelector('.marquee__part') as HTMLElement | null
-    const w = part?.offsetWidth || 0
-    if (!w) return
-    loopRef.current = gsap.to(innerRef.current, {
-      x: -w,
-      duration: 16,
-      ease: 'none',
-      repeat: -1,
-    })
-    return () => {
-      loopRef.current?.kill()
+  // jump the scroll to project i's reading dwell (or the static slide when the
+  // pinned timeline isn't running, e.g. reduced motion)
+  const jumpTo = (i: number) => {
+    const tl = tlRef.current
+    const st = tl?.scrollTrigger
+    const dur = tl?.duration() ?? 0
+    if (tl && st && dur) {
+      const frac = ((startsRef.current[i] ?? 0) + 0.2) / dur
+      const y = st.start + gsap.utils.clamp(0, 1, frac) * (st.end - st.start)
+      const lenis = getLenis()
+      if (lenis) lenis.scrollTo(y, { duration: 1.1, lock: true })
+      else window.scrollTo({ top: y, behavior: 'smooth' })
+      return
     }
-  }, [])
-
-  const edge = (e: React.MouseEvent) => {
-    const r = itemRef.current!.getBoundingClientRect()
-    const y = e.clientY - r.top
-    return y < r.height / 2 ? 'top' : 'bottom'
+    document
+      .getElementById(`sh-${projects[i].slug}`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
-  const onEnter = (e: React.MouseEvent) => {
-    if (!marqueeRef.current || !innerRef.current) return
-    const ed = edge(e)
-    gsap
-      .timeline({ defaults: ANIM })
-      .set(marqueeRef.current, { y: ed === 'top' ? '-101%' : '101%' }, 0)
-      .set(innerRef.current, { y: ed === 'top' ? '101%' : '-101%' }, 0)
-      .to([marqueeRef.current, innerRef.current], { y: '0%' }, 0)
-  }
-  const onLeave = (e: React.MouseEvent) => {
-    if (!marqueeRef.current || !innerRef.current) return
-    const ed = edge(e)
-    gsap
-      .timeline({ defaults: ANIM })
-      .to(marqueeRef.current, { y: ed === 'top' ? '-101%' : '101%' }, 0)
-      .to(innerRef.current, { y: ed === 'top' ? '101%' : '-101%' }, 0)
-  }
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia()
+      mm.add(MOTION_OK, () => {
+        const slides = gsap.utils.toArray<HTMLElement>('.sh-slide', root.current)
+        if (!slides.length) return
+
+        // stage starts with only the first project on the sheet
+        slides.forEach((s, i) => gsap.set(s, { autoAlpha: i === 0 ? 1 : 0 }))
+
+        const starts: number[] = []
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: root.current,
+            start: 'top top',
+            // generous runway: ~1.3 viewport heights of scroll per project
+            end: () => '+=' + slides.length * window.innerHeight * 1.3,
+            scrub: 1.2,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: () => {
+              const t = tl.time()
+              let i = 0
+              starts.forEach((s, j) => {
+                if (t >= s) i = j
+              })
+              if (i !== lastActive.current) {
+                lastActive.current = i
+                setActive(i)
+              }
+              if (progress.current)
+                progress.current.style.transform = `scaleX(${
+                  slides.length > 1 ? i / (slides.length - 1) : 1
+                })`
+            },
+          },
+          defaults: { ease: 'none' },
+        })
+
+        slides.forEach((slide, i) => {
+          starts.push(tl.duration())
+          const fig = slide.querySelector('.sh-fig')
+          const info = slide.querySelectorAll('.sh-info > *')
+
+          // long reading dwell before anything moves
+          tl.to({}, { duration: 1.4 })
+
+          if (i < slides.length - 1) {
+            const next = slides[i + 1]
+            const nextFig = next.querySelector('.sh-fig')
+            const nextInfo = next.querySelectorAll('.sh-info > *')
+
+            // out: the sheet swallows the project, slowly
+            tl.to(
+              fig,
+              {
+                scale: 0.82,
+                autoAlpha: 0,
+                filter: 'blur(12px)',
+                duration: 1,
+                ease: 'power2.in',
+              },
+              '>',
+            )
+              .to(
+                info,
+                { y: -30, autoAlpha: 0, duration: 0.8, stagger: 0.05 },
+                '<',
+              )
+              .set(slide, { autoAlpha: 0 })
+              .set(next, { autoAlpha: 1 })
+              // in: the next one surfaces from depth, just as unhurried
+              .fromTo(
+                nextFig,
+                { scale: 1.16, autoAlpha: 0, filter: 'blur(12px)' },
+                {
+                  scale: 1,
+                  autoAlpha: 1,
+                  filter: 'blur(0px)',
+                  duration: 1,
+                  ease: 'power2.out',
+                },
+              )
+              .fromTo(
+                nextInfo,
+                { y: 34, autoAlpha: 0 },
+                { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.07 },
+                '<0.25',
+              )
+          } else {
+            // last project holds before the unpin
+            tl.to({}, { duration: 0.6 })
+          }
+        })
+
+        // hand the geometry to the index so it can translate a project into a
+        // scroll offset on click
+        tlRef.current = tl
+        startsRef.current = starts
+      })
+    },
+    { scope: root },
+  )
 
   return (
-    <li className="rule-t">
-      <div className="flow-row" ref={itemRef}>
-        <button
-          className="flow-link group px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-flame"
-          onMouseEnter={onEnter}
-          onMouseLeave={onLeave}
-          onClick={onToggle}
-          aria-expanded={open}
-          data-hot
-        >
-          <span className="font-mono text-sm text-flame">{p.index}</span>
-          <span className="font-display text-[clamp(1.6rem,4.5vw,3rem)] font-bold leading-none tracking-tight max-md:min-w-0 max-md:text-[clamp(1.5rem,5.6vw,2rem)] max-md:leading-[1.05] max-md:[overflow-wrap:anywhere]">
-            {p.title}
-          </span>
-          <span className="ml-auto hidden font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft sm:block">
-            {p.category}
-          </span>
-          <span
-            className="font-display text-2xl text-ink-soft transition-transform duration-500 ease-out"
-            style={{ transform: open ? 'rotate(45deg)' : 'none' }}
-            aria-hidden
-          >
-            +
-          </span>
-        </button>
-
-        <div className="marquee" ref={marqueeRef}>
-          <div className="marquee__inner-wrap">
-            <div className="marquee__inner" ref={innerRef} aria-hidden>
-              {Array.from({ length: REPS }).map((_, i) => (
-                <div className="marquee__part" key={i}>
-                  <span>{p.title}</span>
-                  <div
-                    className="marquee__img"
-                    style={{ backgroundImage: `url(${marqueeImg})` }}
-                  />
-                </div>
-              ))}
+    <section id="index" ref={root} className="relative overflow-hidden">
+      <div className="flex min-h-svh flex-col px-5 py-6 sm:px-8">
+        {/* instrument row: position readout + progress */}
+        <div className="mx-auto w-full max-w-[1400px] pt-14">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <span className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft">
+              Projetos <span className="text-flame">/</span> 2026
+            </span>
+            <div className="flex items-center gap-5 font-mono text-xs uppercase tracking-widest text-ink-soft">
+              <span>
+                <span className="tabular-nums text-flame">
+                  {String(active + 1).padStart(2, '0')}
+                </span>{' '}
+                / {String(projects.length).padStart(2, '0')}
+              </span>
+              <span className="relative hidden h-px w-36 bg-line sm:block" aria-hidden>
+                <span
+                  ref={progress}
+                  className="absolute inset-0 origin-left bg-flame"
+                  style={{ transform: 'scaleX(0)' }}
+                />
+              </span>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* expand-down panel: summary + preview */}
-      <div
-        className="grid transition-[grid-template-rows] duration-500 ease-out"
-        style={{ gridTemplateRows: open ? '1fr' : '0fr' }}
-      >
-        <div className="overflow-hidden">
-          <div className="grid gap-8 px-1 pb-12 pt-2 lg:grid-cols-[1fr_1.05fr] lg:items-start">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-wider text-flame">
-                {p.role}
-              </p>
-              <p className="mt-4 max-w-[56ch] leading-relaxed text-ink-soft max-md:text-ink">
-                {p.summary}
-              </p>
-              <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
-                {p.stack.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
-              <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
-                <Link
-                  to={`/projeto/${p.slug}`}
-                  className="inline-flex items-center gap-2 bg-ink px-6 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame focus-visible:bg-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
-                  data-hot
-                >
-                  Ver projeto →
-                </Link>
-                {href && (
+          {/* fast path: an always-present index of every project. Clicking a
+              title jumps into its dwell in the pinned narrative, so a visitor
+              in a hurry never has to scroll the whole runway to reach one. */}
+          <nav aria-label="Índice de projetos" className="rule-t mt-5 pt-4">
+            <ul className="-mx-2.5 flex snap-x gap-x-1 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden">
+              {projects.map((p, i) => {
+                const on = active === i
+                return (
+                  <li key={p.slug} className="snap-start">
+                    <button
+                      type="button"
+                      onClick={() => jumpTo(i)}
+                      aria-current={on ? 'true' : undefined}
+                      className={`group inline-flex items-baseline gap-2 whitespace-nowrap px-2.5 py-1.5 font-mono text-[0.7rem] uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame ${
+                        on ? 'text-ink' : 'text-ink-soft hover:text-ink'
+                      }`}
+                      data-hot
+                    >
+                      <span
+                        className={`tabular-nums transition-colors ${
+                          on ? 'text-flame' : 'text-flame/55 group-hover:text-flame'
+                        }`}
+                      >
+                        {p.index}
+                      </span>
+                      <span className="relative">
+                        {p.title}
+                        <span
+                          className={`pointer-events-none absolute -bottom-0.5 left-0 h-px bg-flame transition-all duration-300 ease-out ${
+                            on ? 'w-full' : 'w-0 group-hover:w-full'
+                          }`}
+                        />
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
+        </div>
+
+        {/* pinned stage: slides swap in place, half capture / half brief */}
+        <div className="sh-stage relative flex-1">
+          {projects.map((p) => {
+            const href = p.live || p.repo
+            return (
+              <article
+                key={p.slug}
+                id={`sh-${p.slug}`}
+                className="sh-slide flex items-center justify-center"
+              >
+                <div className="mx-auto grid w-full max-w-[1400px] items-center gap-x-14 gap-y-7 lg:grid-cols-[1.15fr_0.85fr]">
                   <a
                     href={href}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-mono text-xs uppercase tracking-wider text-ink-soft underline decoration-flame decoration-2 underline-offset-4 transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none max-md:text-ink"
+                    className="sh-fig group relative block overflow-hidden rounded-[10px] ring-1 ring-ink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame"
                     data-hot
+                    aria-label={`Abrir ${p.title}`}
                   >
-                    {p.live ? 'Ver live' : 'Ver no GitHub'} ↗
+                    <img
+                      src={p.shot}
+                      alt={p.shotAlt ?? `Captura de tela do projeto ${p.title}`}
+                      decoding="async"
+                      className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03] max-lg:max-h-[38svh]"
+                    />
+                    <span className="absolute bottom-3 right-3 rounded-md bg-paper px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-wider text-ink opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      {p.live ? 'Ver live ↗' : 'Ver código ↗'}
+                    </span>
                   </a>
-                )}
-              </div>
-            </div>
 
-            {p.gallery && p.gallery.length > 0 ? (
-              <Link
-                to={`/projeto/${p.slug}`}
-                className="group/sh block"
-                data-hot
-                aria-label={`Abrir projeto ${p.title}`}
-              >
-                <div className="grid grid-cols-2 gap-2">
-                  {p.gallery.slice(0, 3).map((src, i) => (
-                    <div
-                      key={src}
-                      className={`relative overflow-hidden ring-1 ring-ink/10 ${
-                        i === 0 ? 'col-span-2 aspect-[16/9]' : 'aspect-[16/11]'
-                      }`}
-                    >
-                      <img
-                        src={src}
-                        alt={`Captura ${i + 1} do projeto ${p.title}`}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover/sh:scale-[1.04]"
-                      />
+                  <div className="sh-info relative">
+                    <p className="font-mono text-xs uppercase tracking-[0.18em] text-ink-soft">
+                      <span className="text-flame">{p.index}</span>
+                      <span className="mx-3">·</span>
+                      {p.category} · {p.year}
+                      {p.status ? (
+                        <span className="ml-3 text-flame">{p.status}</span>
+                      ) : null}
+                    </p>
+                    <h3 className="mt-4 font-display text-[clamp(1.7rem,3.6vw,3rem)] font-extrabold leading-[1.02] tracking-tight">
+                      {p.title}
+                    </h3>
+                    <p className="mt-2 font-mono text-xs uppercase tracking-wider text-flame">
+                      {p.role}
+                    </p>
+                    <p className="mt-5 max-w-[52ch] leading-relaxed text-ink-soft max-md:line-clamp-3">
+                      {p.summary}
+                    </p>
+                    <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
+                      {p.stack.slice(0, 6).map((s) => (
+                        <li key={s}>{s}</li>
+                      ))}
+                    </ul>
+                    <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+                      <Link
+                        to={`/projeto/${p.slug}`}
+                        className="inline-flex items-center gap-2 bg-ink px-6 py-3.5 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame focus-visible:bg-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+                        data-hot
+                      >
+                        Estudo de caso →
+                      </Link>
+                      {href && (
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-mono text-xs uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-[6px] transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none"
+                          data-hot
+                        >
+                          {p.live ? 'Visitar ↗' : 'GitHub ↗'}
+                        </a>
+                      )}
                     </div>
-                  ))}
+                  </div>
                 </div>
-                <span className="mt-3 block text-right font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft transition-colors group-hover/sh:text-flame">
-                  {String(p.gallery.length).padStart(2, '0')} telas — ver tudo →
-                </span>
-              </Link>
-            ) : (
-              <Link
-                to={`/projeto/${p.slug}`}
-                className="flex aspect-[16/10] w-full items-end justify-between bg-paper-2 p-6 ring-1 ring-ink/10 transition-colors hover:bg-paper"
-                data-hot
-                aria-label={`Abrir projeto ${p.title}`}
-              >
-                <span
-                  className="font-display text-[7rem] font-extrabold leading-none"
-                  style={{ WebkitTextStroke: '1.5px var(--color-flame)', color: 'transparent' }}
-                >
-                  {p.index}
-                </span>
-                <span className="font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
-                  {p.status || 'Ver projeto'} →
-                </span>
-              </Link>
-            )}
-          </div>
+              </article>
+            )
+          })}
         </div>
-      </div>
-    </li>
-  )
-}
-
-export default function Projects() {
-  const root = useRef<HTMLElement>(null)
-  const [open, setOpen] = useState<string | null>(null)
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.idx-head > *', {
-        scrollTrigger: { trigger: '.idx-head', start: 'top 85%' },
-        y: 28,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.08,
-        ease: 'expo.out',
-      })
-      gsap.utils.toArray<HTMLElement>('.rule-t').forEach((row) => {
-        gsap.from(row, {
-          scrollTrigger: { trigger: row, start: 'top 92%' },
-          y: 24,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'expo.out',
-        })
-      })
-    }, root)
-    return () => ctx.revert()
-  }, [])
-
-  return (
-    <section id="index" ref={root} className="relative px-5 py-24 sm:px-8">
-      <div className="mx-auto max-w-[1400px]">
-        <div className="idx-head mb-10 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="font-display text-[clamp(2rem,5vw,3.75rem)] font-extrabold leading-none tracking-tight">
-            Índice de projetos
-          </h2>
-          <span className="font-mono text-xs uppercase tracking-widest text-ink-soft">
-            {String(projects.length).padStart(2, '0')} entradas / 2026
-          </span>
-        </div>
-
-        <ul>
-          {projects.map((p) => (
-            <FlowRow
-              key={p.slug}
-              p={p}
-              open={open === p.slug}
-              onToggle={() => setOpen((cur) => (cur === p.slug ? null : p.slug))}
-            />
-          ))}
-        </ul>
       </div>
     </section>
   )
