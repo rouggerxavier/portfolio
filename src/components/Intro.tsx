@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import RxMark from './RxMark'
 import { gsap } from 'gsap'
 
 export const INTRO_DONE = 'intro:done'
@@ -78,7 +79,7 @@ export default function Intro() {
         <span
           className="intro-mark font-display text-[clamp(3rem,12vw,9rem)] font-extrabold leading-none tracking-tight opacity-0"
         >
-          RX<span className="text-flame">/</span>
+          <RxMark className="h-[0.72em] w-auto" />
         </span>
         <span
           ref={num}

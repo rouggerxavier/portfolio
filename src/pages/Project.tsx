@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { gsap, SplitText, MOTION_OK, useGSAP } from '../lib/gsap'
 import ScrollRail from '../components/ScrollRail'
 import Magnetic from '../components/Magnetic'
+import RxMark from '../components/RxMark'
 import { projects, profile, type Project as ProjectData } from '../data/projects'
 
 // Case-study endpoint (/projeto/:slug), scroll-driven end to end: pinned hero
@@ -217,10 +218,10 @@ function ProjectView({ p }: { p: ProjectData }) {
         <nav className="mx-auto flex max-w-[1400px] items-center justify-between px-5 sm:px-8">
           <Link
             to="/"
-            className="font-display text-2xl font-extrabold tracking-tight"
+            aria-label="Rougger Xavier, início"
             data-hot
           >
-            RX<span className="text-flame">/</span>
+            <RxMark className="h-[1.15rem] w-auto" />
           </Link>
           <div className="flex items-center gap-8">
             <Link

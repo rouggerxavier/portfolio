@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import RxMark from './RxMark'
 
 const links = [
   { href: '#index', label: 'Projetos' },
@@ -27,10 +28,10 @@ export default function Nav() {
       <nav className="mx-auto grid max-w-[1400px] grid-cols-[1fr_auto_1fr] items-center px-5 sm:px-8">
         <a
           href="#top"
-          className="justify-self-start font-display text-2xl font-extrabold tracking-tight"
+          aria-label="Rougger Xavier, início"
+          className="justify-self-start"
         >
-          RX
-          <span className="text-flame">/</span>
+          <RxMark className="h-[1.15rem] w-auto" />
         </a>
 
         <ul className="hidden items-center gap-9 justify-self-center md:flex">
