@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects, type Project } from '../data/projects'
@@ -116,7 +117,7 @@ function FlowRow({
         style={{ gridTemplateRows: open ? '1fr' : '0fr' }}
       >
         <div className="overflow-hidden">
-          <div className="grid gap-8 px-1 pb-12 pt-2 lg:grid-cols-[1fr_0.85fr] lg:items-start">
+          <div className="grid gap-8 px-1 pb-12 pt-2 lg:grid-cols-[1fr_1.05fr] lg:items-start">
             <div>
               <p className="font-mono text-xs uppercase tracking-wider text-flame">
                 {p.role}
@@ -129,42 +130,63 @@ function FlowRow({
                   <li key={s}>{s}</li>
                 ))}
               </ul>
-              {href && (
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-7 inline-flex items-center gap-2 bg-ink px-6 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame focus-visible:bg-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <Link
+                  to={`/projeto/${p.slug}`}
+                  className="inline-flex items-center gap-2 bg-ink px-6 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-flame focus-visible:bg-flame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                   data-hot
                 >
-                  {p.live ? 'Ver live' : 'Ver no GitHub'} ↗
-                </a>
-              )}
+                  Ver projeto →
+                </Link>
+                {href && (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-mono text-xs uppercase tracking-wider text-ink-soft underline decoration-flame decoration-2 underline-offset-4 transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none max-md:text-ink"
+                    data-hot
+                  >
+                    {p.live ? 'Ver live' : 'Ver no GitHub'} ↗
+                  </a>
+                )}
+              </div>
             </div>
 
-            {p.shot ? (
-              <a
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className="group/sh relative block overflow-hidden ring-1 ring-ink/10"
+            {p.gallery && p.gallery.length > 0 ? (
+              <Link
+                to={`/projeto/${p.slug}`}
+                className="group/sh block"
                 data-hot
+                aria-label={`Abrir projeto ${p.title}`}
               >
-                <img
-                  src={p.shot}
-                  alt={`Captura de tela do site do projeto ${p.title}`}
-                  loading="lazy"
-                  decoding="async"
-                  className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 ease-out group-hover/sh:scale-[1.04]"
-                />
-              </a>
+                <div className="grid grid-cols-2 gap-2">
+                  {p.gallery.slice(0, 3).map((src, i) => (
+                    <div
+                      key={src}
+                      className={`relative overflow-hidden ring-1 ring-ink/10 ${
+                        i === 0 ? 'col-span-2 aspect-[16/9]' : 'aspect-[16/11]'
+                      }`}
+                    >
+                      <img
+                        src={src}
+                        alt={`Captura ${i + 1} do projeto ${p.title}`}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover/sh:scale-[1.04]"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <span className="mt-3 block text-right font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft transition-colors group-hover/sh:text-flame">
+                  {String(p.gallery.length).padStart(2, '0')} telas — ver tudo →
+                </span>
+              </Link>
             ) : (
-              <a
-                href={p.repo}
-                target="_blank"
-                rel="noreferrer"
-                className="flex aspect-[16/10] w-full items-end justify-between bg-paper-2 p-6 ring-1 ring-ink/10"
+              <Link
+                to={`/projeto/${p.slug}`}
+                className="flex aspect-[16/10] w-full items-end justify-between bg-paper-2 p-6 ring-1 ring-ink/10 transition-colors hover:bg-paper"
                 data-hot
+                aria-label={`Abrir projeto ${p.title}`}
               >
                 <span
                   className="font-display text-[7rem] font-extrabold leading-none"
@@ -173,9 +195,9 @@ function FlowRow({
                   {p.index}
                 </span>
                 <span className="font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft">
-                  {p.status || 'GitHub'} ↗
+                  {p.status || 'Ver projeto'} →
                 </span>
-              </a>
+              </Link>
             )}
           </div>
         </div>

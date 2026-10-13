@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
 const links = [
-  { href: '#index', label: 'Índice' },
-  { href: '#about', label: 'Perfil' },
-  { href: '#contact', label: 'Contato' },
+  { href: '/#index', label: 'Índice' },
+  { href: '/#about', label: 'Perfil' },
+  { href: '/#contact', label: 'Contato' },
 ]
 
 export default function Nav() {
@@ -22,7 +22,7 @@ export default function Nav() {
       }`}
     >
       <nav className="mx-auto flex max-w-[1400px] items-center justify-between px-5 sm:px-8">
-        <a href="#top" className="font-display text-2xl font-extrabold tracking-tight">
+        <a href="/" className="font-display text-2xl font-extrabold tracking-tight">
           RX
           <span className="text-flame">/</span>
         </a>
@@ -43,7 +43,7 @@ export default function Nav() {
         </ul>
 
         <a
-          href="#contact"
+          href="/#contact"
           className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider underline decoration-flame decoration-2 underline-offset-4 transition-colors hover:text-flame focus-visible:text-flame focus-visible:outline-none max-md:-my-2 max-md:py-2"
         >
           <span className="relative flex h-1.5 w-1.5" aria-hidden>
