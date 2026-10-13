@@ -1,2 +1,5 @@
+# Busca e assistentes de IA: liberados (inclui GPTBot, ClaudeBot, PerplexityBot, Google-Extended).
 User-agent: *
 Allow: /
+
+Sitemap: https://rouggerxavier.com.br/sitemap.xml
