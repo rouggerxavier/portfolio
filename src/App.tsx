@@ -9,6 +9,8 @@ import Cursor from './components/Cursor'
 import { INTRO_DONE } from './components/Intro'
 import Home from './pages/Home'
 import Project from './pages/Project'
+import { projects } from './data/projects'
+import { applyMeta, homeMeta, projectMeta } from './seo'
 
 // route changes land at the top of the new page with fresh trigger positions
 function ScrollReset() {
@@ -18,6 +20,8 @@ function ScrollReset() {
     if (l) l.scrollTo(0, { immediate: true, force: true })
     window.scrollTo(0, 0)
     requestAnimationFrame(() => ScrollTrigger.refresh())
+    const p = pathname.startsWith('/projeto/') ? projects.find((x) => x.slug === pathname.split('/')[2]) : undefined
+    applyMeta(p ? projectMeta(p) : homeMeta)
   }, [pathname])
   return null
 }
