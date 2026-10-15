@@ -4,6 +4,7 @@ import Intro from '../components/Intro'
 import Nav from '../components/Nav'
 import ScrollRail from '../components/ScrollRail'
 import Hero from '../components/Hero'
+import Showcase from '../components/Showcase'
 import Manifesto from '../components/Manifesto'
 import Marquee from '../components/Marquee'
 import Projects from '../components/Projects'
@@ -30,6 +31,7 @@ export default function Home() {
       <ScrollRail />
       <main>
         <Hero />
+        <Showcase />
         <Manifesto />
         <Marquee />
         <Projects />

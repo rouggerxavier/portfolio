@@ -154,3 +154,12 @@ body.intro-lock {
     cursor: none;
   }
 }
+
+/* Showcase (ScrollExpand): flat dark plate instead of the stock gradient,
+   the captures are too busy for the overlay copy */
+.showcase .scroll-expand__scrim {
+  background: oklch(0.07 0.002 60 / 0.8);
+}
+.showcase .scroll-expand__hint {
+  letter-spacing: 0.2em;
+}
