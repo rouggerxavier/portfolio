@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#070708" />
     <meta name="color-scheme" content="dark" />
+    <!-- the crawlable fallback in #root stays out of sight once JS will render the app -->
+    <script>document.documentElement.classList.add('js')</script>
+    <style>html{background:#070708}.js .seo-static{visibility:hidden}</style>
     <!--seo-head-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

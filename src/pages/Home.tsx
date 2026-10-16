@@ -5,7 +5,6 @@ import Nav from '../components/Nav'
 import ScrollRail from '../components/ScrollRail'
 import Hero from '../components/Hero'
 import Manifesto from '../components/Manifesto'
-import Marquee from '../components/Marquee'
 import Projects from '../components/Projects'
 import About from '../components/About'
 import Contact from '../components/Contact'
@@ -31,7 +30,6 @@ export default function Home() {
       <main>
         <Hero />
         <Manifesto />
-        <Marquee />
         <Projects />
         <About />
         <Contact />

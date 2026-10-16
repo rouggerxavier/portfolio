@@ -45,7 +45,12 @@ neutro tímido. Contraste alto por construção (tinta clara sobre papel escuro)
 - Perfil (Act 4): duas colunas de peso igual (Design & Front-end / IA & Back-end)
   como statement — sem percentuais inventados — mais grade de ferramentas e uma
   faixa de números reais (produtos, no ar, ferramentas).
-- Title block (rodapé do Contato) com metadata mono, como desenho técnico.
+- Hero (Act 1): `ScrollExpand` (React Bits) com mosaico 2×2 de capturas reais;
+  o h1 fica sobre o frame em repouso e some enquanto o frame abre até a tela
+  cheia, que mostra só os projetos.
+- Rodapé (fim do Contato): fundo com sombra quente radial e a marca RX://
+  enorme, escura e mascarada, cortada à direita, como charme de fundo. Na
+  frente: marca pequena, frase display, linha de links mono e barra legal.
 
 ## Motion
 
@@ -53,8 +58,7 @@ neutro tímido. Contraste alto por construção (tinta clara sobre papel escuro)
 - Narrativa em atos, cada reveal casado ao conteúdo: entrada com split headline
   (`words,chars` p/ não quebrar palavra), manifesto que materializa char a char,
   palco de projetos que engole um e traz o próximo, barras/números scrubbed.
-- Backdrop ambiente: `DotField` (canvas), lattice de pontos cinábrio→tinta que
-  reage ao ponteiro. Não é blob neon (anti-referência explícita).
+- Sem backdrop ambiente: o papel escuro fica liso (o `DotField` foi removido).
 - Ease-out exponencial. `prefers-reduced-motion` respeitado: o palco fixado vira
   stack estático legível; o índice cai para `scrollIntoView`.
 
