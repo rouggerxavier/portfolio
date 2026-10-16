@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap, SplitText, MOTION_OK, useGSAP } from '../lib/gsap'
-import { TbCopy, TbCheck, TbClipboardX, TbChevronDown } from 'react-icons/tb'
+import { TbCopy, TbCheck, TbClipboardX, TbChevronDown, TbArrowUp, TbArrowUpRight } from 'react-icons/tb'
 import Magnetic from './Magnetic'
+import RxMark from './RxMark'
 import { profile } from '../data/projects'
 
 // live readout: local time in Rougger's timezone (Paraíba / BRT)
@@ -306,24 +307,77 @@ export default function Contact() {
           Sem compromisso
         </p>
 
-        {/* drawing title block footer */}
-        <footer className="mt-24 grid grid-cols-2 gap-px overflow-hidden border border-line bg-line font-mono text-[0.65rem] uppercase tracking-wider sm:grid-cols-4">
-          {[
-            ['Documento', 'Portfólio'],
-            ['Autor', profile.name],
-            ['Rev.', '2026.0'],
-            ['Stack', 'React · GSAP · Lenis'],
-          ].map(([k, v]) => (
-            <div key={k} className="bg-paper p-4">
-              <div className="text-ink-soft">{k}</div>
-              <div className="mt-1 text-ink">{v}</div>
-            </div>
-          ))}
-        </footer>
-        <p className="py-6 text-center font-mono text-[0.65rem] uppercase tracking-widest text-ink-soft">
-          © {new Date().getFullYear()} {profile.name} · desenhado e construído à mão
-        </p>
       </div>
+
+      {/* closing footer: the RX:// mark sits deep in a warm shade behind the
+          content, a charm rather than a subject */}
+      <footer className="relative -mx-5 mt-32 overflow-hidden border-t border-line bg-[radial-gradient(120%_90%_at_85%_10%,oklch(0.17_0.008_55)_0%,oklch(0.09_0.003_60)_55%,var(--color-paper)_100%)] sm:-mx-8">
+        <RxMark className="pointer-events-none absolute -right-[16%] top-[70px] w-[68%] text-[oklch(0.22_0.02_45)] [mask-image:linear-gradient(200deg,#000_15%,transparent_75%)] [&_path:last-child]:fill-[oklch(0.26_0.05_40)] max-md:-right-[45%] max-md:top-auto max-md:bottom-28 max-md:w-[130%]" />
+
+        <div className="relative px-5 sm:px-8">
+          <div className="mx-auto max-w-[1400px]">
+            <RxMark className="mt-20 h-7 w-auto text-ink" />
+            <p className="mt-10 font-display text-[clamp(2.75rem,5.5vw,4.75rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
+              Desenhado à mão,
+              <br />
+              construído <span className="text-flame">para viver.</span>
+            </p>
+
+            <nav
+              aria-label="Rodapé"
+              className="mt-14 flex flex-wrap items-center gap-x-9 gap-y-2 font-mono text-xs uppercase tracking-[0.12em]"
+            >
+              {[
+                ['#index', 'Projetos'],
+                ['#about', 'Perfil'],
+                ['#contact', 'Contato'],
+              ].map(([href, label]) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="text-ink-soft hover:text-ink focus-visible:text-ink transition-colors focus-visible:outline-none max-md:inline-flex max-md:min-h-[44px] max-md:items-center"
+                >
+                  {label}
+                </a>
+              ))}
+              <span className="h-4 w-px bg-line max-sm:hidden" aria-hidden />
+              <a
+                href={`mailto:${profile.email}`}
+                className="text-flame hover:text-ink focus-visible:text-ink transition-colors focus-visible:outline-none max-md:inline-flex max-md:min-h-[44px] max-md:items-center"
+              >
+                Começar um projeto
+              </a>
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 text-flame hover:text-ink focus-visible:text-ink transition-colors focus-visible:outline-none max-md:inline-flex max-md:min-h-[44px] max-md:items-center"
+              >
+                GitHub <TbArrowUpRight className="text-sm" aria-hidden />
+              </a>
+            </nav>
+
+            <div className="mt-20 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-t border-line py-5 font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-ink-soft">
+              <span>
+                © {new Date().getFullYear()} {profile.name}
+              </span>
+              <span className="flex flex-wrap items-center gap-x-7 gap-y-2">
+                <span>
+                  {profile.location.split(',')[0]}, BR · {time} BRT
+                </span>
+                <span aria-hidden className="text-flame max-sm:hidden">·</span>
+                <span>React · GSAP · Lenis</span>
+                <a
+                  href="#top"
+                  className="inline-flex items-center gap-1.5 text-ink hover:text-flame focus-visible:text-flame transition-colors focus-visible:outline-none max-md:inline-flex max-md:min-h-[44px] max-md:items-center"
+                >
+                  Voltar ao topo <TbArrowUp className="text-sm" aria-hidden />
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </section>
   )
 }

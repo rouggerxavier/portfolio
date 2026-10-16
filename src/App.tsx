@@ -4,7 +4,6 @@ import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
 import { gsap, ScrollTrigger } from './lib/gsap'
 import { setLenis, getLenis } from './lib/lenis'
-import Background from './components/Background'
 import Cursor from './components/Cursor'
 import { INTRO_DONE } from './components/Intro'
 import Home from './pages/Home'
@@ -74,7 +73,6 @@ export default function App() {
 
   return (
     <>
-      <Background />
       <Cursor />
       <ScrollReset />
       <Routes>

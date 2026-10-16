@@ -135,7 +135,7 @@ export function headTags(m: Meta) {
 export function bodyHtml(p?: Project) {
   const list = (xs: string[]) => `<ul>${xs.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`
   if (p) {
-    return `<main><nav><a href="/">${profile.name}</a> / <a href="/#index">Projetos</a></nav>
+    return `<main class="seo-static"><nav><a href="/">${profile.name}</a> / <a href="/#index">Projetos</a></nav>
 <h1>${esc(p.title)}</h1><p>${esc(p.role)} · ${esc(p.category)} · ${p.year}</p>
 <p>${esc(p.summary)}</p>
 <h2>Problema</h2><p>${esc(p.problem)}</p>
@@ -147,7 +147,7 @@ export function bodyHtml(p?: Project) {
 ${p.live ? `<p><a href="${p.live}">Ver ao vivo</a></p>` : ''}${p.repo ? `<p><a href="${p.repo}">Código no GitHub</a></p>` : ''}
 </main>`
   }
-  return `<main><h1>${profile.name} — ${profile.role}</h1>
+  return `<main class="seo-static"><h1>${profile.name} — ${profile.role}</h1>
 <p>${esc(homeMeta.description)}</p>
 <h2>Projetos</h2><ul>${projects
     .map((x) => `<li><a href="/projeto/${x.slug}">${esc(x.title)}</a> — ${esc(x.role)}. ${esc(x.summary)}</li>`)
