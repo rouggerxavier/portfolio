@@ -8,8 +8,9 @@ import Cursor from './components/Cursor'
 import { INTRO_DONE } from './components/Intro'
 import Home from './pages/Home'
 import Project from './pages/Project'
-import { projects } from './data/projects'
-import { applyMeta, homeMeta, projectMeta } from './seo'
+import Service from './pages/Service'
+import { projects, service } from './data/projects'
+import { applyMeta, homeMeta, projectMeta, serviceMeta } from './seo'
 
 // route changes land at the top of the new page with fresh trigger positions
 function ScrollReset() {
@@ -20,7 +21,7 @@ function ScrollReset() {
     window.scrollTo(0, 0)
     requestAnimationFrame(() => ScrollTrigger.refresh())
     const p = pathname.startsWith('/projeto/') ? projects.find((x) => x.slug === pathname.split('/')[2]) : undefined
-    applyMeta(p ? projectMeta(p) : homeMeta)
+    applyMeta(p ? projectMeta(p) : pathname === service.path ? serviceMeta : homeMeta)
   }, [pathname])
   return null
 }
@@ -78,6 +79,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/projeto/:slug" element={<Project />} />
+        <Route path={service.path} element={<Service />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </>

@@ -27,7 +27,7 @@ export default function Hero() {
             { yPercent: 120, duration: 0.9, stagger: { each: 0.016, from: 'start' } },
             '-=0.8',
           )
-          .from('.scroll-expand__hint', { autoAlpha: 0, duration: 0.6 }, '-=0.4')
+          .from('.h-kicker, .scroll-expand__hint', { autoAlpha: 0, duration: 0.6 }, '-=0.4')
 
         const play = () => tl.play()
         if (sessionStorage.getItem('introSeen')) play()
@@ -63,6 +63,9 @@ export default function Hero() {
         }
         title={
           <h1 className="font-display text-[clamp(2.7rem,8.5vw,6rem)] font-extrabold leading-[0.92] tracking-[-0.03em] text-ink max-md:text-[clamp(2.1rem,9.5vw,2.9rem)] max-md:leading-[1]">
+            <span className="h-kicker mb-5 inline-block bg-paper/80 px-3 py-1.5 font-mono text-[clamp(0.625rem,1.4vw,0.85rem)] font-medium uppercase leading-normal tracking-[0.16em] max-md:tracking-[0.08em] [text-shadow:none]">
+              Rougger Xavier · Web designer em João Pessoa
+            </span>
             <span className="block overflow-hidden pb-[0.08em]">
               <span className="h-line block">Desenho e construo</span>
             </span>
