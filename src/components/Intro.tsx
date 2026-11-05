@@ -1,63 +1,53 @@
-import { useEffect, useRef } from 'react'
-import RxMark from './RxMark'
+import { useLayoutEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 
 export const INTRO_DONE = 'intro:done'
 
+// once per page load: a reload replays the intro, in-app navigation doesn't
+let played = false
+export const introPlayed = () => played
+
 export default function Intro() {
   const root = useRef<HTMLDivElement>(null)
-  const num = useRef<HTMLSpanElement>(null)
-  const bar = useRef<HTMLSpanElement>(null)
 
-  useEffect(() => {
+  // layout effect: the mark's start state must be set before the first paint
+  useLayoutEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const seen = sessionStorage.getItem('introSeen')
 
     const finish = () => {
       document.body.classList.remove('intro-lock')
       window.dispatchEvent(new Event(INTRO_DONE))
-      sessionStorage.setItem('introSeen', '1')
+      played = true
     }
 
-    if (seen || reduce) {
+    if (played || reduce) {
       if (root.current) root.current.style.display = 'none'
       finish()
       return
     }
 
     document.body.classList.add('intro-lock')
-    const counter = { v: 0 }
 
     const tl = gsap.timeline({
-      defaults: { ease: 'expo.out' },
       onComplete: () => {
         if (root.current) root.current.style.display = 'none'
-        finish()
       },
     })
 
-    tl.from('.intro-meta', { opacity: 0, y: 10, duration: 0.5, stagger: 0.08 })
-      .to(
-        counter,
-        {
-          v: 100,
-          duration: 1.7,
-          ease: 'power2.inOut',
-          onUpdate: () => {
-            if (num.current)
-              num.current.textContent = String(Math.round(counter.v)).padStart(3, '0')
-            if (bar.current) bar.current.style.transform = `scaleX(${counter.v / 100})`
-          },
-        },
-        '-=0.2',
-      )
-      .to('.intro-mark', { opacity: 1, duration: 0.4 }, '-=0.6')
-      .to('.intro-fade', { opacity: 0, duration: 0.5 }, '+=0.25')
-      .to(
-        root.current,
-        { yPercent: -100, duration: 1, ease: 'expo.inOut' },
-        '-=0.1',
-      )
+    // the colon appears centered on the mark, then moves to its place while
+    // RX and // slide out of it; the whole panel lifts away to reveal the hero
+    tl.fromTo(
+      '.intro-dot',
+      { x: -160, y: -4.5, autoAlpha: 0, scale: 0.6, transformOrigin: '50% 50%' },
+      { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'back.out(2)', stagger: 0.05 },
+      0.15,
+    )
+      .to('.intro-dot', { x: 0, y: 0, duration: 0.55, ease: 'power3.inOut' }, 0.6)
+      .fromTo('.intro-rx', { x: 640 }, { x: 0, duration: 0.7, ease: 'expo.out' }, 0.82)
+      .fromTo('.intro-slashes', { x: -340 }, { x: 0, duration: 0.7, ease: 'expo.out' }, 0.82)
+      .to(root.current, { yPercent: -100, duration: 0.75, ease: 'expo.inOut' }, 1.68)
+      // the hero starts its entrance as the panel clears, so it isn't revealed empty
+      .call(finish, undefined, 1.83)
 
     return () => {
       tl.kill()
@@ -68,45 +58,32 @@ export default function Intro() {
   return (
     <div
       ref={root}
-      className="fixed inset-0 z-[200] flex flex-col justify-between bg-paper px-5 py-6 sm:px-8 sm:py-8"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-paper"
     >
-      <div className="intro-fade flex items-center justify-between font-mono text-xs uppercase tracking-[0.18em] text-ink-soft">
-        <span className="intro-meta">Rougger Xavier</span>
-        <span className="intro-meta">Portfólio / Rev. 2026.0</span>
-      </div>
-
-      <div className="intro-fade flex items-end justify-between">
-        <span
-          className="intro-mark font-display text-[clamp(3rem,12vw,9rem)] font-extrabold leading-none tracking-tight opacity-0"
-        >
-          <RxMark className="h-[0.72em] w-auto" />
-        </span>
-        <span
-          ref={num}
-          className="font-mono text-[clamp(2.5rem,9vw,7rem)] font-medium leading-none text-ink"
-        >
-          000
-        </span>
-      </div>
-
-      {/* mobile-only: fill the empty middle with a clear value proposition */}
-      <p className="intro-fade intro-meta max-w-[18ch] font-display text-[1.7rem] font-bold leading-[1.05] tracking-tight text-ink md:hidden">
-        Web design, front-end e <span className="text-flame">IA aplicada</span>.
-      </p>
-
-      <div className="intro-fade">
-        <div className="mb-2 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.18em] text-ink-soft">
-          <span className="intro-meta">Carregando experiência</span>
-          <span className="intro-meta">gsap · scrolltrigger · lenis</span>
-        </div>
-        <div className="h-px w-full bg-line">
-          <span
-            ref={bar}
-            className="block h-full origin-left scale-x-0 bg-flame"
-            style={{ transformOrigin: 'left' }}
+      <svg
+        viewBox="0 0 1015 314"
+        role="img"
+        aria-label="RX://"
+        className="w-[clamp(180px,27vw,520px)] text-ink"
+      >
+        {/* nested svgs clip RX and // at the colon, so they slide out of it */}
+        <svg width="640" height="314" viewBox="0 0 640 314">
+          <path
+            className="intro-rx"
+            fill="currentColor"
+            d="M0 0H214C262 0 308 40 308 92V104C308 168 250 210 166 210H96V314H0ZM96 72V138H177C191 138 209 126 209 110V100C209 84 191 72 177 72ZM116 150H223L332.3 314H225.3ZM286 0H399L638 314H525ZM523 0H636L384 314H271Z"
           />
-        </div>
-      </div>
+        </svg>
+        <svg x="680" width="335" height="314" viewBox="680 0 335 314">
+          <path
+            className="intro-slashes"
+            fill="#FE4E01"
+            d="M816 0H897L770 314H689ZM934 0H1015L888 314H807Z"
+          />
+        </svg>
+        <path className="intro-dot" fill="#FE4E01" d="M628 101a39 39 0 1 0 78 0a39 39 0 1 0-78 0Z" />
+        <path className="intro-dot" fill="#FE4E01" d="M628 222a39 39 0 1 0 78 0a39 39 0 1 0-78 0Z" />
+      </svg>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { gsap, SplitText, MOTION_OK, useGSAP } from '../lib/gsap'
 import ScrollExpand from './ScrollExpand'
-import { INTRO_DONE } from './Intro'
+import { INTRO_DONE, introPlayed } from './Intro'
 import { projects } from '../data/projects'
 
 const SHOTS = ['grankasa', 'projeto-alana', 'feirao', 'evalops']
@@ -30,7 +30,7 @@ export default function Hero() {
           .from('.h-kicker, .scroll-expand__hint', { autoAlpha: 0, duration: 0.6 }, '-=0.4')
 
         const play = () => tl.play()
-        if (sessionStorage.getItem('introSeen')) play()
+        if (introPlayed()) play()
         else window.addEventListener(INTRO_DONE, play, { once: true })
 
         return () => {
