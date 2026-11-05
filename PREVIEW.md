@@ -4,7 +4,7 @@ Objetivo: implementar o layout explicitamente selecionado **Índice aberto**, co
 
 Branch: `codex/preview-c-indice-aberto`.
 
-Referências: ZIP exportado em `/tmp/rx-abc-reference/site-novo-rx-export`; layout `paginas/Indice.dc.html` e linguagem de motion `hyperframes/index.html` (trecho C). `PRODUCT.md` fornece o contexto de marca. `DESIGN.md` e `.impeccable/design.json` registram os valores reais da implementação.
+Referências: ZIP fornecido `site-novo-rx.zip`; layout `paginas/Indice.dc.html` e linguagem de motion `hyperframes/index.html` (trecho C). `PRODUCT.md` fornece o contexto de marca. `DESIGN.md` e `.impeccable/design.json` registram os valores reais da implementação.
 
 Proveniência: todas as imagens já existiam no repositório, em `/public/images/projects`; nenhum raster novo foi criado. A marca é o componente vetorial `RxMark` existente (navegação textual mínima nesta Home). As referências `/_blob` do ZIP foram substituídas pelas capturas locais correspondentes. As páginas de case preservam o visual dark e as rotas existentes.
 
@@ -14,4 +14,6 @@ Reprodução da verificação: `node scripts/check-preview.mjs <URL>`. Requer Pl
 
 Âncoras preservadas: Perfil `#about`, projetos `#index`, contato `#contact`; retorno do case restaura o hash da Home.
 
-Até esta etapa de documentação, nenhum deploy foi realizado. Sem commits nesta etapa de documentação.
+Prévia Cloudflare Pages: https://codex-preview-c-indice-abert.portfolio-e48.pages.dev
+
+Publicação isolada por branch; o domínio de produção permanece no deployment anterior.
