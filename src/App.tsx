@@ -27,6 +27,7 @@ function ScrollReset() {
 }
 
 export default function App() {
+  const { pathname } = useLocation()
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     // Smooth scroll (Lenis) only on real pointer devices. On touch, Lenis fights
@@ -58,7 +59,7 @@ export default function App() {
 
       // hold scroll until the intro reveals the page (mobile uses body.intro-lock);
       // the intro only runs on the home route, so don't lock deep links
-      if (!seen && window.location.pathname === '/') {
+      if (!seen && window.location.pathname === '/' && document.querySelector('.intro-dot')) {
         l.stop()
         window.addEventListener(INTRO_DONE, () => l.start(), { once: true })
       }
@@ -74,7 +75,7 @@ export default function App() {
 
   return (
     <>
-      <Cursor />
+      {pathname !== '/' && <Cursor />}
       <ScrollReset />
       <Routes>
         <Route path="/" element={<Home />} />
