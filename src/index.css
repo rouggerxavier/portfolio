@@ -35,7 +35,8 @@
     font-family: var(--font-body);
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    /* clip, not hidden: body must never become the scroller the hero's sticky stage binds to */
+    overflow-x: clip;
   }
   ::selection {
     background: var(--color-flame);
@@ -142,7 +143,7 @@
 
 /* lock scroll while the intro overlay is on screen */
 body.intro-lock {
-  overflow: hidden;
+  overflow: clip;
   height: 100vh;
 }
 

@@ -5,7 +5,7 @@ import 'lenis/dist/lenis.css'
 import { gsap, ScrollTrigger } from './lib/gsap'
 import { setLenis, getLenis } from './lib/lenis'
 import Cursor from './components/Cursor'
-import { INTRO_DONE } from './components/Intro'
+import { INTRO_DONE, introPlayed } from './components/Intro'
 import Home from './pages/Home'
 import Project from './pages/Project'
 import Service from './pages/Service'
@@ -39,7 +39,7 @@ export default function App() {
 
     // recalc trigger positions once fonts/layout settle and after the intro
     const refresh = () => ScrollTrigger.refresh()
-    const seen = sessionStorage.getItem('introSeen')
+    const seen = introPlayed()
     if (!seen) window.addEventListener(INTRO_DONE, refresh, { once: true })
     if (document.fonts?.ready) document.fonts.ready.then(refresh)
     window.addEventListener('load', refresh)
