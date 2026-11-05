@@ -79,11 +79,10 @@
 .case-nav { position: fixed; inset: 0 0 auto; z-index: 40; height: 72px; padding-inline: var(--gutter); display: flex; align-items: center; justify-content: space-between; color: #fff; mix-blend-mode: difference; font-size: 16px; font-weight: 500; pointer-events: none; }
 .case-nav a { pointer-events: auto; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
 .case-nav svg { width: 22px; height: 22px; }
-.case-hero { position: relative; height: 185svh; }
-.case-photo { position: sticky; top: 0; height: 100svh; overflow: clip; background: var(--tone); }
-.case-photo::after { content: ''; position: absolute; inset: 0; background: rgb(10 12 18 / .2); }
-.case-photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--x) 0; transform-origin: var(--x) 0; }
-.case-panel { position: absolute; inset: 0 0 auto; min-height: 72svh; display: flex; flex-direction: column; padding: 16px var(--gutter) clamp(120px, 21svh, 210px); color: #fff; --mark-accent: #fff; }
+.case-photo { position: relative; height: 100svh; overflow: clip; background: var(--tone); }
+.case-photo::after { content: ''; position: absolute; inset: 0; background: var(--photo-veil, rgb(10 12 18 / .2)); }
+.case-photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--x) 0; }
+.case-panel { position: relative; z-index: 1; min-height: 72svh; display: flex; flex-direction: column; padding: 16px var(--gutter) clamp(120px, 21svh, 210px); color: #fff; --mark-accent: #fff; }
 .case-panel-bg { position: absolute; inset: 0; overflow: clip; background: var(--tone); }
 .case-slashes { color: #fff; opacity: .08; height: 62%; top: 12%; right: 6%; }
 .case-mark { position: relative; align-self: center; display: inline-flex; align-items: center; min-height: 44px; }
@@ -94,7 +93,7 @@
 .case-intro > p { max-width: 34ch; font-size: clamp(18px, 1.65vw, 24px); line-height: 1.25; font-weight: 500; letter-spacing: -.015em; }
 .case-headline { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 0; transform: translateY(50%); text-align: center; color: #fff; font-size: clamp(38px, 6.2vw, 96px); line-height: 1; font-weight: 700; letter-spacing: -.04em; text-wrap: balance; }
 
-.case-story { position: relative; background: #fff; padding: clamp(72px, 12vw, 160px) var(--gutter); }
+.case-story { padding: clamp(72px, 12vw, 160px) var(--gutter); }
 .case-story p { max-width: 30ch; margin-inline: auto; font-size: clamp(24px, 2.8vw, 40px); line-height: 1.18; font-weight: 500; letter-spacing: -.025em; }
 .case-frame { background: var(--tone); padding: clamp(24px, 6vw, 88px) var(--gutter); }
 .case-frame img { display: block; width: 100%; aspect-ratio: auto 16 / 10; max-width: 1240px; margin-inline: auto; border-radius: clamp(8px, 1vw, 14px); box-shadow: 0 24px 60px rgb(0 0 0 / .28); }

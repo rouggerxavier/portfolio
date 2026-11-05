@@ -30,7 +30,7 @@ Linhas sempre fechadas. O cursor ou o foco abre a faixa a partir da linha centra
 
 ## Motion
 
-Um momento autoral: a foto que abre. GSAP, `power4.inOut` em 0.62s, alinhada ao pixel com a linha (`alignToRow`). Depois, o painel desce sobre a foto com `expo.out`. No desktop, as camadas com `data-depth` derivam contra o cursor (`src/lib/cursorDepth.ts`) e o nome da linha se inclina para ele. Com `prefers-reduced-motion`, tudo aparece sem movimento e o clique só navega.
+Um momento autoral: a foto que abre. GSAP, `power4.inOut` em 0.62s, alinhada ao pixel com a linha (`alignToRow`). Depois, a página desce e o painel entra acima da foto, com `expo.out`. Painel e foto fazem parte do fluxo e rolam juntos. No desktop, as camadas com `data-depth` derivam contra o cursor (`src/lib/cursorDepth.ts`) e o nome da linha se inclina para ele. Com `prefers-reduced-motion`, tudo aparece sem movimento e o clique só navega.
 
 ## Regras
 
