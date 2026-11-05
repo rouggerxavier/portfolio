@@ -1,68 +1,37 @@
+---
+name: "Rougger Xavier — Índice aberto"
+description: "Branco, tinta e azul de link; a foto do projeto é o que abre."
+colors:
+  rx: "#1f3bff"
+  ink: "#0e1014"
+  ink-soft: "#4b4f58"
+  paper: "#ffffff"
+  line: "#0e101433"
+typography:
+  family: "Inter Tight"
+  display: { fontSize: "clamp(46px,8.8vw,144px)", fontWeight: 700, lineHeight: ".94", letterSpacing: "-.04em" }
+  row: { fontSize: "clamp(34px,6.2vw,96px)", fontWeight: 500, letterSpacing: "-.04em" }
+  body: { fontSize: "17px", fontWeight: 400, lineHeight: 1.5 }
+---
+
 # DESIGN.md
 
-Lane: **blueprint técnico / Swiss spec-sheet**. Tema **dark** (superfície
-quase-preta quente), tinta = foreground claro, acento cinábrio. O site é uma
-prancha de desenho técnica viva: rigor de grid e cotas, mão humana no papel.
+Referência declarada: jozue.fr. Fundo branco, grotesca pesada e apertada, um cartaz de `://` atrás dos títulos no lugar da assinatura.
 
-## Color (OKLCH)
+## Cor
 
-Estratégia: **Committed** — cinábrio carrega o acento; tinta + papel escuro
-fazem o resto. Tokens reais em `src/index.css` (`@theme`):
+- `rx`: acento único do site. `rx://` é um endereço, então o azul é o de link. Trocar a marca é trocar `--color-rx`.
+- Cada projeto tem `tone` em `src/data/projects.ts`, usado no painel e no bloco da captura. Precisa de 4.5:1 com branco.
+- Marca: letras em `currentColor`, `://` em `--mark-accent`.
 
-| Role | Token | OKLCH |
-|---|---|---|
-| Papel (bg) | `--color-paper` | `oklch(0.07 0.002 60)` |
-| Papel painel | `--color-paper-2` | `oklch(0.135 0.003 60)` |
-| Tinta (fg) | `--color-ink` | `oklch(0.94 0.012 82)` |
-| Tinta suave | `--color-ink-soft` | `oklch(0.72 0.012 78)` |
-| Acento (cinábrio) | `--color-flame` | `oklch(0.66 0.215 40)` |
-| Acento fundo | `--color-flame-deep` | `oklch(0.56 0.19 37)` |
-| Linha de grid | `--color-line` | `oklch(0.94 0.012 82 / 0.14)` |
+## Índice
 
-Sem `#000`/`#fff` nos tokens (o body usa `--color-paper`). Sem gradient text.
-Cinábrio em ~15-25% da superfície (hover, números, sublinhados, fios), não
-neutro tímido. Contraste alto por construção (tinta clara sobre papel escuro).
-
-## Typography
-
-- Display: **Bricolage Grotesque** (700/800). Headlines enormes, tracking apertado.
-- Corpo: **Hanken Grotesk** (400/500/600). 65-75ch máx.
-- Mono/spec: **Spline Sans Mono** (400/500). Números de índice, cotas, metadata
-  do "title block". Uso deliberado (voz de prancha), não costume.
-- Escala fluida `clamp()`, ratio ≥1.25. Menor tier de mono ≥11px (legibilidade
-  acima da estética de miniatura).
-
-## Layout
-
-- Grid visível como voz (fios finos em `--color-line`, `rule-t`/`rule-b`).
-- Assimétrico, left-aligned. Nada de stack centralizado genérico.
-- Header: grid 3 colunas (`1fr auto 1fr`) para centrar os links na viewport
-  independente da largura das laterais.
-- Projetos (Act 3): palco fixado (pin), um projeto por vez, meio a meio —
-  captura de um lado, brief do outro. Acima do palco, um **índice persistente**
-  (todos os 7 títulos) que salta direto para o dwell de cada projeto no scroll:
-  a narrativa é *oferecida*, não forçada.
-- Perfil (Act 4): duas colunas de peso igual (Design & Front-end / IA & Back-end)
-  como statement — sem percentuais inventados — mais grade de ferramentas e uma
-  faixa de números reais (produtos, no ar, ferramentas).
-- Hero (Act 1): `ScrollExpand` (React Bits) com mosaico 2×2 de capturas reais;
-  o h1 fica sobre o frame em repouso e some enquanto o frame abre até a tela
-  cheia, que mostra só os projetos.
-- Rodapé (fim do Contato): fundo com sombra quente radial e a marca RX://
-  enorme, escura e mascarada, cortada à direita, como charme de fundo. Na
-  frente: marca pequena, frase display, linha de links mono e barra legal.
+Linhas sempre fechadas. O cursor ou o foco abre a faixa a partir da linha central, 12% além da linha em cima e embaixo, sem empurrar as vizinhas; em toque não há estado aberto, o toque já abre o projeto. O `crop` de cada projeto escolhe uma área da captura sem texto, para não brigar com o nome. Capturas só de interface usam `tint`.
 
 ## Motion
 
-- GSAP + Lenis (smooth scroll só em ponteiro fino; touch usa scroll nativo).
-- Narrativa em atos, cada reveal casado ao conteúdo: entrada com split headline
-  (`words,chars` p/ não quebrar palavra), manifesto que materializa char a char,
-  palco de projetos que engole um e traz o próximo, barras/números scrubbed.
-- Sem backdrop ambiente: o papel escuro fica liso (o `DotField` foi removido).
-- Ease-out exponencial. `prefers-reduced-motion` respeitado: o palco fixado vira
-  stack estático legível; o índice cai para `scrollIntoView`.
+Um momento autoral: a foto que abre. GSAP, `power4.inOut` em 0.62s, alinhada ao pixel com a linha (`alignToRow`). Depois, o painel desce sobre a foto com `expo.out`. No desktop, as camadas com `data-depth` derivam contra o cursor (`src/lib/cursorDepth.ts`) e o nome da linha se inclina para ele. Com `prefers-reduced-motion`, tudo aparece sem movimento e o clique só navega.
 
-## Bans herdados
+## Regras
 
-gradient text · glassmorphism decorativo · cards idênticos · kickers uppercase
-repetidos · side-stripe borders · em dash · percentuais/skill-bars inventados.
+Sem kicker, sem numeração de seção, sem cards, sem texto em mono. Divisórias pontilhadas de 1px.

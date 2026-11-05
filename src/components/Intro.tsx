@@ -6,6 +6,10 @@ export const INTRO_DONE = 'intro:done'
 // once per page load: a reload replays the intro, in-app navigation doesn't
 let played = false
 export const introPlayed = () => played
+// a deep link already showed its page: arriving home later shouldn't hold it behind the mark
+export const skipIntro = () => {
+  played = true
+}
 
 export default function Intro() {
   const root = useRef<HTMLDivElement>(null)
@@ -58,13 +62,13 @@ export default function Intro() {
   return (
     <div
       ref={root}
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-paper"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-rx"
     >
       <svg
         viewBox="0 0 1015 314"
         role="img"
         aria-label="RX://"
-        className="w-[clamp(180px,27vw,520px)] text-ink"
+        className="w-[clamp(180px,27vw,520px)] text-white"
       >
         {/* nested svgs clip RX and // at the colon, so they slide out of it */}
         <svg width="640" height="314" viewBox="0 0 640 314">
@@ -77,12 +81,12 @@ export default function Intro() {
         <svg x="680" width="335" height="314" viewBox="680 0 335 314">
           <path
             className="intro-slashes"
-            fill="#FE4E01"
+            fill="var(--color-ink)"
             d="M816 0H897L770 314H689ZM934 0H1015L888 314H807Z"
           />
         </svg>
-        <path className="intro-dot" fill="#FE4E01" d="M628 101a39 39 0 1 0 78 0a39 39 0 1 0-78 0Z" />
-        <path className="intro-dot" fill="#FE4E01" d="M628 222a39 39 0 1 0 78 0a39 39 0 1 0-78 0Z" />
+        <path className="intro-dot" fill="var(--color-ink)" d="M628 101a39 39 0 1 0 78 0a39 39 0 1 0-78 0Z" />
+        <path className="intro-dot" fill="var(--color-ink)" d="M628 222a39 39 0 1 0 78 0a39 39 0 1 0-78 0Z" />
       </svg>
     </div>
   )

@@ -1,0 +1,14 @@
+{
+  "name": "Rougger Xavier — Índice aberto",
+  "colors": {
+    "rx": "#1f3bff",
+    "ink": "#0e1014",
+    "ink-soft": "#4b4f58",
+    "paper": "#ffffff",
+    "line": "#0e101433"
+  },
+  "fonts": {
+    "all": "Inter Tight"
+  },
+  "source": "DESIGN.md"
+}

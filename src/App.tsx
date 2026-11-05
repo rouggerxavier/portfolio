@@ -3,9 +3,9 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
 import { gsap, ScrollTrigger } from './lib/gsap'
+import { useCursorDepth } from './lib/cursorDepth'
 import { setLenis, getLenis } from './lib/lenis'
-import Cursor from './components/Cursor'
-import { INTRO_DONE, introPlayed } from './components/Intro'
+import { INTRO_DONE, introPlayed, skipIntro } from './components/Intro'
 import Home from './pages/Home'
 import Project from './pages/Project'
 import Service from './pages/Service'
@@ -18,7 +18,8 @@ function ScrollReset() {
   useEffect(() => {
     const l = getLenis()
     if (l) l.scrollTo(0, { immediate: true, force: true })
-    window.scrollTo(0, 0)
+    // instant: the html smooth-scroll rule would leave the new page mid-way down
+    window.scrollTo({ top: 0, behavior: 'instant' })
     requestAnimationFrame(() => ScrollTrigger.refresh())
     const p = pathname.startsWith('/projeto/') ? projects.find((x) => x.slug === pathname.split('/')[2]) : undefined
     applyMeta(p ? projectMeta(p) : pathname === service.path ? serviceMeta : homeMeta)
@@ -27,6 +28,7 @@ function ScrollReset() {
 }
 
 export default function App() {
+  useCursorDepth()
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     // Smooth scroll (Lenis) only on real pointer devices. On touch, Lenis fights
@@ -39,6 +41,7 @@ export default function App() {
 
     // recalc trigger positions once fonts/layout settle and after the intro
     const refresh = () => ScrollTrigger.refresh()
+    if (window.location.pathname !== '/') skipIntro()
     const seen = introPlayed()
     if (!seen) window.addEventListener(INTRO_DONE, refresh, { once: true })
     if (document.fonts?.ready) document.fonts.ready.then(refresh)
@@ -58,7 +61,7 @@ export default function App() {
 
       // hold scroll until the intro reveals the page (mobile uses body.intro-lock);
       // the intro only runs on the home route, so don't lock deep links
-      if (!seen && window.location.pathname === '/') {
+      if (!seen && window.location.pathname === '/' && document.querySelector('.intro-dot')) {
         l.stop()
         window.addEventListener(INTRO_DONE, () => l.start(), { once: true })
       }
@@ -74,7 +77,6 @@ export default function App() {
 
   return (
     <>
-      <Cursor />
       <ScrollReset />
       <Routes>
         <Route path="/" element={<Home />} />
