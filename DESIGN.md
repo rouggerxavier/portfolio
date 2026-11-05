@@ -26,11 +26,11 @@ Referência declarada: jozue.fr. Fundo branco, grotesca pesada e apertada, um ca
 
 ## Índice
 
-Linhas sempre fechadas. O cursor ou o foco abre a faixa a partir da linha central; em toque não há estado aberto, o toque já abre o projeto. O `crop` de cada projeto escolhe uma área da captura sem texto, para não brigar com o nome. Capturas só de interface usam `tint`.
+Linhas sempre fechadas. O cursor ou o foco abre a faixa a partir da linha central, 12% além da linha em cima e embaixo, sem empurrar as vizinhas; em toque não há estado aberto, o toque já abre o projeto. O `crop` de cada projeto escolhe uma área da captura sem texto, para não brigar com o nome. Capturas só de interface usam `tint`.
 
 ## Motion
 
-Um momento autoral: a foto que abre. GSAP, `expo.inOut` em 0.85s, alinhada ao pixel com a linha (`alignToRow`). Depois, o painel desce sobre a foto com `expo.out`. Com `prefers-reduced-motion`, tudo aparece sem movimento e o clique só navega.
+Um momento autoral: a foto que abre. GSAP, `power4.inOut` em 0.62s, alinhada ao pixel com a linha (`alignToRow`). Depois, o painel desce sobre a foto com `expo.out`. Com `prefers-reduced-motion`, tudo aparece sem movimento e o clique só navega.
 
 ## Regras
 

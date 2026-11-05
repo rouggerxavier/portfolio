@@ -21,16 +21,16 @@ function ProjectView({ p }: { p: ProjectData }) {
       const mm = gsap.matchMedia()
       mm.add(MOTION_OK, () => {
         const enter = gsap
-          .timeline({ delay: 0.3, defaults: { ease: 'expo.out', duration: 1 } })
-          .fromTo('.case-panel-bg', { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1 }, 0)
-          .from('.case-fade', { autoAlpha: 0, duration: 0.6 }, 0.5)
-          .from('.case-intro > *', { y: 20, autoAlpha: 0, stagger: 0.08, duration: 0.8 }, 0.35)
+          .timeline({ delay: 0.15, defaults: { ease: 'expo.out', duration: 0.9 } })
+          .fromTo('.case-panel-bg', { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.9 }, 0)
+          .from('.case-fade', { autoAlpha: 0, duration: 0.5 }, 0.35)
+          .from('.case-intro > *', { y: 20, autoAlpha: 0, stagger: 0.06, duration: 0.7 }, 0.25)
         SplitText.create('.case-headline', {
           type: 'lines',
           mask: 'lines',
           autoSplit: true,
           onSplit: (self) => {
-            enter.from(self.lines, { yPercent: 110, stagger: 0.08 }, 0.3)
+            enter.from(self.lines, { yPercent: 110, stagger: 0.06 }, 0.2)
           },
         })
 

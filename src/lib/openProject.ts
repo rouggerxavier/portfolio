@@ -41,7 +41,9 @@ export function openProject(row: HTMLElement, crop: [number, number, number], go
   document.body.append(morph)
 
   const { width: vw, height: vh } = morph.getBoundingClientRect()
-  const rect = row.getBoundingClientRect()
+  const rowBox = row.getBoundingClientRect()
+  // the band is taller than the row, so that's what the photo has to line up with
+  const rect = row.querySelector('.row-band')!.getBoundingClientRect()
   const mid = Math.min(Math.max((rect.top + rect.bottom) / 2, 0), vh)
   // touch rows and rows opened by nothing start from their centre line, like the hover
   const opened = row.matches(':hover, :focus-visible')
@@ -50,7 +52,7 @@ export function openProject(row: HTMLElement, crop: [number, number, number], go
   // the name stays on the photo for a moment instead of vanishing on click
   const label = row.cloneNode(true) as HTMLElement
   label.querySelector('.row-band')?.remove()
-  Object.assign(label.style, { left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` })
+  Object.assign(label.style, { left: `${rowBox.left}px`, top: `${rowBox.top}px`, width: `${rowBox.width}px`, height: `${rowBox.height}px` })
   morph.append(label)
   const lenis = getLenis()
   lenis?.stop()
@@ -64,7 +66,7 @@ export function openProject(row: HTMLElement, crop: [number, number, number], go
         lenis?.start()
         gsap.to(morph, {
           autoAlpha: 0,
-          duration: 0.25,
+          duration: 0.18,
           ease: 'power2.out',
           onComplete: () => {
             morph.remove()
@@ -74,7 +76,7 @@ export function openProject(row: HTMLElement, crop: [number, number, number], go
       })
   }
 
-  const move = { duration: 0.85, ease: 'expo.inOut' }
+  const move = { duration: 0.62, ease: 'power4.inOut' }
   gsap
     .timeline({
       onComplete: () => {
@@ -82,7 +84,7 @@ export function openProject(row: HTMLElement, crop: [number, number, number], go
         settle()
       },
     })
-    .to(label, { autoAlpha: 0, duration: 0.3, ease: 'power2.out' }, 0)
+    .to(label, { autoAlpha: 0, duration: 0.2, ease: 'power2.out' }, 0)
     .fromTo(morph, { clipPath: `inset(${top}px 0px ${bottom}px 0px)` }, { clipPath: 'inset(0px 0px 0px 0px)', ...move }, 0)
     .fromTo(morph, { '--veil': veil }, { '--veil': 0.12, ...move }, 0)
     .fromTo(img, { transformOrigin: '0 0', ...alignToRow(source, rect, crop, vw, vh) }, { x: 0, y: 0, scale: 1, ...move }, 0)
