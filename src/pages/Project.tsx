@@ -7,9 +7,10 @@ import { projects, type Project as ProjectData } from '../data/projects'
 import { gsap, MOTION_OK, SplitText, useGSAP } from '../lib/gsap'
 import '../site.css'
 
-// Case page (/projeto/:slug). The hero photo is the one that opened from the index
-// row: it stays pinned while the panel in the project's colour drops over it, then
-// the panel scrolls away and leaves the photo on screen.
+// Case page (/projeto/:slug). The panel and the photo below it are ordinary page
+// content that scrolls together. The photo is the one that opened from the index row:
+// the page enters shifted up by the panel's height, with the photo where the opening
+// left it, then slides down into place.
 function ProjectView({ p }: { p: ProjectData }) {
   const root = useRef<HTMLDivElement>(null)
   const idx = projects.findIndex((x) => x.slug === p.slug)
@@ -22,7 +23,7 @@ function ProjectView({ p }: { p: ProjectData }) {
       mm.add(MOTION_OK, () => {
         const enter = gsap
           .timeline({ delay: 0.15, defaults: { ease: 'expo.out', duration: 0.9 } })
-          .fromTo('.case-panel-bg', { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.9 }, 0)
+          .from('main', { y: () => -root.current!.querySelector<HTMLElement>('.case-panel')!.offsetHeight, clearProps: 'transform' }, 0)
           .from('.case-intro > *', { y: 20, autoAlpha: 0, stagger: 0.06, duration: 0.7 }, 0.25)
         SplitText.create('.case-headline', {
           type: 'lines',
@@ -33,11 +34,6 @@ function ProjectView({ p }: { p: ProjectData }) {
           },
         })
 
-        gsap.to('.case-photo img', {
-          scale: 1.08,
-          ease: 'none',
-          scrollTrigger: { trigger: '.case-hero', start: 'top top', end: 'bottom top', scrub: true },
-        })
       })
       return () => mm.revert()
     },
@@ -45,7 +41,7 @@ function ProjectView({ p }: { p: ProjectData }) {
   )
 
   return (
-    <div ref={root} className="site" style={{ '--tone': p.tone, '--x': `${p.crop[0] * 100}%` } as CSSProperties}>
+    <div ref={root} className="site" style={{ '--tone': p.tone, '--x': `${p.crop[0] * 100}%`, ...(p.tint && { '--photo-veil': `color-mix(in srgb, ${p.tone} 55%, transparent)` }) } as CSSProperties}>
       <nav className="case-nav" aria-label="Principal">
         <Link to="/#index">
           <TbArrowLeft aria-hidden /> Projetos
@@ -55,9 +51,6 @@ function ProjectView({ p }: { p: ProjectData }) {
 
       <main>
         <section className="case-hero">
-          <div className="case-photo">
-            <img src={p.shot} alt={alt} decoding="async" />
-          </div>
           <div className="case-panel">
             <div className="case-panel-bg">
               <RxSlashes className="case-slashes" />
@@ -77,6 +70,9 @@ function ProjectView({ p }: { p: ProjectData }) {
               <p>{p.problem}</p>
             </div>
             <p className="case-headline" data-depth="1">{p.role}</p>
+          </div>
+          <div className="case-photo">
+            <img src={p.shot} alt={alt} decoding="async" />
           </div>
         </section>
 
