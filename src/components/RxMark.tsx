@@ -12,7 +12,7 @@ export default function RxMark({ className = '' }: { className?: string }) {
 // O "://" sozinho, em escala de cartaz: a assinatura atrás dos títulos.
 export function RxSlashes({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="628 0 387 314" aria-hidden="true" className={`slashes ${className}`} fill="currentColor">
+    <svg viewBox="628 0 387 314" aria-hidden="true" className={`slashes ${className}`} fill="currentColor" data-depth="0.25">
       <path d="M628 101a39 39 0 1 0 78 0a39 39 0 1 0-78 0Z" />
       <path d="M628 222a39 39 0 1 0 78 0a39 39 0 1 0-78 0Z" />
       <path d="M816 0H897L770 314H689Z" />

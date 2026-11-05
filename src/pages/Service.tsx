@@ -14,8 +14,8 @@ export default function Service() {
         <section className="service-hero">
           <RxSlashes className="hero-slashes" />
           <Nav />
-          <h1>{service.title}</h1>
-          <p>{service.intro}</p>
+          <h1 data-depth="1">{service.title}</h1>
+          <p data-depth="0.5">{service.intro}</p>
           <a className="pill" href={`https://wa.me/${profile.phone}`} target="_blank" rel="noreferrer">
             Pedir orçamento no WhatsApp <TbArrowUpRight aria-hidden />
           </a>

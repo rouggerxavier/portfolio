@@ -65,12 +65,12 @@ export default function Home() {
         <section className="hero">
           <RxSlashes className="hero-slashes" />
           <Nav />
-          <p className="hero-hi">
+          <p className="hero-hi" data-depth="0.6">
             Oi,
             <br />
             eu sou Rougger.
           </p>
-          <h1>
+          <h1 data-depth="1">
             <span className="mask">
               <span>web designer</span>
             </span>
@@ -78,7 +78,7 @@ export default function Home() {
               <span>+ engenheiro de IA</span>
             </span>
           </h1>
-          <div className="hero-foot">
+          <div className="hero-foot" data-depth="0.5">
             <p>Desenho e construo sites, landing pages e agentes de IA, do layout ao deploy.</p>
             <p>Quem desenha a interface é quem constrói.</p>
             <p>

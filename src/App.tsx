@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
 import { gsap, ScrollTrigger } from './lib/gsap'
+import { useCursorDepth } from './lib/cursorDepth'
 import { setLenis, getLenis } from './lib/lenis'
 import { INTRO_DONE, introPlayed, skipIntro } from './components/Intro'
 import Home from './pages/Home'
@@ -27,6 +28,7 @@ function ScrollReset() {
 }
 
 export default function App() {
+  useCursorDepth()
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     // Smooth scroll (Lenis) only on real pointer devices. On touch, Lenis fights

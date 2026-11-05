@@ -9,8 +9,8 @@ colors:
   line: "#0e101433"
 typography:
   family: "Inter Tight"
-  display: { fontSize: "clamp(52px,10.4vw,168px)", fontWeight: 700, lineHeight: ".94", letterSpacing: "-.04em" }
-  row: { fontSize: "clamp(38px,7.4vw,112px)", fontWeight: 500, letterSpacing: "-.04em" }
+  display: { fontSize: "clamp(46px,8.8vw,144px)", fontWeight: 700, lineHeight: ".94", letterSpacing: "-.04em" }
+  row: { fontSize: "clamp(34px,6.2vw,96px)", fontWeight: 500, letterSpacing: "-.04em" }
   body: { fontSize: "17px", fontWeight: 400, lineHeight: 1.5 }
 ---
 
@@ -30,7 +30,7 @@ Linhas sempre fechadas. O cursor ou o foco abre a faixa a partir da linha centra
 
 ## Motion
 
-Um momento autoral: a foto que abre. GSAP, `power4.inOut` em 0.62s, alinhada ao pixel com a linha (`alignToRow`). Depois, o painel desce sobre a foto com `expo.out`. Com `prefers-reduced-motion`, tudo aparece sem movimento e o clique só navega.
+Um momento autoral: a foto que abre. GSAP, `power4.inOut` em 0.62s, alinhada ao pixel com a linha (`alignToRow`). Depois, o painel desce sobre a foto com `expo.out`. No desktop, as camadas com `data-depth` derivam contra o cursor (`src/lib/cursorDepth.ts`) e o nome da linha se inclina para ele. Com `prefers-reduced-motion`, tudo aparece sem movimento e o clique só navega.
 
 ## Regras
 

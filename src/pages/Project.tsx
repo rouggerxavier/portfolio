@@ -23,7 +23,6 @@ function ProjectView({ p }: { p: ProjectData }) {
         const enter = gsap
           .timeline({ delay: 0.15, defaults: { ease: 'expo.out', duration: 0.9 } })
           .fromTo('.case-panel-bg', { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.9 }, 0)
-          .from('.case-fade', { autoAlpha: 0, duration: 0.5 }, 0.35)
           .from('.case-intro > *', { y: 20, autoAlpha: 0, stagger: 0.06, duration: 0.7 }, 0.25)
         SplitText.create('.case-headline', {
           type: 'lines',
@@ -63,12 +62,10 @@ function ProjectView({ p }: { p: ProjectData }) {
             <div className="case-panel-bg">
               <RxSlashes className="case-slashes" />
             </div>
-            {/* keeps the headline legible over any capture, and leaves with the panel */}
-            <div className="case-fade" />
-            <Link to="/" className="case-mark" aria-label="Rougger Xavier, início">
+            <Link to="/" className="case-mark" aria-label="Rougger Xavier, início" data-depth="0.3">
               <RxMark />
             </Link>
-            <div className="case-intro">
+            <div className="case-intro" data-depth="0.6">
               <div>
                 <h1>{p.title}</h1>
                 <p className="case-tags">
@@ -79,7 +76,7 @@ function ProjectView({ p }: { p: ProjectData }) {
               </div>
               <p>{p.problem}</p>
             </div>
-            <p className="case-headline">{p.role}</p>
+            <p className="case-headline" data-depth="1">{p.role}</p>
           </div>
         </section>
 
