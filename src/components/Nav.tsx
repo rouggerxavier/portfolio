@@ -3,6 +3,7 @@ import RxMark from './RxMark'
 
 const links = [
   { href: '#index', label: 'Projetos' },
+  { href: '/web-designer-joao-pessoa', label: 'Serviços' },
   { href: '#about', label: 'Perfil' },
   { href: '#contact', label: 'Contato' },
 ]

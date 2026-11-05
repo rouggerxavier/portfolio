@@ -2,8 +2,8 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { projects } from './src/data/projects'
-import { bodyHtml, headTags, homeMeta, llmsTxt, projectMeta, sitemapXml } from './src/seo'
+import { projects, service } from './src/data/projects'
+import { bodyHtml, headTags, homeMeta, llmsTxt, projectMeta, serviceBodyHtml, serviceMeta, sitemapXml } from './src/seo'
 
 // Static SEO: per-route HTML (head + crawlable body), sitemap.xml, llms.txt, 404.html.
 function seo(): Plugin {
@@ -26,6 +26,7 @@ function seo(): Plugin {
       for (const p of projects) {
         writeFileSync(`${out}/projeto/${p.slug}.html`, render(headTags(projectMeta(p)), bodyHtml(p)))
       }
+      writeFileSync(`${out}${service.path}.html`, render(headTags(serviceMeta), serviceBodyHtml()))
       const notFound = { ...homeMeta, title: 'Página não encontrada | Rougger Xavier', jsonLd: [] }
       writeFileSync(
         `${out}/404.html`,

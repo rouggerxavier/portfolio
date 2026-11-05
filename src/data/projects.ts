@@ -272,12 +272,52 @@ export const profile = {
   role: 'Web Designer & AI Engineer',
   study: 'Ciência de Dados & IA',
   school: 'UFPB',
-  location: 'Paraíba, Brasil',
+  location: 'João Pessoa, Paraíba, Brasil',
   email: 'rouggerxavier@hotmail.com',
   github: 'https://github.com/rouggerxavier',
   // `phone` = só dígitos com DDI+DDD (para wa.me); `phoneLabel` = como aparece e é copiado.
   phone: '5583996353706',
   phoneLabel: '+55 (83) 99635-3706',
+}
+
+// Landing page de serviço (/web-designer-joao-pessoa): os slugs ligam cada oferta aos estudos de caso.
+export const service = {
+  path: '/web-designer-joao-pessoa',
+  title: 'Web designer em João Pessoa',
+  intro:
+    'Sou Rougger Xavier, web designer e engenheiro de IA em João Pessoa (PB). Desenho e construo sites, landing pages e agentes de IA, do layout ao deploy, para quem precisa que a presença na internet traga contato de verdade.',
+  offers: [
+    {
+      name: 'Sites institucionais e portfólios',
+      text: 'Seu trabalho em primeiro plano, carregamento rápido no celular e contato direto no WhatsApp.',
+      slugs: ['projeto-alana', 'mobileturismo'],
+    },
+    {
+      name: 'Landing pages',
+      text: 'Uma página com um objetivo só: transformar visita em pedido de orçamento.',
+      slugs: ['mobileturismo', 'projeto-alana'],
+    },
+    {
+      name: 'Lojas e catálogos online',
+      text: 'Catálogo, filtros e um caminho curto entre encontrar o produto e falar com você.',
+      slugs: ['feirao', 'grankasa'],
+    },
+    {
+      name: 'Agentes de IA e chat',
+      text: 'Atendimento em linguagem natural e respostas a partir dos seus próprios dados e documentos.',
+      slugs: ['grankasa', 'docops', 'aurora'],
+    },
+    {
+      name: 'Sistemas web sob medida',
+      text: 'Painéis e ferramentas internas para operação, finanças e análise de dados.',
+      slugs: ['fluxo-nexo', 'evalops', 'sistema-tse'],
+    },
+  ],
+  reasons: [
+    ['Design e código na mesma mão', 'Quem desenha a interface é quem constrói, então o que foi aprovado é o que vai ao ar.'],
+    ['Pensado para o celular', 'Layout, imagens e contato são resolvidos primeiro para quem chega pelo telefone.'],
+    ['Pronto para o Google', 'Cada página sai com título, descrição, dados estruturados e HTML que os buscadores conseguem ler.'],
+  ],
 }
 
 export type Capability = { label: string; icon: string }

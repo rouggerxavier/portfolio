@@ -1,4 +1,4 @@
-import { profile, projects, type Project } from './data/projects'
+import { profile, projects, service, type Project } from './data/projects'
 
 export const SITE = 'https://rouggerxavier.com.br'
 
@@ -18,8 +18,9 @@ const person = {
   jobTitle: profile.role,
   url: SITE,
   email: `mailto:${profile.email}`,
+  telephone: `+${profile.phone}`,
   sameAs: [profile.github],
-  address: { '@type': 'PostalAddress', addressRegion: 'PB', addressCountry: 'BR' },
+  address: { '@type': 'PostalAddress', addressLocality: 'João Pessoa', addressRegion: 'PB', addressCountry: 'BR' },
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidade Federal da Paraíba (UFPB)' },
   knowsAbout: ['Web Design', 'UI/UX', 'React', 'TypeScript', 'Python', 'FastAPI', 'RAG', 'Agentes de IA', 'LLM Evals'],
 }
@@ -31,9 +32,9 @@ function clip(s: string, max = 155) {
 }
 
 export const homeMeta: Meta = {
-  title: 'Rougger Xavier — Web Designer e Engenheiro de IA | Portfólio',
+  title: 'Rougger Xavier — Web Designer em João Pessoa e Engenheiro de IA',
   description:
-    'Web designer e engenheiro de IA full-stack na Paraíba. Crio sites, landing pages, agentes de IA e sistemas RAG com React, TypeScript, Python e FastAPI.',
+    'Web designer e engenheiro de IA em João Pessoa (PB). Crio sites, landing pages, agentes de IA e sistemas RAG com React, TypeScript e Python.',
   path: '/',
   image: `${SITE}${projects[0].shot}`,
   keywords: [
@@ -59,6 +60,43 @@ export const homeMeta: Meta = {
           mainEntity: { '@id': `${SITE}/#person` },
           hasPart: projects.map((p) => ({ '@type': 'CreativeWork', name: p.title, url: `${SITE}/projeto/${p.slug}` })),
         },
+      ],
+    },
+  ],
+}
+
+export const serviceMeta: Meta = {
+  title: `Web Designer em João Pessoa — Sites e Landing Pages | ${profile.name}`,
+  description: clip(service.intro),
+  path: service.path,
+  image: `${SITE}${projects[1].shot}`,
+  keywords: ['web designer João Pessoa', 'criar site João Pessoa', 'landing page João Pessoa', 'agentes de IA', profile.name],
+  jsonLd: [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: service.title,
+      serviceType: 'Web design',
+      description: service.intro,
+      url: `${SITE}${service.path}`,
+      inLanguage: 'pt-BR',
+      areaServed: { '@type': 'City', name: 'João Pessoa' },
+      provider: person,
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Serviços',
+        itemListElement: service.offers.map((o) => ({
+          '@type': 'Offer',
+          itemOffered: { '@type': 'Service', name: o.name, description: o.text },
+        })),
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Início', item: SITE },
+        { '@type': 'ListItem', position: 2, name: service.title, item: `${SITE}${service.path}` },
       ],
     },
   ],
@@ -147,12 +185,29 @@ export function bodyHtml(p?: Project) {
 ${p.live ? `<p><a href="${p.live}">Ver ao vivo</a></p>` : ''}${p.repo ? `<p><a href="${p.repo}">Código no GitHub</a></p>` : ''}
 </main>`
   }
-  return `<main class="seo-static"><h1>${profile.name} — ${profile.role}</h1>
+  return `<main class="seo-static"><h1>${profile.name} — Web designer em João Pessoa</h1>
 <p>${esc(homeMeta.description)}</p>
+<p><a href="${service.path}">Serviços de web design em João Pessoa</a></p>
 <h2>Projetos</h2><ul>${projects
     .map((x) => `<li><a href="/projeto/${x.slug}">${esc(x.title)}</a> — ${esc(x.role)}. ${esc(x.summary)}</li>`)
     .join('')}</ul>
 <h2>Contato</h2><p><a href="mailto:${profile.email}">${profile.email}</a> · <a href="${profile.github}">GitHub</a></p>
+</main>`
+}
+
+export function serviceBodyHtml() {
+  return `<main class="seo-static"><nav><a href="/">${profile.name}</a></nav>
+<h1>${esc(service.title)}</h1><p>${esc(service.intro)}</p>
+<h2>O que eu faço</h2>${service.offers
+    .map((o) => {
+      const links = projects.filter((x) => o.slugs.includes(x.slug))
+      return `<h3>${esc(o.name)}</h3><p>${esc(o.text)}</p><ul>${links
+        .map((x) => `<li><a href="/projeto/${x.slug}">${esc(x.title)}</a> — ${esc(x.role)}</li>`)
+        .join('')}</ul>`
+    })
+    .join('\n')}
+<h2>Por que comigo</h2><ul>${service.reasons.map(([k, v]) => `<li>${esc(k)}: ${esc(v)}</li>`).join('')}</ul>
+<h2>Contato</h2><p><a href="https://wa.me/${profile.phone}">WhatsApp ${profile.phoneLabel}</a> · <a href="mailto:${profile.email}">${profile.email}</a></p>
 </main>`
 }
 
@@ -182,12 +237,13 @@ ${projects.map((p) => `- [${p.title}](${SITE}/projeto/${p.slug}): ${p.role}. ${c
 ## Links
 
 - [Portfólio](${SITE}/)
+- [Web designer em João Pessoa](${SITE}${service.path})
 - [GitHub](${profile.github})
 `
 }
 
 export function sitemapXml(lastmod: string) {
-  const urls = ['/', ...projects.map((p) => `/projeto/${p.slug}`)]
+  const urls = ['/', service.path, ...projects.map((p) => `/projeto/${p.slug}`)]
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls

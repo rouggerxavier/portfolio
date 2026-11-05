@@ -329,6 +329,7 @@ export default function Contact() {
             >
               {[
                 ['#index', 'Projetos'],
+                ['/web-designer-joao-pessoa', 'Web designer em João Pessoa'],
                 ['#about', 'Perfil'],
                 ['#contact', 'Contato'],
               ].map(([href, label]) => (
