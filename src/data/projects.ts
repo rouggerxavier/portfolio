@@ -18,12 +18,29 @@ export type Project = {
   status?: string
   shot?: string
   shotAlt?: string
+  /** variante de 800px da captura, para o índice no celular */
+  thumb?: string
+  /** nome curto para as linhas do índice */
+  short?: string
+  /** cor da página do projeto; precisa de 4.5:1 com texto branco */
+  tone: string
+  tags: string[]
+  /** recorte da foto na linha aberta: foco x, foco y (0-1) e zoom, para fugir do texto da captura */
+  crop: [number, number, number]
+  /** captura de interface, sem foto: a linha aberta usa a cor do projeto como véu */
+  tint?: boolean
+  gallery?: string[]
 }
 
 export const projects: Project[] = [
   {
     index: '01',
     slug: 'grankasa',
+    thumb: '/images/projects/thumb/grankasa.jpg',
+    tone: '#0F4C6E',
+    tags: ['Design', 'IA'],
+    crop: [1, 0.45, 1.9],
+    gallery: [1, 2, 3, 4, 5].map((n) => `/images/projects/grankasa/g${n}.webp`),
     title: 'Grankasa',
     role: 'Plataforma imobiliária com agente de IA',
     category: 'Real estate / IA',
@@ -51,6 +68,12 @@ export const projects: Project[] = [
   {
     index: '02',
     slug: 'projeto-alana',
+    thumb: '/images/projects/thumb/projeto-alana.jpg',
+    tone: '#3F4A2C',
+    tags: ['Design', 'Arquitetura'],
+    crop: [0.7, 1, 1.6],
+    short: 'Alana Lacerda',
+    gallery: [1, 2, 3, 4, 5].map((n) => `/images/projects/projeto-alana/g${n}.webp`),
     title: 'Alana Lacerda Arquitetos',
     role: 'Portfólio que vira canal de clientes',
     category: 'Brand / Landing',
@@ -78,6 +101,10 @@ export const projects: Project[] = [
   {
     index: '03',
     slug: 'docops',
+    thumb: '/images/projects/thumb/docops.jpg',
+    tone: '#2450A8',
+    tags: ['IA', 'Documentos'],
+    crop: [1, 0.5, 2.1],
     title: 'DocOps Agent',
     role: 'Documentos longos viram ação',
     category: 'AI Engineering / RAG',
@@ -105,6 +132,10 @@ export const projects: Project[] = [
   {
     index: '04',
     slug: 'evalops',
+    thumb: '/images/projects/thumb/evalops.jpg',
+    tone: '#141F8F',
+    tags: ['IA', 'Avaliações'],
+    crop: [1, 0.4, 4],
     title: 'EvalOps Studio',
     role: 'Controle para LLMs em produção',
     category: 'LLMOps / Evals',
@@ -132,6 +163,10 @@ export const projects: Project[] = [
   {
     index: '05',
     slug: 'feirao',
+    thumb: '/images/projects/thumb/feirao.jpg',
+    tone: '#14592F',
+    tags: ['Design', 'Loja'],
+    crop: [0.72, 0.35, 2.4],
     title: 'Feirão da Construção',
     role: 'Catálogo que vende pelo WhatsApp',
     category: 'E-commerce / MVP',
@@ -160,6 +195,11 @@ export const projects: Project[] = [
   {
     index: '06',
     slug: 'aurora',
+    thumb: '/images/projects/thumb/aurora.jpg',
+    tone: '#0F6B62',
+    tags: ['IA', 'Atendimento'],
+    crop: [1, 0.5, 1.3],
+    tint: true,
     title: 'Aurora Support AI',
     role: 'Atendimento de e-commerce que aprende',
     category: 'AI / Fine-tuning',
@@ -187,6 +227,10 @@ export const projects: Project[] = [
   {
     index: '07',
     slug: 'mobileturismo',
+    thumb: '/images/projects/thumb/mobileturismo.jpg',
+    tone: '#A8480C',
+    tags: ['Design', 'Turismo'],
+    crop: [1, 0.72, 1.9],
     title: 'MobileTurismo',
     role: 'Site que capta orçamentos de fretamento',
     category: 'Site / Turismo',
@@ -213,6 +257,11 @@ export const projects: Project[] = [
   {
     index: '08',
     slug: 'fluxo-nexo',
+    thumb: '/images/projects/thumb/fluxo-nexo.jpg',
+    tone: '#0E6A50',
+    tags: ['Sistema', 'Finanças'],
+    crop: [1, 0.22, 1.6],
+    tint: true,
     title: 'Fluxo Nexo',
     role: 'Fluxo de caixa realizado',
     category: 'Fintech / Operações',
@@ -240,6 +289,10 @@ export const projects: Project[] = [
   {
     index: '09',
     slug: 'sistema-tse',
+    tone: '#5E4322',
+    tags: ['Sistema', 'Dados'],
+    crop: [0.5, 0.5, 1],
+    tint: true,
     title: 'sistema_tse',
     role: 'Simulador de transferência de votos',
     category: 'Data / Produto interno',
